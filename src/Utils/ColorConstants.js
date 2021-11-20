@@ -1,0 +1,4 @@
+export default{
+	PRIMARY_COLOR:"#5298F8",
+	SYMPOCIA_LINK_TEXT:"#D40D0D"
+}
