@@ -19,9 +19,8 @@ const ScrollingWindowContainer=styled.div`
 	display:flex;
 	flex-direction:row;
 	transition:.8s;
-	animation: wave 9000ms infinite;
+	animation: wave 9000ms;
 	flex-wrap:wrap;
-
 	${({currentMarginTopCounter})=>
 		css`
 			@keyframes wave {
@@ -37,57 +36,33 @@ const ScrollingWindowContainer=styled.div`
 `;
 
 const ScrollingWindow=()=>{
-	const test=true;
 	const [blocks,changeBlocks]=useState([]);
 	const [hasFirstRenderedOccured,changeFirstRenderOccurence]=useState(false);
 	const [currentMarginTopCounter,changeCurrentMarginTopCounter]=useState(0);
+	const [addBlocksIndicator,changeAddBlocksIndicator]=useState(false);
 
+	const addDefaultImages=(images)=>{
+		images.splice(0,0,<Block1/>);
+		images.splice(0,0,<Block2/>);
+		images.splice(0,0,<Block3/>);
+		images.splice(0,0,<Block4/>);
+		images.splice(0,0,<Block1/>);
+		images.splice(0,0,<Block2/>);
+		images.splice(0,0,<Block3/>);
+		images.splice(0,0,<Block4/>);
+		images.splice(0,0,<Block1/>);
+		images.splice(0,0,<Block2/>);
+		images.splice(0,0,<Block3/>);
+		images.splice(0,0,<Block4/>);
+		return images;
+	}
 	useEffect(()=>{
 		let initBlocks=[];
-		initBlocks.push(<Block1/>);
-		initBlocks.push(<Block2/>);
-		initBlocks.push(<Block3/>);
-		initBlocks.push(<Block4/>);
-		initBlocks.push(<Block1/>);
-		initBlocks.push(<Block2/>);
-		initBlocks.push(<Block3/>);
-		initBlocks.push(<Block4/>);
-		initBlocks.push(<Block1/>);
-		initBlocks.push(<Block2/>);
-		initBlocks.push(<Block3/>);
-		initBlocks.push(<Block4/>);
+		initBlocks=addDefaultImages(initBlocks);
 
 		changeBlocks([...initBlocks]);
 		changeFirstRenderOccurence(true);
 	},[]);
-
-	useEffect(()=>{
-		debugger;
-		if(hasFirstRenderedOccured){
-			setTimeout(()=>{
-				setTimeout(()=>{
-					document.getElementById("scrollingWindow").style.animationPlayState="paused";
-					let initBlocks=blocks;
-					initBlocks.splice(0,0,<Block1/>);
-					initBlocks.splice(0,0,<Block2/>);
-					initBlocks.splice(0,0,<Block3/>);
-					initBlocks.splice(0,0,<Block4/>);
-					if(currentMarginTopCounter>200){
-						changeCurrentMarginTopCounter(-300);
-						const currentBlocksIteration=blocks;
-
-						currentBlocksIteration.splice(0, (11)/2);
-						changeBlocks([...currentBlocksIteration]);
-					}else{
-						changeCurrentMarginTopCounter(currentMarginTopCounter+100);
-					}
-					changeBlocks([...initBlocks]);
-					document.getElementById("scrollingWindow").style.animationPlayState="running";
-
-				},1500);
-			},8800);
-		}
-	},[blocks.length]);
 
 	const Block1=()=>{
 		return(
@@ -120,9 +95,41 @@ const ScrollingWindow=()=>{
 			</div>
 		)
 	}
+	const triggerAnalyzeFlow=()=>{
+		if(currentMarginTopCounter>=200){
+			resetFlow();
+			let initBlocks=[];
+			initBlocks=addDefaultImages(initBlocks);
+			changeBlocks([...initBlocks]);
+		}else{
+			continueFlow();
+			let initBlocks=blocks;
+			initBlocks=addDefaultImages(initBlocks);
+			changeBlocks([...initBlocks]);
+		}
+	}
+
+	const continueFlow=()=>{
+		changeCurrentMarginTopCounter(currentMarginTopCounter+100);
+		var element = document.getElementById('scrollingWindow');
+		element.style.animation="none";
+		void element.offsetWidth;
+		element.style.animation='wave 9000ms';
+	}
+	const resetFlow=()=>{
+		changeCurrentMarginTopCounter(0);
+		var element = document.getElementById('scrollingWindow');
+		element.style.animation="none";
+		void element.offsetWidth;
+		element.style.animation='wave 9000ms';
+	}
+
 	return(
 		<Container>
-			<ScrollingWindowContainer id="scrollingWindow" currentMarginTopCounter={currentMarginTopCounter}>
+			<ScrollingWindowContainer 
+				id="scrollingWindow" 
+				currentMarginTopCounter={currentMarginTopCounter}
+				onAnimationEnd={()=>triggerAnalyzeFlow()}>
 				{blocks.map(data=>
 					<>{data}</>
 				)}
