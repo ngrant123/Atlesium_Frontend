@@ -14,7 +14,7 @@ const Container=styled.div`
 
 const Landing=()=>{
 	return(
-		<Container>
+		<Container id="landingPage">
 			<Introduction/>
 			<SlidingWindow/>
 		</Container>

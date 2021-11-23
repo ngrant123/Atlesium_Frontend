@@ -1,8 +1,9 @@
-import React from "react";
+import React,{useState} from "react";
 import styled from "styled-components";
 import Color_Constants from "../../../../../../Utils/ColorConstants.js";
 import SympociaLogo from "../../../../../../Assets/Logos/StampIcon.png";
 import ArrowForwardIosIcon from '@material-ui/icons/KeyboardArrowDown';
+import LoginModal from "../../../LandingSet/Modals-Portals/SignInPortal.js";
 
 const Container=styled.div`
 	display:flex;
@@ -19,9 +20,25 @@ const InputContainer=styled.textarea`
 	border-width:1px;
 	border-color:#D8D8D8;
 	resize:none;
-	padding:5px;
+	padding:10px;
 	border-top-left-radius: 5px 5px;
 	border-bottom-left-radius: 5px 5px;
+`;
+
+const SecondaryButton=styled.div`
+	border-radius:5px;
+	background-color:#1E1E1E;
+	display:flex;
+	flex-direction:row;
+	padding:4px;
+	width:35%;
+	justify-content:space-between;
+	cursor:pointer;
+	transition:.8s;
+	&:hover{
+	    background-color:white;
+		box-shadow:2px 10px 10px #b9d6ff;
+   }
 `;
 
 const PrimaryGetStartButtonCSS={
@@ -55,8 +72,28 @@ const SecondaryButtonCSS={
 }
 
 const Header=({incrementPageCounter})=>{
+	const [displaySignInModal,changeDisplaySignInModal]=useState(false);
+
+	const closeSignInModal=()=>{
+		changeDisplaySignInModal(false);
+	}
+
+	const signInModal=()=>{
+		return(
+			<React.Fragment>
+				{displaySignInModal==true &&(
+					<LoginModal
+						closeModal={closeSignInModal}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
+
+
 	return(
 		<Container>
+			{signInModal()}
 			<div style={{marginTop:"25%",marginBottom:"15%"}}>
 				<div style={{width:"100%",display:"flex",textAlign:"center",marginBottom:"5%"}}>
 					<p style={{fontSize:"36px"}}>
@@ -78,7 +115,7 @@ const Header=({incrementPageCounter})=>{
 					</div>
 				</div>
 				<div style={{width:"100%",display:"flex",justifyContent:"space-between",marginBottom:"10%"}}>
-					<div style={SecondaryButtonCSS} onClick={()=>incrementPageCounter(1,true)}>
+					<SecondaryButton onClick={()=>incrementPageCounter(1,true)}>
 						<div style={{backgroundColor:"white",padding:"10px"}}>
 							How it works
 						</div>
@@ -87,8 +124,8 @@ const Header=({incrementPageCounter})=>{
 								style={{color:"white",fontSize:"24"}}
 							/>
 						</div>
-					</div>
-					<div style={SecondaryButtonCSS}>
+					</SecondaryButton>
+					<SecondaryButton onClick={()=>changeDisplaySignInModal(true)}>
 						<div style={{backgroundColor:"white",padding:"10px",width:"50%"}}>
 							Sign In
 						</div>
@@ -97,14 +134,14 @@ const Header=({incrementPageCounter})=>{
 								style={{color:"white",fontSize:"24"}}
 							/>
 						</div>
-					</div>
+					</SecondaryButton>
 				</div>
 			</div>
 
 			<a href="https://sympocia.com/" style={{textDecoration:"none"}}>
 				<div style={{display:"flex",flexDirection:"row",alignItems:"center",width:"100%"}}>
 					<img src={SympociaLogo} style={{width:"50px",height:"45px",borderRadius:"50%"}}/>
-					<p style={{marginLeft:"2%",color:Color_Constants.SYMPOCIA_LINK_TEXT}}>Made by Sympocia</p>
+					<p style={{marginLeft:"2%",color:Color_Constants.CALL_TO_ACTION_COLOR}}>Made by Sympocia</p>
 				</div>
 			</a>
 		</Container>

@@ -1,12 +1,13 @@
 import React,{useState,useEffect,useRef} from "react";
 import styled from "styled-components";
 import Header from "./Header/index.js";
-import PrimaryIntroduction from "./ProcessBreakDowns/Primary/index.js";
-import SecondaryIntroduction from "./ProcessBreakDowns/Secondary/index.js";
-import TertiaryIntroduction from "./ProcessBreakDowns/Tertiary/index.js";
 import ArrowCircleDownOutlinedIcon from '@material-ui/icons/ArrowBackOutlined';
 import Color_Constants from "../../../../../Utils/ColorConstants.js";
 
+import ProcessBreakDownSkeleton from "./ProcessBreakDowns/ProcessBreakDownSkeleton.js";
+import PrimaryBreakDownImage from "../../../../../Assets/LandingPageSpecific/Explanation_1.png";
+import SecondaryBreakDownImage from "../../../../../Assets/LandingPageSpecific/Explanation_2.png";
+import TertiaryBreakDownImage from "../../../../../Assets/LandingPageSpecific/Explanation_3.png";
 
 const Container=styled.div`
 	background-color:white;
@@ -25,15 +26,11 @@ const CircleContainer=styled.div`
 	border-radius:50%;
 	background-color:white;
 	box-shadow:1px 1px 5px #6e6e6e;
+	transition:.8s;
+	&:hover{
+		box-shadow:1px 1px 20px #6e6e6e;
+   	}
 `;
-
-const CircleCSS={
-	width:"28px",
-	height:"28px",
-	borderRadius:"50%",
-	backgroundColor:"white",
-	boxShadow:"1px 1px 5px #6e6e6e"
-}
 
 const PageIconsCSS={
 	display:"flex",
@@ -42,6 +39,33 @@ const PageIconsCSS={
 	justifyContent:"space-between",
 	cursor:"pointer",
 	alignItems:"center"
+}
+
+const breakDownInformation={
+	primary:{
+		stepNumber:1,
+		headerText:<b>Record an introduction to your <span style={{color:Color_Constants.PRIMARY_COLOR}}> customers </span> </b>,
+		image:PrimaryBreakDownImage,
+		explanationText:"Create a video introduction on our platform of whatever you want and give customers/visitors an authentic view of what you represent"
+	},
+	secondary:{
+		stepNumber:2,
+		headerText:<b>
+						Attach <span style={{color:Color_Constants.PRIMARY_COLOR}}> script </span> 
+						to page you want modal to show
+					</b>,
+		image:SecondaryBreakDownImage,
+		explanationText:"After you create your video description, we will give you a code snippet that you can then attach to pages you want this video to come up. "
+	},
+	tertiary:{
+		stepNumber:3,
+		headerText:<b>
+						Experience a newfound  <span style={{color:Color_Constants.PRIMARY_COLOR}}> connection </span> 
+						with your visitors
+					</b>,
+		image:TertiaryBreakDownImage,
+		explanationText:"Text simply doesn’t cut it anymore. People resonate with a face, so why hold your business back"
+	}
 }
 
 const IntroductionCoordinator=()=>{
@@ -60,16 +84,21 @@ const IntroductionCoordinator=()=>{
 			case 1:{
 				initPageIcons();
 				selectButton();
-				return changeComponent(<PrimaryIntroduction/>);
+				const primaryInformation=breakDownInformation['primary'];
+				return changeComponent(
+					<ProcessBreakDownSkeleton {...primaryInformation}/>
+				);
 			}
 			case 2:{
 				selectButton();
-				return changeComponent(<SecondaryIntroduction/>);
+				const secondaryInformation=breakDownInformation['secondary'];
+				return changeComponent(<ProcessBreakDownSkeleton {...secondaryInformation}/>);
 			}
 
 			case 3:{
 				selectButton();
-				return changeComponent(<TertiaryIntroduction/>);
+				const tertiaryInformation=breakDownInformation['tertiary'];
+				return changeComponent(<ProcessBreakDownSkeleton {...tertiaryInformation}/>);
 			}
 		}
 	},[pageCounter]);
