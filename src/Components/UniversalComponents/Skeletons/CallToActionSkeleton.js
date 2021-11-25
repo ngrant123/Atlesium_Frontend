@@ -3,18 +3,25 @@ import styled from "styled-components";
 import {createPortal} from "react-dom";
 
 const Container=styled.div`
-  position:fixed;
-  height:60%;
-  background-color:white;
-  z-index:12;
-  top:20%;
-  border-radius:5px;
-  width:30%;
-  left:35%;
-  padding:40px;
-  display:flex;
-  overflow:hidden;
-  flex-direction:column;
+	position:fixed;
+	height:60%;
+	background-color:white;
+	z-index:12;
+	top:20%;
+	border-radius:5px;
+	width:30%;
+	left:35%;
+	padding:40px;
+	display:flex;
+	overflow:hidden;
+	flex-direction:column;
+
+	@media screen and (max-width:650px){
+		top:0%;
+		width:100%;
+		left:0%;
+		height:100%;
+	}
 `;
 
 const ShadowContainer = styled.div`

@@ -13,6 +13,14 @@ const Container=styled.div`
 	display:flex;
 	flex-direction:row;
 	overflow-y:auto;
+
+	@media screen and (max-width:1370px){
+		flex-direction:column;
+	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		flex-direction:column;
+    }
 `;
 
 
