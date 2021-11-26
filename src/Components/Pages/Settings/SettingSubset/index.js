@@ -12,12 +12,23 @@ const Container=styled.div`
 `;
 const Settings=()=>{
 	const [displayPasswordReset,changeDisplayPasswordReset]=useState(false);
+
+	const triggerDisplayPasswordResetDisplay=()=>{
+		changeDisplayPasswordReset(true);
+	}
+	const closePasswordReset=()=>{
+		changeDisplayPasswordReset(false);
+	}
 	return(
 		<Container>
 			{displayPasswordReset==true?
-				<PasswordReset/>:
+				<PasswordReset
+					closePasswordReset={closePasswordReset}
+				/>:
 				<React.Fragment>
-					<PersonalInformation/>
+					<PersonalInformation
+						passwordResetHandle={triggerDisplayPasswordResetDisplay}
+					/>
 					<hr/>
 					<AccountSettings/>
 				</React.Fragment>

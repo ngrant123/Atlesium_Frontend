@@ -46,7 +46,7 @@ const EditButtonCSS={
 	cursor:"pointer",
 	marginTop:"-20px"
 }
-const PersonalInformationSettings=()=>{
+const PersonalInformationSettings=({passwordResetHandle})=>{
 	const [displayDeleteProfileModal,changeDisplayDeleteProfileModal]=useState(false);
 	const [displayPauseProfileModal,changeDisplayPauseProfileModal]=useState(false);
 
@@ -139,7 +139,9 @@ const PersonalInformationSettings=()=>{
 					</div>
 				</div>
 				<div style={{display:"flex",flexDirection:"row"}}>
-					<input type="checkbox"/>
+					<input type="checkbox" style={{cursor:"pointer"}}
+						onClick={()=>passwordResetHandle()}
+					/>
 					<p style={{marginLeft:"2%",color:Color_Constants.PRIMARY_COLOR}}>Update Password</p>
 				</div>
 			</div>

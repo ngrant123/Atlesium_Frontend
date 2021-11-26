@@ -75,7 +75,7 @@ const Navigation=({pageType})=>{
 					</p>
 				</div>
 
-				<div style={{marginTop:"10%"}}>
+				<div style={{marginTop:"15%"}}>
 					<div style={dashboardSelection==true?SelectedNavigationDivCSS:UnSelectedNavigationDivCSS}>
 						<DesktopWindowsIcon
 							style={{fontSize:"24"}}
