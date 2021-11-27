@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Navigation from "../../../UniversalComponents/Navigation/index.js";
-import SettingsOptions from "../SettingSubset/index.js";
+import AnalyticsStats from "../AnalyticsSubset/index.js";
 
 const Container=styled.div`
 	position:absolute;
@@ -14,6 +14,7 @@ const Container=styled.div`
 	flex-direction:row;
 	overflow-y:auto;
 
+
 	@media screen and (max-width:1370px){
 		flex-direction:column;
 	}
@@ -24,16 +25,16 @@ const Container=styled.div`
 `;
 
 
-const Settings=(props)=>{
+const Analytics=()=>{
 	return(
-		<Container id="settings">
+		<Container>
 			<Navigation
-				pageType={"Settings"}
+				pageType={"Analytics"}
 			/>
-			<SettingsOptions/>
+			<AnalyticsStats/>
 		</Container>
 	)
 }
 
 
-export default Settings;
+export default Analytics;

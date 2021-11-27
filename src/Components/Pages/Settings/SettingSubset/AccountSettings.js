@@ -10,7 +10,7 @@ const AccountSettings=()=>{
 				<AccountBalanceOutlinedIcon
 					style={{fontSize:"36",color:Color_Constants.PRIMARY_COLOR}}
 				/>
-				<p style={{fontSize:"24px",marginLeft:"2%"}}>
+				<p id="settingHeaderText" style={{fontSize:"24px",marginLeft:"2%"}}>
 					<b>Account Settings</b>
 				</p>
 			</div>

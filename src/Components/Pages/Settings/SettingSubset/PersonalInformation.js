@@ -7,6 +7,14 @@ import Color_Constants from "../../../../Utils/ColorConstants.js";
 import DeleteProfileModal from "../SettingSet/Modals-Portals/DeleteProfilePortal.js";
 import PauseProfileModal from "../SettingSet/Modals-Portals/PauseProfilePortal.js";
 
+const Container=styled.div`
+	@media screen and (max-width:650px){
+		#editButtonIcon{
+			padding:3% !important;
+		}
+	}
+`;
+
 const TextArea=styled.textarea`
   position:relative;
   border-radius:5px;
@@ -19,8 +27,9 @@ const TextArea=styled.textarea`
   margin-bottom:2%;
   margin-right:2%;
   height:70px;
-  @media screen and (max-width:700px){
-    width:95% !important;
+  @media screen and (max-width:650px){
+    width:80% !important;
+    height:50px;
   }
 `;
 
@@ -42,7 +51,7 @@ const VerticalLineCSS={
 const EditButtonCSS={
 	borderRadius:"50%",
 	boxShadow:"1px 1px 5px #6e6e6e",
-	padding:"1%",
+	padding:"10px",
 	cursor:"pointer",
 	marginTop:"-20px"
 }
@@ -81,14 +90,14 @@ const PersonalInformationSettings=({passwordResetHandle})=>{
 	}
 
 	return(
-		<React.Fragment>
+		<Container>
 			{pauseProfileModal()}
 			{deleteProfileModal()}
 			<div style={{display:"flex",flexDirection:"row",marginBottom:"5%"}}>
 				<AccountBoxIcon
 					style={{fontSize:"36",color:Color_Constants.PRIMARY_COLOR}}
 				/>
-				<p style={{fontSize:"24px",marginLeft:"2%"}}>
+				<p id="settingHeaderText" style={{fontSize:"24px",marginLeft:"2%"}}>
 					<b>Personal Information</b>
 				</p>
 				<div class="btn-group">
@@ -117,7 +126,7 @@ const PersonalInformationSettings=({passwordResetHandle})=>{
 				<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 					<TextArea placeholder="First Name"/>
 					<div style={VerticalLineCSS}/>
-					<div style={EditButtonCSS}>
+					<div id="editButtonIcon" style={EditButtonCSS}>
 						<BorderColorIcon
 							style={{color:Color_Constants.PRIMARY_COLOR,}}
 						/>
@@ -132,7 +141,7 @@ const PersonalInformationSettings=({passwordResetHandle})=>{
 				<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 					<TextArea placeholder="Email"/>
 					<div style={VerticalLineCSS}/>
-					<div style={EditButtonCSS}>
+					<div id="editButtonIcon" style={EditButtonCSS}>
 						<BorderColorIcon
 							style={{color:Color_Constants.PRIMARY_COLOR}}
 						/>
@@ -145,7 +154,7 @@ const PersonalInformationSettings=({passwordResetHandle})=>{
 					<p style={{marginLeft:"2%",color:Color_Constants.PRIMARY_COLOR}}>Update Password</p>
 				</div>
 			</div>
-		</React.Fragment>
+		</Container>
 	)
 }
 

@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import Navigation from "../../../UniversalComponents/Navigation/index.js";
-import SettingsOptions from "../SettingSubset/index.js";
 
 const Container=styled.div`
 	position:absolute;
@@ -11,8 +10,8 @@ const Container=styled.div`
 	display:flex;
 	flex-direction:row;
 	display:flex;
-	flex-direction:row;
 	overflow-y:auto;
+	background-color:red;
 
 	@media screen and (max-width:1370px){
 		flex-direction:column;
@@ -23,17 +22,14 @@ const Container=styled.div`
     }
 `;
 
-
-const Settings=(props)=>{
+const Dashboard=()=>{
 	return(
-		<Container id="settings">
+		<Container>
 			<Navigation
-				pageType={"Settings"}
+				pageType={"Analytics"}
 			/>
-			<SettingsOptions/>
 		</Container>
 	)
 }
 
-
-export default Settings;
+export default Dashboard;

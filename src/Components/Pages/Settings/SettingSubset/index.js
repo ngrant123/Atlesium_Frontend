@@ -9,6 +9,10 @@ const Container=styled.div`
 	width:100%;
 	height:100%;
 	padding:5%;
+
+	#settingHeaderText{
+		font-size:18px !important;
+	}
 `;
 const Settings=()=>{
 	const [displayPasswordReset,changeDisplayPasswordReset]=useState(false);
