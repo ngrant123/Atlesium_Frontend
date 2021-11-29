@@ -12,6 +12,21 @@ const Container=styled.div`
 	flex-direction:row;
 `;
 
+const SlidingWindowContainer=styled.div`
+	width:50%;
+	@media screen and (max-width:650px){
+		#scrollingWindow{
+			display:none !important;
+		}
+	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		#scrollingWindow{
+			display:none !important;
+		}
+    }
+`;
+
 const Landing=()=>{
 	return(
 		<Container id="landingPage">
@@ -20,6 +35,5 @@ const Landing=()=>{
 		</Container>
 	)
 }
-
 
 export default Landing;

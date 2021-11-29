@@ -10,14 +10,56 @@ import SecondaryBreakDownImage from "../../../../../Assets/LandingPageSpecific/E
 import TertiaryBreakDownImage from "../../../../../Assets/LandingPageSpecific/Explanation_3.png";
 
 const Container=styled.div`
-	background-color:white;
+	position:relative;
 	height:100%;
-	width:90%;
+	width:70%;
 	display:flex;
 	flex-direction:column;
 	align-items:center;
 	justify-content:center;
 	padding:70px;
+
+
+	@media screen and (max-width:1370px){
+		width:90% !important;
+	}
+
+	@media screen and (max-width:650px){
+		padding:30px !important;
+		width:100% !important;
+		#headerText{
+			font-size:18px !important;
+		}
+
+		#pageBreakDownIcons{
+			width:60% !important;
+		}
+		#componentId{
+			width:100% !important;
+			margin-top:5% !important;
+		}
+	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		width:100% !important;
+
+		#headerText{
+			font-size:18px !important;
+		}
+
+		#pageBreakDownIcons{
+			width:60% !important;
+		}
+
+		#image{
+			width:200px !important;
+			height:82px !important;
+		}
+
+		#explanationText{
+			font-size:18px !important;
+		}
+    }
 `;
 
 const CircleContainer=styled.div`
@@ -116,7 +158,7 @@ const IntroductionCoordinator=()=>{
 		}
 
 		return(
-			<div style={PageIconsCSS}>
+			<div id="pageBreakDownIcons" style={PageIconsCSS}>
 				<ArrowCircleDownOutlinedIcon
 					style={{fontSize:"24"}}
 					onClick={()=>changePageCounter(0)}
@@ -167,7 +209,7 @@ const IntroductionCoordinator=()=>{
 
 	return(
 		<Container>
-			<div style={{marginBottom:"10%"}}>{component}</div>
+			<div id="componentId" style={{marginBottom:"10%"}}>{component}</div>
 			{pageCounter!=0 &&(
 				<>{pageCounterIcons}</>
 			)}

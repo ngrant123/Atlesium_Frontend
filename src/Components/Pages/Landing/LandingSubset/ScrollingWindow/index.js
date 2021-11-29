@@ -10,6 +10,14 @@ const Container=styled.div`
 	width:90%;
 	height:100%;
 	overflow:hidden;
+
+	@media screen and (max-width:650px){
+		display:none !important;
+	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		display:none !important;
+    }
 `;
 
 

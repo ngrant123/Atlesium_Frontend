@@ -124,6 +124,10 @@ const Navigation=({pageType})=>{
 				changeAnalyticsSelection(true);
 				break;
 			}
+			case "Dashboard":{
+				changeDashBoardSelection(true);
+				break;
+			}
 		}
 	},[]);
 	const dashBoardDisplay=()=>{

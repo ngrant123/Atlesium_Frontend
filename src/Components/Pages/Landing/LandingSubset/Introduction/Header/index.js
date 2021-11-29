@@ -10,6 +10,58 @@ const Container=styled.div`
 	flex-direction:column;
 	justify-content:space-between;
 	height:100%;
+	width:100%;
+	margin-top:0%;
+
+	@media screen and (max-width:650px){
+		width:100%;
+		#primaryText{
+			font-size:14px !important;
+		}
+
+		#getStartedDiv{
+			height:40px !important;
+			font-size:12px !important;
+		}
+
+		#parentCompanyDiv{
+			margin-top:20% !important;
+			font-size:12px !important;
+		}
+		#parentCompanyLogo{
+			width:40px !important;
+			height:40px !important;
+		}
+
+		#callToActionsButtons{
+			margin-top:20%;
+		}
+	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		width:100%;
+		height:100%;
+		#primaryText{
+			font-size:14px !important;
+		}
+
+		#getStartedDiv{
+			height:40px !important;
+			font-size:12px !important;
+		}
+
+		#parentCompanyDiv{
+			display:none !important;
+		}
+		#parentCompanyLogo{
+			width:40px !important;
+			height:40px !important;
+		}
+
+		#callToActionsButtons{
+			margin-top:20%;
+		}
+	}
 `;
 
 const InputContainer=styled.textarea`
@@ -23,6 +75,16 @@ const InputContainer=styled.textarea`
 	padding:10px;
 	border-top-left-radius: 5px 5px;
 	border-bottom-left-radius: 5px 5px;
+
+
+
+	@media screen and (max-width:650px){
+		height:40px;
+	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		height:40px;
+    }
 `;
 
 const SecondaryButton=styled.div`
@@ -39,6 +101,17 @@ const SecondaryButton=styled.div`
 	    background-color:white;
 		box-shadow:2px 10px 10px #b9d6ff;
    }
+
+   @media screen and (max-width:650px){
+		width:50%;
+		font-size:12px !important;
+		margin-right:2%;
+   }
+   	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		width:50%;
+		font-size:12px !important;
+		margin-right:2%;
+    }
 `;
 
 const PrimaryGetStartButtonCSS={
@@ -94,9 +167,9 @@ const Header=({incrementPageCounter})=>{
 	return(
 		<Container>
 			{signInModal()}
-			<div style={{marginTop:"25%",marginBottom:"15%"}}>
+			<div id="headerTextInformation" style={{marginTop:"25%",marginBottom:"15%"}}>
 				<div style={{width:"100%",display:"flex",textAlign:"center",marginBottom:"5%"}}>
-					<p style={{fontSize:"36px"}}>
+					<p id="headerText" style={{fontSize:"36px"}}>
 						<b>A new way to 
 							<span style={{color:Color_Constants.PRIMARY_COLOR}}> connect </span> 
 							to your customers
@@ -104,17 +177,17 @@ const Header=({incrementPageCounter})=>{
 					</p>
 				</div>
 
-				<p style={{fontSize:"24px"}}>
+				<p id="primaryText" style={{fontSize:"24px"}}>
 					Onboard and interact with your customers on a more personal level than ever before. 
 					Engagment on a whole new level
 				</p>
 				<div style={{width:"100%",display:"flex",flexDirection:"row",alignItems:"center",marginBottom:"5%"}}>	
 					<InputContainer placeholder="Enter your email"/>
-					<div style={PrimaryGetStartButtonCSS}>
+					<div id="getStartedDiv" style={PrimaryGetStartButtonCSS}>
 						Get Started
 					</div>
 				</div>
-				<div style={{width:"100%",display:"flex",justifyContent:"space-between",marginBottom:"10%"}}>
+				<div id="callToActionsButtons" style={{width:"100%",display:"flex",justifyContent:"space-between",marginBottom:"10%"}}>
 					<SecondaryButton onClick={()=>incrementPageCounter(1,true)}>
 						<div style={{backgroundColor:"white",padding:"10px"}}>
 							How it works
@@ -139,8 +212,8 @@ const Header=({incrementPageCounter})=>{
 			</div>
 
 			<a href="https://sympocia.com/" style={{textDecoration:"none"}}>
-				<div style={{display:"flex",flexDirection:"row",alignItems:"center",width:"100%"}}>
-					<img src={SympociaLogo} style={{width:"50px",height:"45px",borderRadius:"50%"}}/>
+				<div id="parentCompanyDiv" style={{display:"flex",flexDirection:"row",alignItems:"center",width:"100%"}}>
+					<img id="parentCompanyLogo" src={SympociaLogo} style={{width:"50px",height:"45px",borderRadius:"50%"}}/>
 					<p style={{marginLeft:"2%",color:Color_Constants.CALL_TO_ACTION_COLOR}}>Made by Sympocia</p>
 				</div>
 			</a>
