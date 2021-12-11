@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from "react";
 import styled from "styled-components";
-import Navigation from "../../../UniversalComponents/Navigation/index.js";
+import Navigation from "../../../UniversalComponents/Navigation/PageNavigation/index.js";
 import Campaign from "../DashboardSubset/Campaigns/index.js";
-import CampaignNavigation from "../DashboardSubset/CampaignNavigation/index.js";
+import CampaignNavigation from "../../../UniversalComponents/Navigation/CardNavigationCircle/index.js";
 import {CampaignProvider} from "./CampaignContext.js";
 
 
@@ -92,9 +92,6 @@ const Dashboard=()=>{
 			value={{
 				campaigns:stackCampaignsView,
 				currentSelectedIndex,
-				triggerUpdatedSelectedIndex:(selectedIndex)=>{
-					updateSelectedIndex(selectedIndex);
-				},
 				removeTargetedIndexCampaign:(index)=>{
 					removeCampaignFromStack(index);
 				}
@@ -106,10 +103,16 @@ const Dashboard=()=>{
 				/>
 				<CampaignContainer>
 					<Campaign/>
-					<CampaignNavigation 
-						totalCampaigns={campaigns}
-						currentSelectedIndex={currentSelectedIndex}
-					/>
+
+
+					<div style={{height:"100%",width:"15%",borderLeft:"1px solid #ECECEC"}}>
+						<CampaignNavigation 
+							totalCards={campaigns}
+							currentSelectedIndex={currentSelectedIndex}
+							specifiedFlexDirection={"column"}
+							triggerUpdatedSelectedIndex={updateSelectedIndex}
+						/>
+					</div>
 				</CampaignContainer>
 			</Container>
 		</CampaignProvider>

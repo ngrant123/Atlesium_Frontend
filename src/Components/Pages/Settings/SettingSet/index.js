@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Navigation from "../../../UniversalComponents/Navigation/index.js";
+import Navigation from "../../../UniversalComponents/Navigation/PageNavigation/index.js";
 import SettingsOptions from "../SettingSubset/index.js";
 
 const Container=styled.div`

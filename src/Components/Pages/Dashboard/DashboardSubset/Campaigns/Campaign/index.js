@@ -2,6 +2,7 @@ import React,{useContext} from "react";
 import styled from "styled-components";
 import Campaign from "./IsolatedCampaign.js";
 import {CampaignContext} from "../../../DashboardSet/CampaignContext.js";
+import {Link} from "react-router-dom";
 
 const Container=styled.div`
 	position:relative;
@@ -19,11 +20,13 @@ const CampaignInitialier=()=>{
 	return(
 		<Container>
 			{campaigns.map((data,index)=>
-				<Campaign 
-					campaignInformation={data}
-					currentIndex={index}
-					removeTargetedIndexCampaign={campaignConsumer.removeTargetedIndexCampaign}
-				/>
+				<Link to={{pathname:"/reticanDetails"}}>
+					<Campaign 
+						campaignInformation={data}
+						currentIndex={index}
+						removeTargetedIndexCampaign={campaignConsumer.removeTargetedIndexCampaign}
+					/>
+				</Link>
 			)}
 		</Container>
 	)

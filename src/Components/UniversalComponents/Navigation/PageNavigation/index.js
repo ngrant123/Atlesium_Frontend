@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from "react";
 import styled from "styled-components";
-import Color_Constants from "../../../Utils/ColorConstants.js";
-import TestImage from "../../../Assets/Logos/StampIcon.png";
+import Color_Constants from "../../../../Utils/ColorConstants.js";
+import TestImage from "../../../../Assets/Logos/StampIcon.png";
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
@@ -252,11 +252,13 @@ const Navigation=({pageType})=>{
 					</div>
 				</div>
 
-				<div style={{display:"flex",justifyContent:"center",width:"100%",marginBottom:"20%"}}>
-					<div style={CreateCampaignCSS}>
-						Create Campaign
+				<Link to={{pathname:"/creation"}} style={{textDecoration:"none"}}>
+					<div style={{display:"flex",justifyContent:"center",width:"100%",marginBottom:"20%"}}>
+						<div style={CreateCampaignCSS}>
+							Create Campaign
+						</div>
 					</div>
-				</div>
+				</Link>
 			</React.Fragment>
 		)
 	}

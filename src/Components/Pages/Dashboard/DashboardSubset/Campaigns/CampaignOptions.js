@@ -21,7 +21,7 @@ const CampaignOptions=()=>{
 				<button class="btn btn-primary dropdown-toggle" type="button" 
 					data-toggle="dropdown" style={CampaignOptionsCSS}>
 					<p style={{fontSize:"18px",marginRight:"5%"}}>
-						<b>Campaigns</b>
+						<b>Reticans</b>
 					</p>
 					<ArrowDropDownCircleOutlinedIcon
 						style={{fontSize:"24",marginTop:"-5px"}}

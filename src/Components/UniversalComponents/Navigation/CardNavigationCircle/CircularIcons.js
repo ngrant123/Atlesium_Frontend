@@ -1,6 +1,5 @@
 import React,{useRef,useState,useEffect} from "react";
 import styled from "styled-components";
-import {CampaignConsumer} from "../../DashboardSet/CampaignContext.js";
 
 const Container=styled.div`
 	width:28px;
@@ -17,7 +16,7 @@ const Container=styled.div`
 	cursor:pointer;
 `;
 
-const CircleContainer=({iteratedIndex,currentSelectedIndex})=>{
+const CircleContainer=({iteratedIndex,currentSelectedIndex,triggerUpdatedSelectedIndex})=>{
 	const [isSelectedButton,changeIsSelectedButton]=useState(false);
 
 	useEffect(()=>{
@@ -32,15 +31,9 @@ const CircleContainer=({iteratedIndex,currentSelectedIndex})=>{
 		}
 	},[iteratedIndex,currentSelectedIndex]);
 	return(
-		<CampaignConsumer>
-			{campaignConsumer=>{
-				return(
-					<Container isSelectedButton={isSelectedButton}
-						onClick={()=>campaignConsumer.triggerUpdatedSelectedIndex(iteratedIndex)}
-					/>
-				)
-			}}
-		</CampaignConsumer>
+		<Container isSelectedButton={isSelectedButton}
+			onClick={()=>triggerUpdatedSelectedIndex(iteratedIndex)}
+		/>
 	)
 }
 

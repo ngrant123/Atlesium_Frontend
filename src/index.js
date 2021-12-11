@@ -7,6 +7,8 @@ const Landing=lazy(()=>import('./Components/Pages/Landing/LandingSet/index.js'))
 const Settings=lazy(()=>import('./Components/Pages/Settings/SettingSet/index.js'));
 const Authenticity=lazy(()=>import('./Components/Pages/Analytics/AnalyticsSet/index.js'));
 const Dashboard=lazy(()=>import('./Components/Pages/Dashboard/DashboardSet/index.js'));
+const Creation=lazy(()=>import('./Components/Pages/Creation/CreationSet/index.js'));
+const ReticanDetails=lazy(()=>import('./Components/Pages/ReticanDetails/DetailsSet/index.js'));
 
 const application=(
 	<Router>
@@ -16,6 +18,8 @@ const application=(
 				<Route exact path="/settings" component={Settings}/>
 				<Route exact path="/authenticity" component={Authenticity}/>
 				<Route exact path="/dashboard" component={Dashboard}/>
+				<Route exact path="/creation" component={Creation}/>
+				<Route exact path="/reticanDetails" component={ReticanDetails}/>
 			</Switch>
 		</Suspense>
 	</Router>
