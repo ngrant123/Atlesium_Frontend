@@ -29,6 +29,7 @@ const ShadowContainer = styled.div`
   width:200%;
   height:100vh;
   left:-10%;
+  top:0%;
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   display:block;
   z-index:8;

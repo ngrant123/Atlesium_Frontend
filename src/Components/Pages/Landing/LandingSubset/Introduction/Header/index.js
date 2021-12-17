@@ -1,9 +1,15 @@
-import React,{useState} from "react";
+import React,{useState,useContext} from "react";
 import styled from "styled-components";
 import Color_Constants from "../../../../../../Utils/ColorConstants.js";
 import SympociaLogo from "../../../../../../Assets/Logos/StampIcon.png";
 import ArrowForwardIosIcon from '@material-ui/icons/KeyboardArrowDown';
 import LoginModal from "../../../LandingSet/Modals-Portals/SignInPortal.js";
+import {LandingPageContext} from "../../../LandingSet/LandingPageContext.js";
+import RequiredFieldNotification from "../../../../../UniversalComponents/Notifications/RequiredFieldNotification.js";
+import {isEmailValid} from "../../../../../../Actions/Validation/EmailValidation.js";
+import ErrorAlertSystem from "../../../../../UniversalComponents/Skeletons/Alerts.js";
+
+import {hasEmailBeenPreviouslyUsed} from "../../../../../../Actions/Requests/ProfileRequests/Retrieval/ProfileInformation.js";
 
 const Container=styled.div`
 	display:flex;
@@ -144,8 +150,20 @@ const SecondaryButtonCSS={
 	cursor:"pointer"
 }
 
+const CallToActionsButtonsCSS={
+	width:"100%",
+	display:"flex",
+	justifyContent:"space-between",
+	marginBottom:"10%",
+	marginTop:"5%"
+}
+
 const Header=({incrementPageCounter})=>{
 	const [displaySignInModal,changeDisplaySignInModal]=useState(false);
+	const landingPageConsumer=useContext(LandingPageContext);
+	const [erroredInputIds,changeErroredInputIds]=useState([]);
+	const [displayEmailErrorAlert,changeDisplayEmailErrorAlert]=useState(false);
+	const [errorMessage,changeErrorMessage]=useState();
 
 	const closeSignInModal=()=>{
 		changeDisplaySignInModal(false);
@@ -157,15 +175,86 @@ const Header=({incrementPageCounter})=>{
 				{displaySignInModal==true &&(
 					<LoginModal
 						closeModal={closeSignInModal}
+						history={landingPageConsumer.history}
+						parentContainerId={landingPageConsumer.parentContainerId}
 					/>
 				)}
 			</React.Fragment>
 		)
 	}
 
+	const initializeProfileCreation=async()=>{
+		debugger;
+		const userSubmittedEmail=document.getElementById("email").value;
+		if(userSubmittedEmail==""){
+			const tempErroredIds=[];
+			tempErroredIds.push("email");
+			changeErroredInputIds(tempErroredIds);
+		}else{
+			const {
+				data:{
+					message
+				}
+			}=await hasEmailBeenPreviouslyUsed(userSubmittedEmail);
+			if(isEmailValid(userSubmittedEmail) && message==false){
+				landingPageConsumer.triggerDisplayProfileCreation(userSubmittedEmail);
+			}else{
+				let emailCreationErrorMessage;
+				if(message==true){
+					emailCreationErrorMessage={
+						header:"Email already assigned",
+						description:"The email you provided is already used. Please enter another email"
+					}
+				}else{
+					emailCreationErrorMessage={
+						header:"Invalid email",
+						description:"The email you provided is invalid. Please enter a valid email"
+					}
+				}
+				changeErrorMessage(emailCreationErrorMessage);
+				changeDisplayEmailErrorAlert(true);
+			}
+		}
+	}
+
+
+	const clearInputField=(id)=>{
+		debugger;
+		let isInputErroredOut=false;
+		for(var i=0;i<erroredInputIds.length;i++){
+			if(erroredInputIds[i]==id){
+				isInputErroredOut=true;
+				erroredInputIds.splice(i,1);
+				break;
+			}
+		}
+		if(isInputErroredOut){
+			changeErroredInputIds([...erroredInputIds]);
+
+		}
+	}
+
+	const closeErrorAlertScreen=()=>{
+		changeDisplayEmailErrorAlert(false);
+	}
+
+	const emailErrorAlertModal=()=>{
+		return(
+			<React.Fragment>
+				{displayEmailErrorAlert==true &&(
+					<ErrorAlertSystem
+						closeModal={closeErrorAlertScreen}
+						targetDomId={landingPageConsumer.parentContainerId}
+						alertMessage={errorMessage}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
 
 	return(
 		<Container>
+			{emailErrorAlertModal()}
 			{signInModal()}
 			<div id="headerTextInformation" style={{marginTop:"25%",marginBottom:"15%"}}>
 				<div style={{width:"100%",display:"flex",textAlign:"center",marginBottom:"5%"}}>
@@ -181,13 +270,25 @@ const Header=({incrementPageCounter})=>{
 					Onboard and interact with your customers on a more personal level than ever before. 
 					Engagment on a whole new level
 				</p>
-				<div style={{width:"100%",display:"flex",flexDirection:"row",alignItems:"center",marginBottom:"5%"}}>	
-					<InputContainer placeholder="Enter your email"/>
-					<div id="getStartedDiv" style={PrimaryGetStartButtonCSS}>
-						Get Started
-					</div>
-				</div>
-				<div id="callToActionsButtons" style={{width:"100%",display:"flex",justifyContent:"space-between",marginBottom:"10%"}}>
+				<RequiredFieldNotification
+					id={"email"}
+					InputComponent={
+						<div style={{width:"100%",display:"flex",flexDirection:"row",alignItems:"center"}}>
+							<InputContainer 
+								id="email" 
+								placeholder="Enter your email"
+								onClick={()=>clearInputField("email")}
+							/>
+							<div id="getStartedDiv" style={PrimaryGetStartButtonCSS} 
+								onClick={()=>initializeProfileCreation()}>
+								Get Started
+							</div>
+						</div>
+					}
+					erroredInputIds={erroredInputIds}
+				/>
+
+				<div id="callToActionsButtons" style={CallToActionsButtonsCSS}>
 					<SecondaryButton onClick={()=>incrementPageCounter(1,true)}>
 						<div style={{backgroundColor:"white",padding:"10px"}}>
 							How it works

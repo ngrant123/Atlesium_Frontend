@@ -12,9 +12,9 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const verifyResetCode=async(email,userSubmittedVerificationCode)=>{
+export const verifyPasswordResetCode=async(email,userSubmittedVerificationCode)=>{
 	try{
-		const {data}=await axios.get(`${SearchURL}/verifyResetCode`,{
+		const {data}=await axios.get(`${SearchURL}/verifyPasswordResetVerificationCode`,{
 			params:{
 				email,
 				userSubmittedVerificationCode

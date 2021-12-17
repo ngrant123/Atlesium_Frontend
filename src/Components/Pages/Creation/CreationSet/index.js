@@ -20,17 +20,32 @@ const Container=styled.div`
 
 const Creation=()=>{
 	const [currentSelectedComponent,changeCurrentSelectedComponent]=useState("webInformation");
+	const [reticanAssembly,changeReticanAssembly]=useState({});
 
 	const ComponentDecider=({children,componentSelectedName})=>{
 		return children.filter(child=>child.props.name==componentSelectedName);
 	}
 
-	const displaySelectedScreen=(selectedScreen)=>{
+	const displaySelectedScreen=(selectedScreen,reticanInformation)=>{
+		if(reticanInformation!=null)
+			updateReticanAssemblerInformation(reticanInformation);
+
 		changeCurrentSelectedComponent(selectedScreen);
 	}
 
+	const updateReticanAssemblerInformation=(reticanInformation)=>{
+		let currentReticanAssemnlyInformation=reticanAssembly;
+		currentReticanAssemnlyInformation={
+			...currentReticanAssemnlyInformation,
+			...reticanInformation
+		}
+		changeReticanAssembly(currentReticanAssemnlyInformation);
+	}
+
+
+
 	return(
-		<Container>
+		<Container id="reticanCreation">
 			<CreationProgressBar
 				currentScreen={currentSelectedComponent}
 			/>
@@ -39,13 +54,16 @@ const Creation=()=>{
 					<InitialWebInformation 
 						name="webInformation"
 						progressScreen={displaySelectedScreen}
+						reticanAssembly={reticanAssembly}
 					/>
 					<ReticanDetails 
 						name="reticanDetails"
 						progressScreen={displaySelectedScreen}
+						reticanAssembly={reticanAssembly}
 					/>
 					<ReviewStage name="review"
 						progressScreen={displaySelectedScreen}
+						reticanAssembly={reticanAssembly}
 					/>
 				</ComponentDecider>
 			</div>

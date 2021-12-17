@@ -1,12 +1,13 @@
 import React,{useEffect,useState} from "react";
 import styled from "styled-components";
 import Color_Constants from "../../../../Utils/ColorConstants.js";
-import TestImage from "../../../../Assets/Logos/StampIcon.png";
+import AtlesiumLogo from "../../../../Assets/Logos/AtlesiumLogo.svg";
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
 import {Link} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 const Container=styled.div`
 	display:flex;
@@ -100,6 +101,7 @@ const Navigation=({pageType})=>{
 	const [analyticsSelection,changeAnalyticsSelection]=useState(false);
 	const [settingsSelection,changeSettingsSelection]=useState(false);
 	const [displayPhoneUI,changeDisplayPhoneUI]=useState(false);
+	const {firstName}=useSelector(state=>state.personalInformation);
 
 	const triggerUIChange=()=>{
 		if(window.innerWidth<1370){
@@ -207,7 +209,7 @@ const Navigation=({pageType})=>{
 						</li>
 					</ul>
 					</div>
-				<img src={TestImage} style={{width:"40px",height:"40px",borderRadius:"50px",marginRight:"2%"}}/>
+				<img src={AtlesiumLogo} style={{width:"40px",height:"40px",borderRadius:"50px",marginRight:"2%"}}/>
 			</div>
 		)
 	}
@@ -241,9 +243,9 @@ const Navigation=({pageType})=>{
 			<React.Fragment>	
 				<div style={{display:"flex",justifyContent:"center",flexDirection:"column",marginTop:"15%"}}>
 					<div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"center",width:"100%"}}>
-						<img src={TestImage} style={{width:"50px",height:"50px",borderRadius:"50px",marginRight:"2%"}}/>
+						<img src={AtlesiumLogo} style={{width:"50px",height:"50px",borderRadius:"50px",marginRight:"2%"}}/>
 						<p style={{fontSize:"18px",marginLeft:"5%"}}>
-							<b>Nathan Grant</b>
+							<b>{firstName}</b>
 						</p>
 					</div>
 

@@ -12,7 +12,7 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const createProfile=(personalInformation)=>{
+export const createProfile=async(personalInformation)=>{
 	try{
 		const {data}=await axios.post(`${ProfileCreationURL}/createProfile`,{
 			...personalInformation

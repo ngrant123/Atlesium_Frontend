@@ -27,6 +27,7 @@ export const editName=async(profileId,name)=>{
 export const editEmail=async(profileId,email)=>{
 	try{
 		const {data}=await axios.post(`${ProfileCreationURL}/editEmail`,{
+			profileId,
 			email
 		});
 		return data;
@@ -47,11 +48,10 @@ export const editProfilePicture=async(profileId,profilePicture)=>{
 	}
 }
 
-export const updatePassword=(profileId,password)=>{
+export const updatePassword=async(updatedPasswordInformation)=>{
 	try{
 		const {data}=await axios.post(`${ProfileCreationURL}/updatePassword`,{
-			profileId,
-			password
+			...updatedPasswordInformation
 		});
 		return data;
 	}catch(err){

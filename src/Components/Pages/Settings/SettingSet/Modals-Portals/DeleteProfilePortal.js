@@ -4,41 +4,6 @@ import {createPortal} from "react-dom";
 import CallToActionSkeleton from "../../../../UniversalComponents/Skeletons/CallToActionSkeleton.js";
 import Color_Constants from "../../../../../Utils/ColorConstants.js";
 
-const Submit=styled.div`
-   width:95%;
-   height:50px;
-   border-color: #C8B0F4;
-   border-style:solid;
-   background-color:#C8B0F4;
-   color:white;
-   text-decoration:none;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:.8s;
-  border-radius:5px;
-  padding:20px;
-  margin-bottom:5%;
-  cursor:pointer;
-
-   z-index:2;
-   &:hover{
-      background-color:white;
-      color:#C8B0F4;
-      border-style:solid;
-      border-color: #C8B0F4;
-      text-decoration:none;
-
-   }
-
-    @media screen and (max-width:650px){
-        width:100% !important;
-        margin-top:10% !important;
-    }
-`;
-
-
 const HorizontalLineCSS={
 	position:"relative",
 	width:"100%",

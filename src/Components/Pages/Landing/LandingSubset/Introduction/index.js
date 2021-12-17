@@ -10,23 +10,15 @@ import SecondaryBreakDownImage from "../../../../../Assets/LandingPageSpecific/E
 import TertiaryBreakDownImage from "../../../../../Assets/LandingPageSpecific/Explanation_3.png";
 
 const Container=styled.div`
-	position:relative;
-	height:100%;
-	width:70%;
 	display:flex;
 	flex-direction:column;
 	align-items:center;
 	justify-content:center;
-	padding:70px;
 
 
-	@media screen and (max-width:1370px){
-		width:90% !important;
-	}
 
 	@media screen and (max-width:650px){
 		padding:30px !important;
-		width:100% !important;
 		#headerText{
 			font-size:18px !important;
 		}
@@ -41,8 +33,6 @@ const Container=styled.div`
 	}
 
 	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
-		width:100% !important;
-
 		#headerText{
 			font-size:18px !important;
 		}

@@ -1,8 +1,7 @@
-import React,{useState} from "react";
+import React from "react";
 import styled from "styled-components";
 import PersonalInformation from "./PersonalInformation.js";
 import AccountSettings from "./AccountSettings.js";
-import PasswordReset from "./PassWordReset.js";
 
 const Container=styled.div`
 	background-color:white;
@@ -14,29 +13,15 @@ const Container=styled.div`
 		font-size:18px !important;
 	}
 `;
-const Settings=()=>{
-	const [displayPasswordReset,changeDisplayPasswordReset]=useState(false);
-
-	const triggerDisplayPasswordResetDisplay=()=>{
-		changeDisplayPasswordReset(true);
-	}
-	const closePasswordReset=()=>{
-		changeDisplayPasswordReset(false);
-	}
+const Settings=({parentContainerId,history})=>{
 	return(
 		<Container>
-			{displayPasswordReset==true?
-				<PasswordReset
-					closePasswordReset={closePasswordReset}
-				/>:
-				<React.Fragment>
-					<PersonalInformation
-						passwordResetHandle={triggerDisplayPasswordResetDisplay}
-					/>
-					<hr/>
-					<AccountSettings/>
-				</React.Fragment>
-			}
+			<PersonalInformation
+				parentContainerId={parentContainerId}
+				history={history}
+			/>
+			<hr/>
+			<AccountSettings/>
 		</Container>
 	)
 }

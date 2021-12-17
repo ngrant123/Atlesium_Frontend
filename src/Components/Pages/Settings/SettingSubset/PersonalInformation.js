@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import styled from "styled-components";
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
@@ -6,6 +6,19 @@ import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Color_Constants from "../../../../Utils/ColorConstants.js";
 import DeleteProfileModal from "../SettingSet/Modals-Portals/DeleteProfilePortal.js";
 import PauseProfileModal from "../SettingSet/Modals-Portals/PauseProfilePortal.js";
+import {retrieveEmail} from "../../../../Actions/Requests/ProfileRequests/Retrieval/ProfileInformation.js";
+import {
+	useSelector,
+	useDispatch
+} from "react-redux";
+import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
+import {
+	editName,
+	editEmail
+} from "../../../../Actions/Requests/ProfileRequests/Adapter/ProfileEditService.js";
+import {
+	editFirstName
+} from "../../../../Actions/Redux/Actions/PersonalInformationActions.js";
 
 const Container=styled.div`
 	@media screen and (max-width:650px){
@@ -21,7 +34,7 @@ const TextArea=styled.textarea`
   width:90%;
   border-style:solid;
   border-width:1px;
-  border-color:#D8D8D8;
+  border-color:${Color_Constants.GREY};
   resize:none;
   padding:5px;
   margin-bottom:2%;
@@ -55,9 +68,33 @@ const EditButtonCSS={
 	cursor:"pointer",
 	marginTop:"-20px"
 }
-const PersonalInformationSettings=({passwordResetHandle})=>{
+const PersonalInformationSettings=({parentContainerId,history})=>{
 	const [displayDeleteProfileModal,changeDisplayDeleteProfileModal]=useState(false);
 	const [displayPauseProfileModal,changeDisplayPauseProfileModal]=useState(false);
+	const {
+		firstName,
+		_id
+	}=useSelector(state=>state.personalInformation);
+	const [alertMessage,changeAlertMessage]=useState();
+	const [displayAlertModal,changeDisplayAlertModal]=useState(false);
+	const [userEmail,changeUserEmail]=useState();
+	const dispatch=useDispatch();
+
+	useEffect(()=>{
+		const fetchData=async()=>{
+			debugger;
+			const {confirmation,data}=await retrieveEmail(_id);
+			if(confirmation=="Success"){
+				const {message}=data;
+				document.getElementById("email").value=message;
+				changeUserEmail(message);
+			}else{
+				//handle exception		
+			}
+		}
+		fetchData();
+		document.getElementById("firstName").value=firstName;
+	},[]);
 
 	const closeDeleteModal=()=>{
 		changeDisplayDeleteProfileModal(false);
@@ -89,8 +126,94 @@ const PersonalInformationSettings=({passwordResetHandle})=>{
 		)
 	}
 
+	const triggerEditName=async()=>{
+		const userSubmittedName=document.getElementById("firstName").value;
+		let editedNameAlertMessage;
+		if(userSubmittedName==firstName){
+			editedNameAlertMessage={
+				header:"No change detected.",
+				description:"Please alter your first name."
+			}
+		}else{
+			const {confirmation,data}=await editName(_id,userSubmittedName);
+			if(confirmation=="Success"){
+				editedNameAlertMessage={
+					header:"Success",
+					description:"First name changed"
+				}
+				dispatch(editFirstName(userSubmittedName));
+			}else{
+				editedNameAlertMessage={
+					header:"Edited Name Error",
+					description:"Unfortunately, there has been an error when attempting to change your name. Please try again"
+				}
+			}
+		}
+		changeAlertMessage(editedNameAlertMessage);
+		changeDisplayAlertModal(true);
+	}
+
+	const triggerEditEmail=async()=>{
+		debugger;
+		const userSubmittedEmail=document.getElementById("email").value;
+		let editedEmailAlterMessage;
+		if(userEmail==userSubmittedEmail){
+			editedEmailAlterMessage={
+				header:"No change detected.",
+				description:"Please alter your email."
+			}
+		}else{
+			const {confirmation,data}=await editEmail(_id,userSubmittedEmail);
+			if(confirmation=="Success"){
+				editedEmailAlterMessage={
+					header:"Success",
+					description:"Email changed"
+				}
+			}else{
+				const {statusCode}=data;
+				if(statusCode==401){
+					editedEmailAlterMessage={
+						header:"Email Taken",
+						description:"The email you have typed has already been taken by someone else. Please add another one."
+					}
+				}else if(statusCode==500){
+					editedEmailAlterMessage={
+						header:"Internal Server Error",
+						description:"Unfortunately there has been an error on our part. Please try again later"
+					}
+				}else{
+					editedEmailAlterMessage={
+						header:"Edited Email Error",
+						description:"Unfortunately, there has been an error when attempting to change your name. Please try again"
+					}
+				}
+			}
+		}
+		changeAlertMessage(editedEmailAlterMessage);
+		changeDisplayAlertModal(true);
+	}
+
+	const closeAlertModal=()=>{
+		changeDisplayAlertModal(false);
+	}
+
+	const alertModal=()=>{
+		return(
+			<React.Fragment>
+				{displayAlertModal==true &&(
+					<AlertSystem
+						closeModal={closeAlertModal}
+						targetDomId={parentContainerId}
+						alertMessage={alertMessage}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
+
 	return(
 		<Container>
+			{alertModal()}
 			{pauseProfileModal()}
 			{deleteProfileModal()}
 			<div style={{display:"flex",flexDirection:"row",marginBottom:"5%"}}>
@@ -124,10 +247,11 @@ const PersonalInformationSettings=({passwordResetHandle})=>{
 					<b>First Name</b>
 				</p>
 				<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-					<TextArea placeholder="First Name"/>
+					<TextArea id="firstName" placeholder="First Name"/>
 					<div style={VerticalLineCSS}/>
 					<div id="editButtonIcon" style={EditButtonCSS}>
 						<BorderColorIcon
+							onClick={()=>triggerEditName()}
 							style={{color:Color_Constants.PRIMARY_COLOR,}}
 						/>
 					</div>
@@ -139,17 +263,18 @@ const PersonalInformationSettings=({passwordResetHandle})=>{
 					<b>Email</b>
 				</p>
 				<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-					<TextArea placeholder="Email"/>
+					<TextArea id="email" placeholder="Email"/>
 					<div style={VerticalLineCSS}/>
 					<div id="editButtonIcon" style={EditButtonCSS}>
 						<BorderColorIcon
+							onClick={()=>triggerEditEmail()}
 							style={{color:Color_Constants.PRIMARY_COLOR}}
 						/>
 					</div>
 				</div>
 				<div style={{display:"flex",flexDirection:"row"}}>
 					<input type="checkbox" style={{cursor:"pointer"}}
-						onClick={()=>passwordResetHandle()}
+						onClick={()=>history.push(`/passwordReset`)}
 					/>
 					<p style={{marginLeft:"2%",color:Color_Constants.PRIMARY_COLOR}}>Update Password</p>
 				</div>

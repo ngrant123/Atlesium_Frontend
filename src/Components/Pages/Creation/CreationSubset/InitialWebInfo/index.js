@@ -1,9 +1,11 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import styled from "styled-components";
 import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded';
 import Color_Constants from "../../../../../Utils/ColorConstants.js";
 import {Link} from "react-router-dom";
+import RequiredFieldNotification from "../../../../UniversalComponents/Notifications/RequiredFieldNotification.js";
+import {clearInputField} from "../../../../../Actions/Tasks/ClearInputFields.js";
 
 const Container=styled.div`
 	width:100%;
@@ -43,8 +45,28 @@ const ReticanDetailsCreationCSS={
 	fontSize:"18px"
 }
 
+const InitialWebInformation=({progressScreen,reticanAssembly})=>{
+	console.log(reticanAssembly);
+	const [erroredInputIds,changeErroredInputIds]=useState([]);
 
-const InitialWebInformation=({progressScreen})=>{
+	useEffect(()=>{
+		const previousInsertedWebsiteName=reticanAssembly.websiteName;
+		if(previousInsertedWebsiteName!=null){
+			document.getElementById("websiteName").value=previousInsertedWebsiteName;
+		}
+	},[]);
+
+	const triggerNextScreen=()=>{
+		debugger;
+		const websiteName=document.getElementById("websiteName").value;
+		if(websiteName==""){
+			let tempErrorInputIds=[];
+			tempErrorInputIds.push("websiteName");
+			changeErroredInputIds(tempErrorInputIds);
+		}else{
+			progressScreen("reticanDetails",{websiteName});
+		}
+	}
 	return(
 		<Container>
 			<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
@@ -57,8 +79,21 @@ const InitialWebInformation=({progressScreen})=>{
 					<b>Website Information</b>
 				</p>
 			</div>
-			<InputContainer placeholder="Website Name"/>
-			<div style={ReticanDetailsCreationCSS} onClick={()=>progressScreen("reticanDetails")}>
+
+			<RequiredFieldNotification
+	          id={"websiteName"}
+	          InputComponent={
+	          	<InputContainer 
+	          		id="websiteName" 
+	          		placeholder="Website Name"
+	          		onClick={()=>clearInputField(changeErroredInputIds,erroredInputIds,"websiteName")}
+
+	          	/>
+	          }
+	          erroredInputIds={erroredInputIds}
+	        />
+
+			<div style={ReticanDetailsCreationCSS} onClick={()=>triggerNextScreen()}>
 				<p>Create Retican Details</p>
 				<ArrowForwardRoundedIcon
 					style={{fontSize:"24"}}

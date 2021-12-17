@@ -30,7 +30,10 @@ const Settings=(props)=>{
 			<Navigation
 				pageType={"Settings"}
 			/>
-			<SettingsOptions/>
+			<SettingsOptions
+				parentContainerId={"settings"}
+				history={props.history}
+			/>
 		</Container>
 	)
 }

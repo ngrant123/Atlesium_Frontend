@@ -13,11 +13,12 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const loginProfile=async(profileId)=>{
+export const loginProfile=async(email,password)=>{
 	try{
 		const {data}=await axios.get(`${SearchUrl}/loginProfile`,{
 			params:{
-				profileId
+				email,
+				password
 			}
 		});
 		return data;
