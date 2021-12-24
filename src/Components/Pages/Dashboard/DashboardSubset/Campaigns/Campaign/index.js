@@ -19,15 +19,20 @@ const CampaignInitialier=()=>{
 	debugger;
 	return(
 		<Container>
-			{campaigns.map((data,index)=>
-				<Link to={{pathname:"/reticanDetails"}}>
-					<Campaign 
-						campaignInformation={data}
-						currentIndex={index}
-						removeTargetedIndexCampaign={campaignConsumer.removeTargetedIndexCampaign}
-					/>
-				</Link>
-			)}
+			{campaigns.length==0?
+				<p>No reticans</p>:
+				<React.Fragment>
+					{campaigns.map((data,index)=>
+						<Link to={{pathname:`/reticanDetails/${data.primaryReticanCard._id}`}}>
+							<Campaign 
+								campaignInformation={data}
+								currentIndex={index}
+								removeTargetedIndexCampaign={campaignConsumer.removeTargetedIndexCampaign}
+							/>
+						</Link>
+					)}
+				</React.Fragment>
+			}
 		</Container>
 	)
 }

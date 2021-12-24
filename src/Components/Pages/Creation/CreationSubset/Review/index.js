@@ -6,8 +6,9 @@ import Color_Constants from "../../../../../Utils/ColorConstants.js";
 import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
 import LoadingAnimation from "../../../../UniversalComponents/Loading/index.js";
 import {createReticanOverview} from "../../../../../Actions/Requests/ReticanRequests/Adapter/ReticanCreation.js";
-import ErrorAlertSystem from "../../../../UniversalComponents/Skeletons/Alerts.js";
+import AlertSystem from "../../../../UniversalComponents/Skeletons/Alerts.js";
 import {useSelector} from "react-redux";
+import {Link} from "react-router-dom";
 
 const Container=styled.div`
 	width:100%;
@@ -62,7 +63,10 @@ const Review=({progressScreen,reticanAssembly})=>{
 	console.log(reticanAssembly);
 	const [displayLoadingAnimation,changeDisplayLoadingAnimation]=useState(true);
 	const [displayReticanOverviewCreationErrorAlert,changeReticanOverviewCreationErrorDisplay]=useState(false);
-	const [errorMessage,changeErrorMessage]=useState();
+	const [alertMessage,changeAlertMessage]=useState();
+	const [reticanOverviewId,changeReticanOverviewId]=useState();
+	const [displayCopySuccessAlert,changeCopySuccessDisplay]=useState(false);
+
 	const profileId=useSelector(state=>state.personalInformation._id);
 
 
@@ -76,13 +80,24 @@ const Review=({progressScreen,reticanAssembly})=>{
 			});
 			changeDisplayLoadingAnimation(false);
 			if(confirmation=="Success"){
-
+				const {message}=data;
+				console.log(message);
+				changeReticanOverviewId(message);
 			}else{
-				let reticanOverviewCreationErrorMessage={
-            		header:"Internal Server Error",
-            		description:"Unfortunately there has been an error on our part. Please try again later"
+				const {statusCode}=data;
+				let reticanOverviewCreationErrorMessage;
+				if(statusCode==400){
+					reticanOverviewCreationErrorMessage={
+	            		header:"Retican Overview Creation Error",
+	            		description:"Unfortunately there has been an error when creating your retican overview. Please try again"
+					}
+				}else{
+					reticanOverviewCreationErrorMessage={
+	            		header:"Internal Server Error",
+	            		description:"Unfortunately there has been an error on our part. Please try again later"
+					}
 				}
-				changeErrorMessage(reticanOverviewCreationErrorMessage);
+				changeAlertMessage(reticanOverviewCreationErrorMessage);
 				changeReticanOverviewCreationErrorDisplay(true);
 			}
 		}
@@ -98,18 +113,47 @@ const Review=({progressScreen,reticanAssembly})=>{
 	    return(
 	      <React.Fragment>
 	        {displayReticanOverviewCreationErrorAlert==true &&(
-	          <ErrorAlertSystem
+	          <AlertSystem
 	            closeModal={closeErrorAlertScreen}
 	            targetDomId={"reticanReview"}
-	            alertMessage={errorMessage}
+	            alertMessage={alertMessage}
 	          />
 	        )}
 	      </React.Fragment>
 	    )
   	}
 
+  	const copyToClipboard=()=>{
+  		const clipboardText=`<script defer data-domain=${reticanAssembly.websiteName} src=${reticanOverviewId}></script>`
+  		navigator.clipboard.writeText(clipboardText);
+  		let copySuccessAlertMessage={
+    		header:"Copy Successful"
+		}
+		changeAlertMessage(copySuccessAlertMessage);
+		changeCopySuccessDisplay(true);
+  	}
+
+  	const closeCopySuccessAlert=()=>{
+  		changeCopySuccessDisplay(false);
+  	}
+
+  	const copySuccessAlert=()=>{
+  		return(
+  			<React.Fragment>
+  				{displayCopySuccessAlert==true &&(
+ 					<AlertSystem
+			            closeModal={closeCopySuccessAlert}
+			            targetDomId={"reticanReview"}
+			            alertMessage={alertMessage}
+			          />
+  				)}
+  			</React.Fragment>
+  		)
+  	}	
+
 	return(
 		<Container id="reticanReview">
+			{copySuccessAlert()}
 			{reticanCreationErrorAlertModal()}
 			{displayLoadingAnimation==true?
 				<div style={{position:"relative",width:"100%",height:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
@@ -146,22 +190,25 @@ const Review=({progressScreen,reticanAssembly})=>{
 									</p>
 								</ScriptContainer>
 								<SaveRoundedIcon
+									onClick={()=>copyToClipboard()}
 									style={{fontSize:"24",marginLeft:"5%",cursor:"pointer"}}
 								/>
 							</div>
 
 							<ScriptParams style={{marginTop:"5%"}}>
 								<p>
-									<b>(1)= "testing.com"</b>
+									<b>(1)= " {reticanAssembly.websiteName} "</b>
 								</p>
 								<p>
-									<b>(2)= "effon;onewobine;boineewb"</b>
+									<b>(2)= " {reticanOverviewId} "</b>
 								</p>
 							</ScriptParams>
 
-							<div style={CloseButtonCSS}>
-								<p style={{color:Color_Constants.PRIMARY_COLOR}}>Close</p>
-							</div>
+							<Link to={{pathname:`/dashboard`}} style={{textDecoration:"none"}}>
+								<div style={CloseButtonCSS}>
+									<p style={{color:Color_Constants.PRIMARY_COLOR}}>Close</p>
+								</div>
+							</Link>
 						</div>
 					</div>
 				</React.Fragment>

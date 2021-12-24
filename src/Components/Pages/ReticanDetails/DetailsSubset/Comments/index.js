@@ -29,17 +29,18 @@ const Container=styled.div`
 	}
 `;
 
-const Comments=({currentSelectedReticanVideo})=>{
-	const {
-		comments,
-		commentType
-	}=currentSelectedReticanVideo;
-
+const Comments=({responses,responseType})=>{
+	console.log(responseType);
 	return(
 		<Container>
-			{commentType=="Text"?
-				<Text comments={comments}/>:
-				<Video comments={comments}/>
+			{responses.length==0?
+				<p>No responses</p>:
+				<React.Fragment>
+					{responseType=="TextResponseRetican"?
+						<Text comments={responses}/>:
+						<Video comments={responses}/>
+					}
+				</React.Fragment>
 			}
 		</Container>
 	)

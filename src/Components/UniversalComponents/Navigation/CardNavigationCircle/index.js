@@ -5,11 +5,20 @@ import CircleIcon from "./CircularIcons.js";
 const Container=styled.div`
 	position:relative;
 	display:flex;
+	height:100%;
+	width:100%;
+	justify-content:center;
+	align-items:center;
+`;
+
+const CircleNavigationContainer=styled.div`
+	display:flex;
 	${({specifiedFlexDirection})=>
 		`flex-direction:${specifiedFlexDirection};`
 	}
+	height:10%;
 	justify-content:space-between;
-	align-items:center;
+
 `;
 
 
@@ -17,14 +26,16 @@ const CampaignNavigation=({totalCards,currentSelectedIndex,specifiedFlexDirectio
 	console.log(totalCards);
 	console.log(currentSelectedIndex);
 	return(
-		<Container specifiedFlexDirection={specifiedFlexDirection}>	
-			{totalCards.map((data,index)=>
-				<CircleIcon
-					iteratedIndex={index}
-					currentSelectedIndex={currentSelectedIndex}
-					triggerUpdatedSelectedIndex={triggerUpdatedSelectedIndex}
-				/>
-			)}
+		<Container>	
+			<CircleNavigationContainer specifiedFlexDirection={specifiedFlexDirection}>
+				{totalCards.map((data,index)=>
+					<CircleIcon
+						iteratedIndex={index}
+						currentSelectedIndex={currentSelectedIndex}
+						triggerUpdatedSelectedIndex={triggerUpdatedSelectedIndex}
+					/>
+				)}
+			</CircleNavigationContainer>
 		</Container>
 	)
 }

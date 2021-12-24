@@ -4,6 +4,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ChatBubbleRoundedIcon from '@material-ui/icons/ChatBubbleRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import CommentOptions from "./CommentOptions.js";
+import NextButton from "./NextButton.js";
 
 const Container=styled.div`
 	width:100%;
@@ -33,9 +34,11 @@ const Text=({comments})=>{
 				/>
 				<div style={{display:"flex",flexDirection:"column",marginLeft:"5%",width:"100%"}}>	
 					<p style={{fontSize:"18px"}}>
-						<b>{data.comment}</b>
+						<b>{data.response}</b>
 					</p>
-					<CommentOptions/>
+					<CommentOptions
+						commentData={data}
+					/>
 				</div>
 			</div>
 		)
@@ -45,6 +48,7 @@ const Text=({comments})=>{
 			{comments.map(data=>
 				<>{comment(data)}</>
 			)}
+			<NextButton/>
 		</Container>
 	)
 }

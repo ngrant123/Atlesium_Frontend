@@ -9,6 +9,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "chart.js": "^3.6.0",
+    "ci": "^2.1.1",
     "faker": "^5.5.3",
     "hyphenate-style-name": "^1.0.4",
     "lodash.throttle": "^4.1.1",
@@ -19,6 +20,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.4",
     "react-step-progress-bar": "^1.0.3",
+    "redux": "^4.1.2",
     "styled-components": "^5.3.3",
     "typescript": "^4.5.2",
     "web-vitals": "^1.0.1"

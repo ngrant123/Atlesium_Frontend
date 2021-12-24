@@ -44,7 +44,7 @@ const application=(
 					<Route exact path="/authenticity" component={Authenticity}/>
 					<Route exact path="/dashboard" component={Dashboard}/>
 					<Route exact path="/creation" component={Creation}/>
-					<Route exact path="/reticanDetails" component={ReticanDetails}/>
+					<Route exact path="/reticanDetails/:reticanOverviewId" component={ReticanDetails}/>
 					<Route exact path="/privacyPolicy" component={PrivacyPolicy}/>
 					<Route exact path="/termsOfService" component={TermsOfConditions}/>
 					<Route exact path="/passwordReset" component={PasswordReset}/>

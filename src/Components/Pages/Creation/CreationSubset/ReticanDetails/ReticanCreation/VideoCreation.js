@@ -4,6 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Color_Constants from "../../../../../../Utils/ColorConstants.js";
 import ReplayRoundedIcon from '@material-ui/icons/ReplayRounded';
 import KeyboardTabIcon from '@material-ui/icons/KeyboardTab';
+import ErrorAlertSystem from "../../../../../UniversalComponents/Skeletons/Alerts.js";
 
 const Container=styled.div`
 	position:relative;
@@ -39,6 +40,8 @@ const VideoOptionsCSS={
 const VideoCreation=({displaySelectedReticanOptionType})=>{
 	const [videoUrl,changeVideoUrl]=useState();
 	const [videoUrlSize,changeVideoUrlSize]=useState();
+	const [displayVideoCreationErrorMessage,changeDisplayVideoCreationErrorMessage]=useState(false);
+	const [errorMessage,changeErrorMessage]=useState(false);
 
 	const clickUploadVideoButton=()=>{
  		document.getElementById("uploadedVideoDescription").click();
@@ -50,7 +53,12 @@ const VideoCreation=({displaySelectedReticanOptionType})=>{
 
 		const maxSize=11*1024*1024;
 		if(videoDescription.size>maxSize){
-			alert('Your file is too large. We only accept video descriptions that have a size of 11MB. You can go to quicktime (Mac) and lower the resolution there.');
+			let videoCreatoinErrorMessage={
+				header:"Video File Size Max Exceeded",
+				description:"Your file is too large. We only accept video descriptions that have a size of 11MB. You can go to quicktime (Mac) and lower the resolution there."
+			}
+			changeDisplayVideoCreationErrorMessage(true);
+			changeErrorMessage(videoCreatoinErrorMessage);
 		}else{
 			reader.onloadend=()=>{
 				changeVideoUrl(reader.result);
@@ -61,13 +69,36 @@ const VideoCreation=({displaySelectedReticanOptionType})=>{
 				reader.readAsDataURL(videoDescription);
 			}
 			else{
-				alert("Sorry but this type of video is not currently allowed. Change it to either mov,mp4 to continue");
+				let videoCreatoinErrorMessage={
+					header:"File Format Not Supported",
+					description:"Sorry but this type of video is not currently allowed. Change it to either mov,mp4 to continue"
+				}
+				changeDisplayVideoCreationErrorMessage(true);
+				changeErrorMessage(videoCreatoinErrorMessage);;
 			}
 		}
 	}
+	const closeErrorAlertScreen=()=>{
+		changeDisplayVideoCreationErrorMessage(false);
+	}
+
+	const videoCreationErrorAlertModal=()=>{
+	    return(
+	      <React.Fragment>
+	        {displayVideoCreationErrorMessage==true &&(
+	          <ErrorAlertSystem
+	            closeModal={closeErrorAlertScreen}
+	            targetDomId={"reticanCreation"}
+	            alertMessage={errorMessage}
+	          />
+	        )}
+	      </React.Fragment>
+	    )
+  	}
 
 	return(
 		<Container videoUrl={videoUrl}>
+			{videoCreationErrorAlertModal()}
 			{videoUrl!=null?
 				<React.Fragment>
 					<video id="videoElement"

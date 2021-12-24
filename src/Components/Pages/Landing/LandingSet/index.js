@@ -53,7 +53,7 @@ const SlidingWindowContainer=styled.div`
 `;
 
 const Landing=({history})=>{
-	const [displayProfileCreation,changeDisplayProfileCreation]=useState(true);
+	const [displayProfileCreation,changeDisplayProfileCreation]=useState(false);
 	const [userSpecifiedEmail,changeUserSpecifiedEmail]=useState();
 	return(
 		<LandingPageProvider

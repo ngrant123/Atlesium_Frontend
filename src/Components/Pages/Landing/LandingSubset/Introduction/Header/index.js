@@ -196,6 +196,7 @@ const Header=({incrementPageCounter})=>{
 					message
 				}
 			}=await hasEmailBeenPreviouslyUsed(userSubmittedEmail);
+			debugger;
 			if(isEmailValid(userSubmittedEmail) && message==false){
 				landingPageConsumer.triggerDisplayProfileCreation(userSubmittedEmail);
 			}else{

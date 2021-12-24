@@ -52,7 +52,7 @@ const ButtonCSS={
 
 //animation:${keyFrame} 3s ease-in-out 0s infinite;
 
-const LoadingAnimation=({loadingText,secondaryText})=>{
+const LoadingAnimation=({loadingText,secondaryText,referralLinkPresent})=>{
 	return(
 		<Container>
 			<Logo>
@@ -64,11 +64,13 @@ const LoadingAnimation=({loadingText,secondaryText})=>{
 			<p style={{marginTop:"2%",width:"40%"}}>
 				<b>{secondaryText}</b>
 			</p>
-			<Link to={{pathname:"/dashboard"}} style={{textDecoration:"none"}}>
-				<div style={ButtonCSS}>
-					Dashboard
-				</div>
-			</Link>
+			{referralLinkPresent!=null &&(
+				<Link to={{pathname:"/dashboard"}} style={{textDecoration:"none"}}>
+					<div style={ButtonCSS}>
+						Dashboard
+					</div>
+				</Link>
+			)}
 
 		</Container>
 	)

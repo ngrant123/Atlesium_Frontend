@@ -182,7 +182,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 											key={uuid()}
 											width="400px" height="250px" borderRadius="50%"
 											autoPlay loop autoBuffer playsInline muted controls>
-											<source src={reticans[currentReticanCounter].videoUrl}
+											<source src={reticans[currentReticanCounter].videoInformation.videoUrl}
 												type="video/mp4"/>
 										</video>
 										<div style={{display:"flex",flexDirection:"row",marginTop:"5%"}}>

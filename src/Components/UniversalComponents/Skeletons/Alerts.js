@@ -10,14 +10,14 @@ const ShadowContainer = styled.div`
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   display:block;
   top:0%;
-  z-index:8;
+  z-index:20;
 `;
 
 const Container=styled.div`
 	position:fixed;
 	height:40%;
 	background-color:white;
-	z-index:12;
+	z-index:21;
 	top:20%;
 	border-radius:5px;
 	width:50%;

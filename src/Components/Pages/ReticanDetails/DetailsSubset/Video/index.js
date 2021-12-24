@@ -27,30 +27,37 @@ const Container=styled.div`
     }
 `;
 
-const Video=({triggerUpdatedSelectedIndex,currentSelectedIndex,videos})=>{
+const Video=({triggerUpdatedSelectedIndex,currentSelectedIndex,totalReticans,currentSelectedReticanVideo})=>{
+	console.log(totalReticans);
+	const uuid=()=>{
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+	}
+
 	return(
 		<Container>
-			<img id="videoElement" src={test4} style={{width:"400px",height:"250px",borderRadius:"5px"}}/>
-			{/*
-				<video id="videoElement"
-					width="400px" height="250px" borderRadius="50%"
-					autoPlay loop autoBuffer playsInline muted>
-					<source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
-						type="video/mp4"/>
-				</video>
-			*/}
-			<div style={{display:"flex",flexDirection:"row",width:"100%",marginTop:"15%"}}>
-				<GetAppRoundedIcon
-					style={{fontSize:"30",cursor:"pointer"}}
-				/>
-				<div id="videoNavigation" style={{width:"30%",marginLeft:"10%"}}>
+			<video id="videoElement"
+				key={uuid()}
+				style={{borderRadius:"5px",backgroundColor:"#151515"}}
+				width="400px" height="250px" borderRadius="50%"
+				autoPlay loop autoBuffer playsInline muted controls>
+				<source src={currentSelectedReticanVideo}
+					type="video/mp4"/>
+			</video>
+			<div style={{display:"flex",flexDirection:"row",width:"100%",marginTop:"15%",alignItems:"center",justifyContent:"space-between"}}>
+				<div id="videoNavigation" style={{display:"flex",justifyContent:"space-between",width:"30%"}}>
 					<VideoNavigation 
-						totalCards={videos}
+						totalCards={totalReticans}
 						currentSelectedIndex={currentSelectedIndex}
 						specifiedFlexDirection={"row"}
 						triggerUpdatedSelectedIndex={triggerUpdatedSelectedIndex}
 					/>
 				</div>
+				<GetAppRoundedIcon
+					style={{fontSize:"30",cursor:"pointer"}}
+				/>
 			</div>
 		</Container>
 	)

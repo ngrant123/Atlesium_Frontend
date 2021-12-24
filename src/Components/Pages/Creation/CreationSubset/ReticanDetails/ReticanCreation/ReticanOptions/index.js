@@ -1,4 +1,4 @@
-import React,{useState,useContext} from "react";
+import React,{useState,useEffect,useContext} from "react";
 import styled from "styled-components";
 import VideoCreation from "../VideoCreation.js";
 import GeneralRetican from "./GeneralRetican.js";
@@ -48,6 +48,21 @@ const ButtonCSS={
 const ReticanOptions=({reticanOption,reticanInformation,displayInitialReticanScreen})=>{
 	console.log(reticanOption);
 	const reticanCreationConsumer=useContext(ReticanCreationContext);
+	const [displayMobileUI,changeDisplayMobileUI]=useState(false);
+
+	const triggerUIChange=()=>{
+		if(window.innerWidth<1370){
+			changeDisplayMobileUI(true); 
+		}else{
+			changeDisplayMobileUI(false);
+		}
+	}
+
+	useEffect(()=>{
+		triggerUIChange();
+		window.addEventListener('resize', triggerUIChange)
+	},[window.innerWidth]);
+
 
 	let [currentRetican,changeCurrentRetican]=useState(reticanInformation);
 	const ReticanOptionsModals=({children,currentSelectedReticanType})=>{
@@ -58,7 +73,10 @@ const ReticanOptions=({reticanOption,reticanInformation,displayInitialReticanScr
 
 	const displaySelectedReticanOptionType=(videoUrl,videoUrlSize)=>{
 		changeCurrentRetican({
-			videoUrl,
+			videoInformation:{
+				videoUrl,
+				isPhoneEnabled:displayMobileUI
+			},
 			reticanOption,
 			videoUrlSize
 		});
@@ -110,7 +128,7 @@ const ReticanOptions=({reticanOption,reticanInformation,displayInitialReticanScr
 						<video id="videoElement"
 							width="200px" height="100px" borderRadius="50%"
 							autoPlay loop autoBuffer playsInline muted controls>
-							<source src={currentRetican.videoUrl} type="video/mp4"/>
+							<source src={currentRetican.videoInformation.videoUrl} type="video/mp4"/>
 						</video>
 						<div style={VideoOptionsCSS} onClick={()=>displayVideoCreationModal()}>
 							<ReplayRoundedIcon/>

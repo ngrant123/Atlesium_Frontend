@@ -4,7 +4,7 @@ import TestImahge from "../../../../../../Assets/LandingPageSpecific/scrollingWi
 
 const Campaign=styled.div`
 	position:absolute;
-	width:85%;
+	width:95%;
 	height:100%;
 	background-color:white;
 	border-radius:5px;
@@ -24,6 +24,7 @@ const ActiveStatusCSS={
 }
 
 const CampaignDisplay=({campaignInformation,currentIndex,removeTargetedIndexCampaign})=>{
+	console.log(campaignInformation);
 	const campaignRef=useRef();
 	let dynamicStyles;
 
@@ -90,7 +91,16 @@ const CampaignDisplay=({campaignInformation,currentIndex,removeTargetedIndexCamp
 		<Campaign ref={campaignRef}
 			onAnimationEnd={() => removeTargetedIndexCampaign(currentIndex)}>
 			<div style={{display:"flex",flexDirection:"column",justifyContent:"center",width:"100%",height:"100%",alignItems:"center",marginTop:"-10%"}}>
-				<img src={TestImahge} style={{width:"75%",height:"35%"}}/>
+
+				<video id="videoElement"
+					key={uuid()}
+					style={{borderRadius:"5px",backgroundColor:"#151515"}}
+					width="75%" height="35%" borderRadius="50%"
+					autoPlay loop autoBuffer playsInline muted>
+					<source src={campaignInformation.primaryReticanCard.videoUrl}
+						type="video/mp4"/>
+				</video>
+
 				<div style={{marginTop:"5%",marginLeft:"-20%",display:"flex",flexDirection:"column"}}>
 					<div>
 						<p style={{fontSize:"24px"}}>
