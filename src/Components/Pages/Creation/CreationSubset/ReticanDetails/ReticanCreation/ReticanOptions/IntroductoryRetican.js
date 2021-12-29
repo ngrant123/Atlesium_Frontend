@@ -44,7 +44,8 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 
 	useEffect(()=>{
 		if(displayPageRedirectCreation){
-			document.getElementById("pageRedirect").value="";
+			document.getElementById("pageRedirectUrl").value="";
+			document.getElementById("pageRedirectDescription").value="";
 		}else{
 			document.getElementById("introductoryText").value=introductoryText==null?"":introductoryText;
 		}
@@ -62,7 +63,15 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 	},[]);
 
 	const triggerAddPageRedirect=()=>{
-		pageRedirects.push(document.getElementById("pageRedirect").value);
+
+
+		const redirectInformation={
+			urlRedirect:document.getElementById("pageRedirectUrl").value,
+			pageRedirectDescription:document.getElementById("pageRedirectDescription").value
+		}
+
+		pageRedirects.push(redirectInformation);
+
 		changePageRedirects([...pageRedirects]);
 		changeDisplayPageRedirectionCreation(false);		
 
@@ -121,7 +130,7 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 						{pageRedirects.map((data,index)=>
 							<li>
 								<div style={{display:"flex",flexDirection:"row"}}>
-									{data}
+									{data.urlRedirect}
 									{deletePageRedirectIcon(index)}
 								</div>
 							</li>
@@ -130,8 +139,12 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 				</React.Fragment>:
 				<React.Fragment>
 					<InputContainer 
-						id="pageRedirect" 
-						placeholder="Enter a link on your website you want a button to redirect to. E.g. payment or about. The final link will be www.youwebsite.com/aboout"
+						id="pageRedirectUrl" 
+						placeholder="Enter a link on your website you want a button to redirect to. E.g. signup. The final link will be www.youwebsite.com/signup"
+					/>
+					<InputContainer 
+						id="pageRedirectDescription" 
+						placeholder="Enter a description of you link. For example if you had used signup above you can write Sign-Up"
 					/>
 					<div style={{display:"flex",flexDirection:"row"}}>
 						<div style={ButtonCSS} onClick={()=>changeDisplayPageRedirectionCreation(false)}>

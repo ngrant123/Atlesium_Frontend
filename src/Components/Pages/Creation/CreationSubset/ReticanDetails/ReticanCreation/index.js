@@ -1,4 +1,4 @@
-import React,{useState,useContext} from "react";
+import React,{useState,useContext,useEffect} from "react";
 import styled from "styled-components";
 import test4 from "../../../../../../Assets/LandingPageSpecific/scrollingWindowBlock_4.png";
 import EditIcon from '@material-ui/icons/ReplayRounded';
@@ -14,6 +14,8 @@ import COLOR_CONSTANTS from "../../../../../../Utils/ColorConstants.js";
 import DeleteRetican from "../../../../Creation/CreationSet/Modals-Portals/DeleteRetican.js";
 import EditReticanModal from "./ReticanOptions/index.js";
 import {ReticanOverviewConsumer} from "../ReticanOverviewCreationContext.js";
+
+
 
 const Container=styled.div`
 	width:40%;
@@ -33,6 +35,18 @@ const VideoOptionsCSS={
 	alignItems:"center",
 	cursor:"pointer"
 }
+
+const RankingInputContainer=styled.textarea`
+	position:relative;
+	width:10%;
+	height:60%;
+	border-style:solid;
+	border-width:1px;
+	border-color:${COLOR_CONSTANTS.GREY};
+	resize:none;
+	padding:10px;
+	border-radius:5px;
+`;
 
 /*
 	<video id="videoElement"
@@ -89,7 +103,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 	debugger;
 	const [isVideoElementPaused,changeVideoElementPauseStatus]=useState(false);
 	
-	const [currentReticanCounter,changeCurrentReticanCounter]=useState(0);
+	let [currentReticanCounter,changeCurrentReticanCounter]=useState(0);
 	const [displayDeleteRetican,changeDisplayDeleteRetican]=useState(false);
 	const [editReticanModal,changeEditReticanModal]=useState(false);
 
@@ -102,8 +116,16 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 		reticanOverviewConsumer.reticanAssembly.reticans==null
 		?true
 		:false);
+	const [displayRankingReOrderSuccess,changeDisplayRankingReorderSuccess]=useState();
 
 	console.log(reticans);
+
+	useEffect(()=>{
+		debugger;
+		if(document.getElementById("rankingContainer")!=null){
+			document.getElementById("rankingContainer").value=currentReticanCounter+1;
+		}
+	},[reticans,currentReticanCounter]);
 
 	const uuid=()=>{
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -128,6 +150,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 		reticans.splice(currentReticanCounter,1);
 		triggerUpdateReticanParentInformation({reticans});
 		changeDisplayDeleteRetican(false);
+		changeCurrentReticanCounter(currentReticanCounter--);
 	}
 
 	const displayCurrentlySelectedReticans=()=>{
@@ -138,7 +161,24 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 		changeReticanScreen(false);
 	}
 
-
+	const analyzeInput=(event)=>{
+		debugger;
+		changeDisplayRankingReorderSuccess(null);
+		if((!!event.key.trim() && event.key > -1)==false){
+			event.preventDefault();
+		}else{
+			if(event.key<=reticans.length && event.key>0){
+				let currentReticans=reticans;
+				let currentSelectedRetican=reticans[currentReticanCounter];
+				currentReticans.splice(currentReticanCounter,1);
+				currentReticans.splice(event.key==0?0:event.key-1, 0, currentSelectedRetican);
+				changeDisplayRankingReorderSuccess(true);
+			}else{
+				event.preventDefault();
+				changeDisplayRankingReorderSuccess(false);
+			}
+		}
+	}
 
 	return(
 		<ReticanCreationProvider
@@ -152,6 +192,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 					changeReticans([...reticans]);
 					triggerUpdateReticanParentInformation({reticans});
 					triggerDisplayReticanDisplay();
+					changeCurrentReticanCounter(currentReticanCounter++);
 				},
 				editRetican:(editedReticanInformation)=>{
 					reticans[currentReticanCounter]={
@@ -195,6 +236,36 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 												onClick={()=>changeDisplayDeleteRetican(true)}>
 												<DeleteIcon/>
 											</div>
+
+											<div style={{marginLeft:"10%",display:"flex",flexDirection:"column"}}>
+												<div style={{display:"flex",flexDirection:"row"}}>
+													<p style={{marginLeft:"10%",marginRight:"2%"}}>
+														<b>Ranking:</b>
+													</p>
+													<RankingInputContainer type="number" id="rankingContainer"
+														onKeyPress={e=>analyzeInput(e)}
+													/>
+												</div> 
+												{displayRankingReOrderSuccess!=null &&(
+													<React.Fragment>
+														<p style={{
+															color:displayRankingReOrderSuccess==false?
+															COLOR_CONSTANTS.CALL_TO_ACTION_COLOR:
+															COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}>
+															<b>
+																{displayRankingReOrderSuccess==true?
+																	<>Ranking Re-Order Success</>:
+																	<>
+																		Ranking Re-Order Failure. Ranking provided is out of bounds. Please provide
+																		a number between 1 and {reticans.length}
+																	</>
+																}
+															</b>
+														</p>
+													</React.Fragment>
+												)}
+											</div>
+
 										</div>
 									</div>
 									<div style={{display:"flex",flexDirection:"column",marginLeft:"5%"}}>

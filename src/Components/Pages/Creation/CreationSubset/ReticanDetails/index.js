@@ -35,8 +35,9 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly})=>{
 
 	const [displayReticanHeaderColorOptions,changeReticanHeaderColorOptionsDisplay]=useState(false);
 	const [selectedColorHeader,changeSelectedColorHeader]=useState();
-	let [currentReticanDetails,changeReticanDetails]=useState({});
+	let [currentReticanDetails,changeReticanDetails]=useState(reticanAssembly==null?{}:reticanAssembly);
 	console.log(currentReticanDetails);
+
 
 	const closeModal=()=>{
 		changeReticanHeaderColorOptionsDisplay(false);
