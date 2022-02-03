@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import COLOR_CONSTANTS from "../../../../Utils/ColorConstants.js";
 
 const AnalyticsOptions={
 	listStyle:"none",
@@ -7,24 +9,33 @@ const AnalyticsOptions={
 	backgroundColor:"white",
 	borderRadius:"5px",
 	padding:"10px",
-	color:"#3898ec",
 	borderStyle:"solid",
 	borderWidth:"2px",
-	borderColor:"#3898ec",
-	cursor:"pointer"
+	borderColor:COLOR_CONSTANTS.GREY,
+	cursor:"pointer",
+	fontSize:"16px",
+	color:COLOR_CONSTANTS.BLACK
 }
-const SecondaryOptions=()=>{
+const SecondaryOptions=({headerText,options})=>{
 	return(
-		<div style={{display:"flex",width:"100%",marginTop:"5%"}}>
-			<div class="btn-group">
-				<button class="btn btn-primary dropdown-toggle" type="button" 
-					data-toggle="dropdown" style={AnalyticsOptions}>
-					Sort By:
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" style={{padding:"10px",marginLeft:"-120px"}}>
-				</ul>
-			</div>
+		<div class="btn-group">
+			<button class="btn btn-primary dropdown-toggle" type="button" 
+				data-toggle="dropdown" style={AnalyticsOptions}>
+				{headerText}
+				<KeyboardArrowDownIcon
+					style={{fontSize:"16"}}
+				/>
+			</button>
+			<ul class="dropdown-menu" style={{padding:"10px"}}>
+				{options.map(data=>
+					<React.Fragment>
+						<li style={{listStyle:"none",cursor:"pointer"}}>
+							{data.option}
+						</li>
+						<hr/>
+					</React.Fragment>
+				)}
+			</ul>
 		</div>
 	)
 }

@@ -41,7 +41,7 @@ const application=(
 				<Switch>
 					<Route exact path="/" component={Landing}/>
 					<Route exact path="/settings" component={Settings}/>
-					<Route exact path="/authenticity" component={Authenticity}/>
+					<Route exact path="/analytics" component={Authenticity}/>
 					<Route exact path="/dashboard" component={Dashboard}/>
 					<Route exact path="/creation" component={Creation}/>
 					<Route exact path="/reticanDetails/:reticanOverviewId" component={ReticanDetails}/>

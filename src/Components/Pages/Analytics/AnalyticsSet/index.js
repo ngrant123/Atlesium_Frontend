@@ -1,7 +1,11 @@
-import React from "react";
+import React,{useState,useMemo} from "react";
 import styled from "styled-components";
 import Navigation from "../../../UniversalComponents/Navigation/PageNavigation/index.js";
-import AnalyticsStats from "../AnalyticsSubset/index.js";
+import AnalyticsStats from "../AnalyticsSubset/Analytics/index.js";
+import ReticanOverviews from "../AnalyticsSubset/ReticanOverviews/index.js";
+import Reticans from "../AnalyticsSubset/Reticans/index.js";
+import {AnaylticsProvider} from "./AnalyticsContext.js";
+import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
 
 const Container=styled.div`
 	position:absolute;
@@ -10,9 +14,6 @@ const Container=styled.div`
 	padding:0px;
 	display:flex;
 	flex-direction:row;
-	display:flex;
-	flex-direction:row;
-	overflow-y:auto;
 
 
 	@media screen and (max-width:1370px){
@@ -26,13 +27,73 @@ const Container=styled.div`
 
 
 const Analytics=()=>{
+	const [currentAnalyticsScreenType,changeCurrentAnalyticsScreenType]=useState("Overviews");
+	const [alertMessage,changeAlertMessage]=useState();
+	const [displayAlertMessage,changeDisplayAlertMessage]=useState(false);
+
+	const ComponentDecider=({screenType,children})=>{
+		return children.filter(child=>child.props.componentName==screenType)
+	}
+
+	const displayScreen=(requestedScreenType)=>{
+		changeCurrentAnalyticsScreenType(requestedScreenType);
+	}
+
+	const closeAlertScreen=()=>{
+		changeDisplayAlertMessage(false);
+	}
+
+	const alertModal=()=>{
+		return(
+			<React.Fragment>
+				{displayAlertMessage==true &&(
+					<AlertSystem
+						closeModal={closeAlertScreen}
+						targetDomId={"analyticsContainer"}
+						alertMessage={alertMessage}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
+
+	const ComponentMemoizedDisplay=useMemo(()=>{
+		return(
+			<ComponentDecider screenType={currentAnalyticsScreenType}>
+				<AnalyticsStats 
+					componentName={"Analytics"}
+				/>
+				<ReticanOverviews 
+					componentName={"Overviews"}
+				/>
+				<Reticans 
+					componentName={"Reticans"}
+				/>
+			</ComponentDecider>
+		)
+	},[currentAnalyticsScreenType])
+
+
 	return(
-		<Container>
-			<Navigation
-				pageType={"Analytics"}
-			/>
-			<AnalyticsStats/>
-		</Container>
+		<AnaylticsProvider
+			value={{
+				triggerDisplayScreen:(requestedScreenType)=>{
+					displayScreen(requestedScreenType);
+				},
+				triggerDisplayAlertMessage:(alertMessage)=>{
+					changeAlertMessage(alertMessage);
+					changeDisplayAlertMessage(true);
+				}	
+			}}
+		>
+			<Container id="analyticsContainer">
+				{alertModal()}
+				<Navigation
+					pageType={"Analytics"}
+				/>
+				{ComponentMemoizedDisplay}
+			</Container>
+		</AnaylticsProvider>
 	)
 }
 

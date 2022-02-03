@@ -223,7 +223,7 @@ const Navigation=({pageType})=>{
 					</div>
 				</Link>
 
-				<Link to={{pathname:'/authenticity'}} style={{textDecoration:"none"}}>
+				<Link to={{pathname:'/analytics'}} style={{textDecoration:"none"}}>
 					<div style={analyticsSelection==true?SelectedNavigationDivCSS:UnSelectedNavigationDivCSS}>
 						{analysisDisplay()}
 					</div>

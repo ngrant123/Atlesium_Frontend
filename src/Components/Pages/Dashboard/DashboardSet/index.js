@@ -177,6 +177,18 @@ const Dashboard=()=>{
 		changeCurrentSelectedIndex(selectedIndex);
 	}
 
+	const deleteCampaign=(index)=>{
+		const currentStackIndex=currentSelectedIndex;
+		if(currentStackIndex!=0){
+			currentStackIndex--;
+		}
+		changeCurrentSelectedIndex(currentStackIndex);
+		const parentCampaigns=campaigns;
+		parentCampaigns.splice(index,1);
+		changeCampaigns(parentCampaigns);
+		removeCampaignFromStack(index);
+	}
+
 	const removeCampaignFromStack=(index)=>{
 		debugger;
 		const tempCampaigns=stackCampaignsView;
@@ -209,6 +221,9 @@ const Dashboard=()=>{
 				currentSelectedIndex,
 				removeTargetedIndexCampaign:(index)=>{
 					removeCampaignFromStack(index);
+				},
+				deleteCampaign:(index)=>{
+					deleteCampaign(index);
 				}
 			}}
 		>

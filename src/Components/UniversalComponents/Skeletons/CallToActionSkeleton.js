@@ -6,7 +6,7 @@ const Container=styled.div`
 	position:fixed;
 	height:60%;
 	background-color:white;
-	z-index:12;
+	z-index:20;
 	top:20%;
 	border-radius:5px;
 	width:30%;
@@ -32,7 +32,7 @@ const ShadowContainer = styled.div`
   top:0%;
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   display:block;
-  z-index:8;
+  z-index:20;
 `;
 
 const CallToActionSkeleton=({closeModal,targetDom,component})=>{

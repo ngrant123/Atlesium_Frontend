@@ -23,13 +23,12 @@ const CampaignInitialier=()=>{
 				<p>No reticans</p>:
 				<React.Fragment>
 					{campaigns.map((data,index)=>
-						<Link to={{pathname:`/reticanDetails/${data.primaryReticanCard._id}`}}>
-							<Campaign 
-								campaignInformation={data}
-								currentIndex={index}
-								removeTargetedIndexCampaign={campaignConsumer.removeTargetedIndexCampaign}
-							/>
-						</Link>
+						<Campaign 
+							campaignInformation={data}
+							currentIndex={index}
+							removeTargetedIndexCampaign={campaignConsumer.removeTargetedIndexCampaign}
+							deleteCampaign={campaignConsumer.deleteCampaign}
+						/>
 					)}
 				</React.Fragment>
 			}
