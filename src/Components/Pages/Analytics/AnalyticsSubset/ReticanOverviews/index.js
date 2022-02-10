@@ -84,6 +84,7 @@ const ReticanOverviewAnalysis=()=>{
 					/>
 				</div>
 			</div>
+			<hr/>
 			<ReticanOverviewContainer>
 				{loading==true?
 					<p>Loading...</p>:

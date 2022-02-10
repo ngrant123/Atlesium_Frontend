@@ -4,6 +4,8 @@ import COLOR_CONSTANTS from "../../../../../Utils/ColorConstants.js";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import RemoveIcon from '@material-ui/icons/Remove';
+
 import {AnalyticsContext} from "../../AnalyticsSet/AnalyticsContext.js";
 
 
@@ -57,8 +59,8 @@ const ReticanOverviewStatusIndicator={
 
 const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 	const analyticsConsumer=useContext(AnalyticsContext);
-	const [visitorsPercentageDecreaseIndicator,changeVisitorsDecreasePercentageIndicator]=useState(false);
-	const [completionPercentageDecreaseIndicator,changeCompletionDecreasePercentageIndicator]=useState(false);
+	const [visitorsPercentageDecreaseIndicator,changeVisitorsDecreasePercentageIndicator]=useState(null);
+	const [completionPercentageDecreaseIndicator,changeCompletionDecreasePercentageIndicator]=useState(null);
 
 	const [visitorsPercentage,changeVisitorsPercentage]=useState(0);
 	const [completionPercentage,changeCompletionPercentage]=useState(0);
@@ -68,11 +70,15 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 		if(overviewData.progressRates.completionPercantageChange.percentageChange<0){
 			changeCompletionDecreasePercentageIndicator(true);
 			changeCompletionPercentage(Math.abs(overviewData.progressRates.completionPercantageChange.percentageChange));
+		}else if(overviewData.progressRates.completionPercantageChange.percentageChange>0){
+			changeCompletionDecreasePercentageIndicator(false);
 		}
 
 		if(overviewData.progressRates.visitationProgressChange.percentageChange<0){
 			changeVisitorsDecreasePercentageIndicator(true);
 			changeVisitorsPercentage(Math.abs(overviewData.progressRates.visitationProgressChange.percentageChange));
+		}else if(overviewData.progressRates.visitationProgressChange.percentageChange>0){
+			changeVisitorsDecreasePercentageIndicator(false);
 		}
 	},[]);
 
@@ -81,6 +87,39 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
 			return v.toString(16);
 		});
+	}
+
+	const percentageChangeIcon=(percentageIndicator)=>{
+		debugger;
+		let icon;
+
+		switch(percentageIndicator){
+			case false:{
+				icon=<ArrowUpwardIcon
+						style={{fontSize:18,color:COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}
+					/>
+				break;
+			} 
+
+			case true:{
+				icon=<ArrowDownwardIcon
+						style={{fontSize:18,color:COLOR_CONSTANTS.CALL_TO_ACTION_COLOR}}
+					/>
+				break;
+			}
+
+			default:{
+				icon=<RemoveIcon
+						style={{fontSize:18,color:COLOR_CONSTANTS.ANALYSIS_NO_CHANGE_INDICATOR,marginTop:"2%"}}
+					/>;
+				break;
+			}
+		}
+		return(
+			<React.Fragment>
+				{icon}
+			</React.Fragment>
+		)
 	}
 
 	return(
@@ -103,14 +142,7 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 								<b>{overviewData.progressRates.visitationProgressChange.totalScore}</b>
 							</p>
 							<p>
-								{visitorsPercentageDecreaseIndicator==true?
-									<ArrowDownwardIcon
-										style={{fontSize:18,color:COLOR_CONSTANTS.CALL_TO_ACTION_COLOR}}
-									/>:
-									<ArrowUpwardIcon
-										style={{fontSize:18,color:COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}
-									/>
-								}
+								{percentageChangeIcon(visitorsPercentageDecreaseIndicator)}
 
 								<b>{overviewData.progressRates.visitationProgressChange.percentageChange}%</b>
 							</p>
@@ -124,14 +156,7 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 								<b>{overviewData.progressRates.completionPercantageChange.totalScore}</b>
 							</p>
 							<p>
-								{completionPercentageDecreaseIndicator==true?
-									<ArrowDownwardIcon
-										style={{fontSize:18,color:COLOR_CONSTANTS.CALL_TO_ACTION_COLOR}}
-									/>:
-									<ArrowUpwardIcon
-										style={{fontSize:18,color:COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}
-									/>
-								}
+								{percentageChangeIcon(completionPercentageDecreaseIndicator)}
 								<b>{overviewData.progressRates.completionPercantageChange.percentageChange}%</b>
 							</p>
 						</div>
@@ -140,7 +165,7 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 
 				<div style={{display:"column",flexDirection:"column",justifyContent:"space-between",height:"100%"}}>
 					<div style={ReticanAnalysisOptionsCSS} 
-						onClick={()=>analyticsConsumer.triggerDisplayScreen("Reticans")}>
+						onClick={()=>analyticsConsumer.triggerDisplayScreen("Reticans",overviewData._id)}>
 						<div style={{padding:"10px"}}>
 							<p>Reticans</p>
 						</div>

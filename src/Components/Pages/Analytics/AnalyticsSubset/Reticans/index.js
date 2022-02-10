@@ -96,12 +96,17 @@ const ReticansAnalysis=({reticanOverviewId})=>{
 			</div>
 
 			<ReticanContainer>
-				{reticans.map(data=>
-					<Retican
-						reticanData={data}
-						displayScreen={analyticsConsumer.triggerDisplayScreen}
-					/>
-				)}
+				{loading==true?
+					<p>Loading...</p>:
+					<React.Fragment>
+						{reticans.map(data=>
+							<Retican
+								reticanData={data}
+								displayScreen={analyticsConsumer.triggerDisplayScreen}
+							/>
+						)}
+					</React.Fragment>
+				}
 			</ReticanContainer>
 		</Container>
 	)

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import COLOR_CONSTANTS from "../../../../../Utils/ColorConstants.js";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 const Container=styled.div`
 	position:relative;
@@ -49,8 +50,8 @@ const AnalysisOptionCSS={
 
 
 const Retican=({reticanData,displayScreen})=>{
-	const [visitorsPercentageDecreaseIndicator,changeVisitorsDecreasePercentageIndicator]=useState(false);
-	const [completionPercentageDecreaseIndicator,changeCompletionDecreasePercentageIndicator]=useState(false);
+	const [visitorsPercentageDecreaseIndicator,changeVisitorsDecreasePercentageIndicator]=useState(null);
+	const [completionPercentageDecreaseIndicator,changeCompletionDecreasePercentageIndicator]=useState(null);
 
 	const [visitorsPercentage,changeVisitorsPercentage]=useState(0);
 	const [completionPercentage,changeCompletionPercentage]=useState(0);
@@ -60,11 +61,15 @@ const Retican=({reticanData,displayScreen})=>{
 		if(reticanData.progressRates.completionPercantageChange.percentageChange<0){
 			changeCompletionDecreasePercentageIndicator(true);
 			changeCompletionPercentage(Math.abs(reticanData.progressRates.completionPercantageChange.percentageChange));
+		}else if(reticanData.progressRates.completionPercantageChange.percentageChange>0){
+			changeCompletionDecreasePercentageIndicator(false);
 		}
 
 		if(reticanData.progressRates.visitationProgressChange.percentageChange<0){
 			changeVisitorsDecreasePercentageIndicator(true);
 			changeVisitorsPercentage(Math.abs(reticanData.progressRates.visitationProgressChange.percentageChange));
+		}else if(reticanData.progressRates.visitationProgressChange.percentageChange>0){
+			changeVisitorsDecreasePercentageIndicator(false);
 		}
 	},[]);
 
@@ -75,6 +80,40 @@ const Retican=({reticanData,displayScreen})=>{
 			return v.toString(16);
 		});
 	}
+
+	const percentageChangeIcon=(percentageIndicator)=>{
+		debugger;
+		let icon;
+
+		switch(percentageIndicator){
+			case false:{
+				icon=<ArrowUpwardIcon
+						style={{fontSize:18,color:COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}
+					/>
+				break;
+			} 
+
+			case true:{
+				icon=<ArrowDownwardIcon
+						style={{fontSize:18,color:COLOR_CONSTANTS.CALL_TO_ACTION_COLOR}}
+					/>
+				break;
+			}
+
+			default:{
+				icon=<RemoveIcon
+						style={{fontSize:18,color:COLOR_CONSTANTS.ANALYSIS_NO_CHANGE_INDICATOR,marginTop:"2%"}}
+					/>;
+				break;
+			}
+		}
+		return(
+			<React.Fragment>
+				{icon}
+			</React.Fragment>
+		)
+	}
+
 
 	return(
 		<Container>
@@ -96,14 +135,7 @@ const Retican=({reticanData,displayScreen})=>{
 							<b>{reticanData.progressRates.visitationProgressChange.totalScore}</b>
 						</p>
 						<p>
-							{visitorsPercentageDecreaseIndicator==true?
-								<ArrowDownwardIcon
-									style={{fontSize:18,color:COLOR_CONSTANTS.CALL_TO_ACTION_COLOR}}
-								/>:
-								<ArrowUpwardIcon
-									style={{fontSize:18,color:COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}
-								/>
-							}
+							{percentageChangeIcon(visitorsPercentageDecreaseIndicator)}
 
 							<b>{reticanData.progressRates.visitationProgressChange.percentageChange}%</b>
 						</p>
@@ -118,14 +150,8 @@ const Retican=({reticanData,displayScreen})=>{
 							<b>{reticanData.progressRates.completionPercantageChange.totalScore}</b>
 						</p>
 						<p>
-							{completionPercentageDecreaseIndicator==true?
-								<ArrowDownwardIcon
-									style={{fontSize:18,color:COLOR_CONSTANTS.CALL_TO_ACTION_COLOR}}
-								/>:
-								<ArrowUpwardIcon
-									style={{fontSize:18,color:COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}
-								/>
-							}
+							{percentageChangeIcon(completionPercentageDecreaseIndicator)}
+							
 							<b>{reticanData.progressRates.completionPercantageChange.percentageChange}%</b>
 						</p>
 					</div>

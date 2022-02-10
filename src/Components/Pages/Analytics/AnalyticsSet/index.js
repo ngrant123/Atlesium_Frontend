@@ -30,13 +30,10 @@ const Analytics=()=>{
 	const [currentAnalyticsScreenType,changeCurrentAnalyticsScreenType]=useState("Overviews");
 	const [alertMessage,changeAlertMessage]=useState();
 	const [displayAlertMessage,changeDisplayAlertMessage]=useState(false);
+	const [targetReticanId,changeTargetReticanId]=useState();
 
 	const ComponentDecider=({screenType,children})=>{
 		return children.filter(child=>child.props.componentName==screenType)
-	}
-
-	const displayScreen=(requestedScreenType)=>{
-		changeCurrentAnalyticsScreenType(requestedScreenType);
 	}
 
 	const closeAlertScreen=()=>{
@@ -68,6 +65,7 @@ const Analytics=()=>{
 				/>
 				<Reticans 
 					componentName={"Reticans"}
+					reticanOverviewId={targetReticanId}
 				/>
 			</ComponentDecider>
 		)
@@ -77,8 +75,9 @@ const Analytics=()=>{
 	return(
 		<AnaylticsProvider
 			value={{
-				triggerDisplayScreen:(requestedScreenType)=>{
-					displayScreen(requestedScreenType);
+				triggerDisplayScreen:(requestedScreenType,targetReticanId)=>{
+					changeTargetReticanId(targetReticanId);
+					changeCurrentAnalyticsScreenType(requestedScreenType);
 				},
 				triggerDisplayAlertMessage:(alertMessage)=>{
 					changeAlertMessage(alertMessage);
