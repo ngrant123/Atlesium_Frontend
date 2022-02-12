@@ -6,8 +6,13 @@ import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
+import ProfilePicture from "../../Modals/Profile/ProfilePicture.js";
+import {retrieveProfilePicture} from "../../../../Actions/Requests/ProfileRequests/Retrieval/ProfileInformation.js";
+import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
+
 
 const Container=styled.div`
 	display:flex;
@@ -96,12 +101,32 @@ const VerticalLineCSS={
 }
 
 
-const Navigation=({pageType})=>{
+const HorizontalLineCSS={
+	position:"relative",
+	width:"100%",
+	height:"2px",
+	borderRadius:"5px",
+	borderRadius:"5px"
+}
+
+
+const Navigation=({pageType,parentDiv})=>{
+	console.log(parentDiv);
+
 	const [dashboardSelection,changeDashBoardSelection]=useState(false);
 	const [analyticsSelection,changeAnalyticsSelection]=useState(false);
 	const [settingsSelection,changeSettingsSelection]=useState(false);
 	const [displayPhoneUI,changeDisplayPhoneUI]=useState(false);
-	const {firstName}=useSelector(state=>state.personalInformation);
+	const [displayProfilePictureCreation,changeProfilePictureCreationDisplay]=useState(false);
+	const [profilePicture,changeProfilePicture]=useState();
+
+	const [errorMessage,changeErrorMessage]=useState();
+	const [displayProfilePictureErrorAlertMessage,changeDisplayProfilePictureErrorMessage]=useState(false);
+
+	const {
+		firstName,
+		_id
+	}=useSelector(state=>state.personalInformation);
 
 	const triggerUIChange=()=>{
 		if(window.innerWidth<1370){
@@ -131,7 +156,35 @@ const Navigation=({pageType})=>{
 				break;
 			}
 		}
+		fetchProfilePicture();
 	},[]);
+
+	const fetchProfilePicture=async()=>{
+		const {confirmation,data}=await retrieveProfilePicture(_id);
+		if(confirmation=="Success"){
+			debugger;
+			const {message}=data;
+			changeProfilePicture(message);
+		}else{
+			const {statusCode}=data;
+			let errorAlertMessage;
+			if(statusCode==500){
+				errorAlertMessage={
+					header:"Internal Server Error",
+					description:"Unfortunately there has been an error on our part. Please try again later"
+				}
+			}else{
+				errorAlertMessage={
+					header:"Profile Creation Error",
+					description:"Unfortunately, an error has occured when creating your profile picture. Please try again."
+				}
+			}
+
+			changeErrorMessage(errorAlertMessage);
+			changeDisplayProfilePictureErrorMessage(true);
+		}
+	}
+
 	const dashBoardDisplay=()=>{
 		return(
 			<React.Fragment>
@@ -243,12 +296,21 @@ const Navigation=({pageType})=>{
 			<React.Fragment>	
 				<div style={{display:"flex",justifyContent:"center",flexDirection:"column",marginTop:"15%"}}>
 					<div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"center",width:"100%"}}>
-						<img src={AtlesiumLogo} style={{width:"50px",height:"50px",borderRadius:"50px",marginRight:"2%"}}/>
+						{profilePicture==null?
+							<AccountCircleIcon
+								onClick={()=>changeProfilePictureCreationDisplay(true)}
+								style={{fontSize:"40",cursor:"pointer"}}
+							/>:
+							<img src={profilePicture} 
+								style={{width:"50px",height:"50px",borderRadius:"50%"}}
+							/>
+						}
+
 						<p style={{fontSize:"18px",marginLeft:"5%"}}>
 							<b>{firstName}</b>
 						</p>
 					</div>
-
+					<hr style={HorizontalLineCSS}/>
 					<div style={{marginTop:"10%"}}>
 						{navigationOptions()}
 					</div>
@@ -264,13 +326,59 @@ const Navigation=({pageType})=>{
 			</React.Fragment>
 		)
 	}
+
+	const closeProfilePictureCreationModal=()=>{
+		changeProfilePictureCreationDisplay(false);
+	}
+
+	const updateNavigationProfilePicture=(profilePictureUrl)=>{
+		changeProfilePicture(profilePictureUrl);
+		closeProfilePictureCreationModal();
+	}
+
+	const profilePictureCreation=()=>{
+		return(
+			<React.Fragment>
+				{displayProfilePictureCreation==true &&(
+					<ProfilePicture
+						targetDom={parentDiv}
+						closeProfilePictureCreationModal={closeProfilePictureCreationModal}
+						updateNavigationProfilePicture={updateNavigationProfilePicture}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
+
+	const closeErrorAlertScreen=()=>{
+		changeDisplayProfilePictureErrorMessage(false);
+	}
+
+
+	const reticanRetrievalOverviewErrorModal=()=>{
+		return(
+			<React.Fragment>
+				{displayProfilePictureErrorAlertMessage==true &&(
+			        <AlertSystem
+						closeModal={closeErrorAlertScreen}
+						targetDomId={parentDiv}
+						alertMessage={errorMessage}
+			        />
+				)}
+			</React.Fragment>
+		)
+	}
+
 	return(
-		<Container>
-			{displayPhoneUI==false?
-				<>{desktopNavigation()}</>:
-				<>{mobileNavigation()}</>
-			}
-		</Container>
+		<React.Fragment>
+			{profilePictureCreation()}
+			<Container>
+				{displayPhoneUI==false?
+					<>{desktopNavigation()}</>:
+					<>{mobileNavigation()}</>
+				}
+			</Container>
+		</React.Fragment>
 	)
 }
 

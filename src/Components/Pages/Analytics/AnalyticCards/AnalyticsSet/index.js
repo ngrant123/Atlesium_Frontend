@@ -1,11 +1,10 @@
 import React,{useState,useMemo} from "react";
 import styled from "styled-components";
-import Navigation from "../../../UniversalComponents/Navigation/PageNavigation/index.js";
-import AnalyticsStats from "../AnalyticsSubset/Analytics/index.js";
+import Navigation from "../../../../UniversalComponents/Navigation/PageNavigation/index.js";
 import ReticanOverviews from "../AnalyticsSubset/ReticanOverviews/index.js";
 import Reticans from "../AnalyticsSubset/Reticans/index.js";
 import {AnaylticsProvider} from "./AnalyticsContext.js";
-import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
+import AlertSystem from "../../../../UniversalComponents/Skeletons/Alerts.js";
 
 const Container=styled.div`
 	position:absolute;
@@ -57,9 +56,6 @@ const Analytics=()=>{
 	const ComponentMemoizedDisplay=useMemo(()=>{
 		return(
 			<ComponentDecider screenType={currentAnalyticsScreenType}>
-				<AnalyticsStats 
-					componentName={"Analytics"}
-				/>
 				<ReticanOverviews 
 					componentName={"Overviews"}
 				/>

@@ -6,7 +6,7 @@ import Retican from "./Retican.js";
 import {AnalyticsContext} from "../../AnalyticsSet/AnalyticsContext.js";
 import {
 	retrieveReticanCards
-} from "../../../../../Actions/Requests/AnalyticsRequests/Retrieval/AnalyticsRetrieval.js";
+} from "../../../../../../Actions/Requests/AnalyticsRequests/Retrieval/AnalyticsRetrieval.js";
 import {useSelector} from "react-redux";
 
 const Container=styled.div`

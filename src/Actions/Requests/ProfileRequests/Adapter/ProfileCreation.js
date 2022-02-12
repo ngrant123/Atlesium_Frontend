@@ -23,4 +23,14 @@ export const createProfile=async(personalInformation)=>{
 	}
 }
 
-
+export const createProfilePicture=async(imgUrl,profileId)=>{
+	try{
+		const {data}=await axios.post(`${ProfileCreationURL}/createProfilePicture`,{
+			imgUrl,
+			profileId
+		});
+		return data;
+	}catch(err){
+		return backendServiceErrorMessage;
+	}
+}

@@ -38,3 +38,16 @@ export const retrieveEmail=async(profileId)=>{
 		return backendServiceErrorMessage;
 	}
 }
+
+export const retrieveProfilePicture=async(profileId)=>{
+	try{
+		const {data}=await axios.get(`${SearchURL}/retrieveProfilePicture`,{
+			params:{
+				profileId
+			}
+		});
+		return data;
+	}catch(err){
+		return backendServiceErrorMessage;
+	}
+}

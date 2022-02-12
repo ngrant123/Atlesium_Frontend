@@ -1,6 +1,6 @@
 import React,{useState,useContext,useEffect} from "react";
 import styled from "styled-components";
-import COLOR_CONSTANTS from "../../../../../Utils/ColorConstants.js";
+import COLOR_CONSTANTS from "../../../../../../Utils/ColorConstants.js";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';

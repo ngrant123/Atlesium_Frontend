@@ -18,7 +18,7 @@ const ReticanHeaderColorOptions=({closeModal,updateReticanDetailInformationInfor
 				<p>Click on the color block you want your header to be</p>
 				<hr/>
 				{COLOR_OPTIONS.RETICAN_HEADER_COLOR_OPTIONS.map(data=>
-					<div style={{...ColorHeaderCSS,background:data.backgroundColor}}
+					<div style={{...ColorHeaderCSS,backgroundColor:data.backgroundColor}}
 						onClick={()=>updateReticanDetailInformationInformation(data.backgroundColor)}
 					/>
 				)}

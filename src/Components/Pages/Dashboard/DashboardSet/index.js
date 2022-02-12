@@ -230,6 +230,7 @@ const Dashboard=()=>{
 			<Container id="dashboard">
 				<Navigation
 					pageType={"Dashboard"}
+					parentDiv={"dashboard"}
 				/>
 				<CampaignContainer>
 					{reticanRetrievalOverviewErrorModal()}

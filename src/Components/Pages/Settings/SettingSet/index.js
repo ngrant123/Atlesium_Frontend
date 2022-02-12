@@ -29,6 +29,7 @@ const Settings=(props)=>{
 		<Container id="settings">
 			<Navigation
 				pageType={"Settings"}
+				parentDiv={"settings"}
 			/>
 			<SettingsOptions
 				parentContainerId={"settings"}

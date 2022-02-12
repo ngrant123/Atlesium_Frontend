@@ -26,7 +26,8 @@ store.subscribe(throttle(() =>{
 
 const Landing=lazy(()=>import('./Components/Pages/Landing/LandingSet/index.js'));
 const Settings=lazy(()=>import('./Components/Pages/Settings/SettingSet/index.js'));
-const Authenticity=lazy(()=>import('./Components/Pages/Analytics/AnalyticsSet/index.js'));
+const Analytics=lazy(()=>import('./Components/Pages/Analytics/AnalyticCards/AnalyticsSet/index.js'));
+const SpecifiedAnalytics=lazy(()=>import('./Components/Pages/Analytics/SpecifiedAnalytic/AnalyticSet/index.js'));
 const Dashboard=lazy(()=>import('./Components/Pages/Dashboard/DashboardSet/index.js'));
 const Creation=lazy(()=>import('./Components/Pages/Creation/CreationSet/index.js'));
 const ReticanDetails=lazy(()=>import('./Components/Pages/ReticanDetails/DetailsSet/index.js'));
@@ -41,7 +42,9 @@ const application=(
 				<Switch>
 					<Route exact path="/" component={Landing}/>
 					<Route exact path="/settings" component={Settings}/>
-					<Route exact path="/analytics" component={Authenticity}/>
+					<Route exact path="/analytics" component={Analytics}/>
+					<Route exact path="/analytics/:id" component={SpecifiedAnalytics}/>
+
 					<Route exact path="/dashboard" component={Dashboard}/>
 					<Route exact path="/creation" component={Creation}/>
 					<Route exact path="/reticanDetails/:reticanOverviewId" component={ReticanDetails}/>

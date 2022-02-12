@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import COLOR_CONSTANTS from "../../../../Utils/ColorConstants.js";
+import COLOR_CONSTANTS from "../../../../../Utils/ColorConstants.js";
 
 const AnalyticsOptions={
 	listStyle:"none",

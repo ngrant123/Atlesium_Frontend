@@ -22,3 +22,14 @@ export const deleteProfile=async(profileId)=>{
 		return backendServiceErrorMessage;
 	}
 }
+
+export const deleteProfilePicture=async(profileId)=>{
+	try{
+		const {data}=await axios.post(`${ProfileCreationURL}/deleteProfilePicture`,{
+			profileId
+		});
+		return data;
+	}catch(err){
+		return backendServiceErrorMessage;
+	}
+}
