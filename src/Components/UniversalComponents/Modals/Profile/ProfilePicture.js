@@ -14,6 +14,8 @@ import {
 } from "../../../../Actions/Requests/ProfileRequests/Adapter/ProfileDeletion.js";
 import {useSelector} from "react-redux";
 import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
+import {useDispatch} from "react-redux";
+import {storeEncodedProfilePicture} from "../../../../Actions/Redux/Actions/PersonalInformationActions.js";
 
 const Container=styled.div`
 	position:fixed;
@@ -108,7 +110,9 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 	const [displayDeleteOptions,changeDeleteOptions]=useState(false);
 	const [errorMessage,changeErrorMessage]=useState();
 	const [displayProfilePictureErrorAlertMessage,changeDisplayProfilePictureCreationErrorMessage]=useState(false);
-	const [submittingStatus,changeSubmittingStatus]=useState(false)
+	const [submittingStatus,changeSubmittingStatus]=useState(false);
+	const [profilePictureBlob,changeProfilePictureBlob]=useState();
+	const dispatch=useDispatch();
 
 	const profileId=useSelector(state=>state.personalInformation._id);
 
@@ -129,6 +133,7 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 	const handleUploadPicture=()=>{
 		let reader= new FileReader();
 		const picture=document.getElementById("uploadPictureFile").files[0];
+		changeProfilePictureBlob(btoa(picture));
 
 		reader.onloadend=()=>{
 			const picUrl=reader.result;
@@ -172,12 +177,12 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 	}
 
 	const triggerCreateProfile=async()=>{
-		updateNavigationProfilePicture(profilePicture);
 		changeSubmittingStatus(true);
 
 		const {confirmation,data}=await createProfilePicture(profilePicture,profileId);
 		if(confirmation=="Success"){
-
+			dispatch(storeEncodedProfilePicture(profilePictureBlob));
+			updateNavigationProfilePicture(profilePicture);
 		}else{
 			const {statusCode}=data;
 			let errorAlertMessage;

@@ -30,11 +30,10 @@ const PersonalInformationReducer=(state={...initialState},action)=>{
 				...payload
 			}
 		}
-
-		case 'EDIT_PROFILE_PICTURE':{
+		case 'STORE_ENCODED_PROFILE_PICTURE':{
 			return{
 				...state,
-				profilePicture:payload
+				encodedProfilePicture:payload
 			}
 		}
 		default:{

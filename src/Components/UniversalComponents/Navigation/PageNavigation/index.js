@@ -125,7 +125,8 @@ const Navigation=({pageType,parentDiv})=>{
 
 	const {
 		firstName,
-		_id
+		_id,
+		encodedProfilePicture
 	}=useSelector(state=>state.personalInformation);
 
 	const triggerUIChange=()=>{
@@ -160,28 +161,34 @@ const Navigation=({pageType,parentDiv})=>{
 	},[]);
 
 	const fetchProfilePicture=async()=>{
-		const {confirmation,data}=await retrieveProfilePicture(_id);
-		if(confirmation=="Success"){
-			debugger;
-			const {message}=data;
-			changeProfilePicture(message);
+		debugger;
+		if(encodedProfilePicture!=null){
+			const base564url=atob(encodedProfilePicture);
+			changeProfilePicture(base564url);
 		}else{
-			const {statusCode}=data;
-			let errorAlertMessage;
-			if(statusCode==500){
-				errorAlertMessage={
-					header:"Internal Server Error",
-					description:"Unfortunately there has been an error on our part. Please try again later"
-				}
+			const {confirmation,data}=await retrieveProfilePicture(_id);
+			if(confirmation=="Success"){
+				debugger;
+				const {message}=data;
+				changeProfilePicture(message);
 			}else{
-				errorAlertMessage={
-					header:"Profile Creation Error",
-					description:"Unfortunately, an error has occured when creating your profile picture. Please try again."
+				const {statusCode}=data;
+				let errorAlertMessage;
+				if(statusCode==500){
+					errorAlertMessage={
+						header:"Internal Server Error",
+						description:"Unfortunately there has been an error on our part. Please try again later"
+					}
+				}else{
+					errorAlertMessage={
+						header:"Profile Creation Error",
+						description:"Unfortunately, an error has occured when creating your profile picture. Please try again."
+					}
 				}
-			}
 
-			changeErrorMessage(errorAlertMessage);
-			changeDisplayProfilePictureErrorMessage(true);
+				changeErrorMessage(errorAlertMessage);
+				changeDisplayProfilePictureErrorMessage(true);
+			}
 		}
 	}
 
@@ -296,15 +303,16 @@ const Navigation=({pageType,parentDiv})=>{
 			<React.Fragment>	
 				<div style={{display:"flex",justifyContent:"center",flexDirection:"column",marginTop:"15%"}}>
 					<div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"center",width:"100%"}}>
-						{profilePicture==null?
-							<AccountCircleIcon
-								onClick={()=>changeProfilePictureCreationDisplay(true)}
-								style={{fontSize:"40",cursor:"pointer"}}
-							/>:
-							<img src={profilePicture} 
-								style={{width:"50px",height:"50px",borderRadius:"50%"}}
-							/>
-						}
+						<div style={{cursor:"pointer"}} onClick={()=>changeProfilePictureCreationDisplay(true)}>
+							{profilePicture==null?
+								<AccountCircleIcon
+									style={{fontSize:"40"}}
+								/>:
+								<img src={profilePicture} 
+									style={{width:"50px",height:"50px",borderRadius:"50%"}}
+								/>
+							}
+						</div>
 
 						<p style={{fontSize:"18px",marginLeft:"5%"}}>
 							<b>{firstName}</b>

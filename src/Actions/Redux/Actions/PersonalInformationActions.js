@@ -26,3 +26,11 @@ export const editProfilePicture=(profilePicture)=>{
 		payload:profilePicture
 	}
 }
+
+
+export const storeEncodedProfilePicture=(encodedProfilePicture)=>{
+	return{
+		type:'STORE_ENCODED_PROFILE_PICTURE',
+		payload:encodedProfilePicture
+	}
+}
