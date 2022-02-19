@@ -7,6 +7,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import RemoveIcon from '@material-ui/icons/Remove';
 
 import {AnalyticsContext} from "../../AnalyticsSet/AnalyticsContext.js";
+import {Link} from "react-router-dom";
 
 
 const Container=styled.div`
@@ -36,7 +37,8 @@ const ReticanAnalysisOptionsCSS={
 	borderRadius:"5px",
 	boxShadow:`1px 1px 5px ${COLOR_CONSTANTS.GREY}`,
 	marginBottom:"5px",
-	cursor:"pointer"
+	cursor:"pointer",
+	color:"black"
 }
 
 const ArrowButtonCSS={
@@ -176,18 +178,19 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 						</div>
 					</div>
 
-					<div style={ReticanAnalysisOptionsCSS} 
-						onClick={()=>analyticsConsumer.triggerDisplayScreen("Analytics")}>
-						<div style={{padding:"10px"}}>
-							Overview
-						</div>
+					<Link to={{pathname:"/analytics/"+overviewData._id}} style={{textDecoration:"none"}}>
+						<div style={ReticanAnalysisOptionsCSS}>
+								<div style={{padding:"10px"}}>
+									Overview
+								</div>
 
-						<div style={ArrowButtonCSS}>
-							<ArrowForwardIosIcon
-								style={{color:"white"}}
-							/>
+								<div style={ArrowButtonCSS}>
+									<ArrowForwardIosIcon
+										style={{color:"white"}}
+									/>
+								</div>
 						</div>
-					</div>
+					</Link> 
 
 					<div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginTop:"15%"}}>
 						<div style={{...ReticanOverviewStatusIndicator,

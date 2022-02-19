@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import styled from "styled-components";
 import {createPortal} from "react-dom";
 import AddIcon from '@material-ui/icons/Add';
@@ -114,7 +114,18 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 	const [profilePictureBlob,changeProfilePictureBlob]=useState();
 	const dispatch=useDispatch();
 
-	const profileId=useSelector(state=>state.personalInformation._id);
+	const {
+		_id,
+		encodedProfilePicture
+	}=useSelector(state=>state.personalInformation);
+
+
+	useEffect(()=>{
+		if(encodedProfilePicture!=null){
+			const base564url=atob(encodedProfilePicture);
+			changeProfilePicture(base564url);
+		}
+	},[]);
 
 	const closeModalIcon=()=>{
 		return(
@@ -133,7 +144,6 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 	const handleUploadPicture=()=>{
 		let reader= new FileReader();
 		const picture=document.getElementById("uploadPictureFile").files[0];
-		changeProfilePictureBlob(btoa(picture));
 
 		reader.onloadend=()=>{
 			const picUrl=reader.result;
@@ -142,6 +152,8 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 				alert('Your file is too large. We only accept images that have a max size of 7MB. You can go to preview (Mac) and lower the resolution there.');
 			}else{
 				const picUrl=reader.result;
+				console.log(btoa(picUrl));
+				changeProfilePictureBlob(btoa(picUrl));
 				changeProfilePicture(picUrl);
 			}
 		}
@@ -179,7 +191,7 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 	const triggerCreateProfile=async()=>{
 		changeSubmittingStatus(true);
 
-		const {confirmation,data}=await createProfilePicture(profilePicture,profileId);
+		const {confirmation,data}=await createProfilePicture(profilePicture,_id);
 		if(confirmation=="Success"){
 			dispatch(storeEncodedProfilePicture(profilePictureBlob));
 			updateNavigationProfilePicture(profilePicture);
@@ -205,9 +217,11 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 	}
 
 	const triggerDeleteProfilePicture=async()=>{
-		const {confirmation,data}=await deleteProfilePicture();
+		const {confirmation,data}=await deleteProfilePicture(_id);
 		if(confirmation=="Success"){
 			changeProfilePicture(null);
+			dispatch(storeEncodedProfilePicture(null));
+			updateNavigationProfilePicture(null);
 		}else{
 			const {statusCode}=data;
 			let errorAlertMessage;

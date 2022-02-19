@@ -85,6 +85,7 @@ const Analytics=()=>{
 				{alertModal()}
 				<Navigation
 					pageType={"Analytics"}
+					parentDiv={"analyticsContainer"}
 				/>
 				{ComponentMemoizedDisplay}
 			</Container>

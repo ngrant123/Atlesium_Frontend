@@ -1,9 +1,9 @@
 import React,{useState,useEffect} from "react";
 import styled from "styled-components";
 import Navigation from "../../../UniversalComponents/Navigation/PageNavigation/index.js";
-import Campaign from "../DashboardSubset/Campaigns/index.js";
-import CampaignNavigation from "../../../UniversalComponents/Navigation/CardNavigationCircle/index.js";
-import {CampaignProvider} from "./CampaignContext.js";
+import Retican from "../DashboardSubset/Reticans/index.js";
+import ReticanNavigation from "../../../UniversalComponents/Navigation/CardNavigationCircle/index.js";
+import {ReticanProvider} from "./ReticanContext.js";
 import {
 	retrieveProfileSpecificReticanOverviews,
 	retrieveRetican
@@ -32,7 +32,7 @@ const Container=styled.div`
     }
 `;
 
-const CampaignContainer=styled.div`
+const ReticanContainer=styled.div`
 	position:relative;
 	height:100%;
 	width:100%;
@@ -40,25 +40,10 @@ const CampaignContainer=styled.div`
 	flex-direction:row
 `;
 
-const campaigns=[
-	{
-		title:"test",
-		description:"Testing out the card features yessir 1"
-	},
-	{
-		title:"test2",
-		description:"Testing out the card features yessir 2"
-	},
-	{
-		title:"test3",
-		description:"Testing out the card features yessir 3"
-	}
-]
-
 const Dashboard=()=>{
 	const [currentSelectedIndex,changeCurrentSelectedIndex]=useState(0);
-	const [campaigns,changeCampaigns]=useState([]);
-	const [stackCampaignsView,changeStackCampaignView]=useState(campaigns);
+	const [reticans,changeReticans]=useState([]);
+	const [stackReticansView,changeStackReticanView]=useState(reticans);
 	const [previousIndex,changePreviousIndex]=useState();
 	const [displayReticanOverviewAlertMessage,changeDisplayReticanOverviewAlertMessage]=useState(false);
 	const [errorMessage,changeErrorMessage]=useState();
@@ -111,36 +96,36 @@ const Dashboard=()=>{
 
 	useEffect(()=>{
 		debugger;
-		if(campaigns.length>1){
+		if(reticans.length>1){
 			const tempStackCampaignHolders=[];
-			fetchReticanUrlData(campaigns[currentSelectedIndex].primaryReticanCard.toString()).then(result=>{
+			fetchReticanUrlData(reticans[currentSelectedIndex].primaryReticanCard.toString()).then(result=>{
 				debugger;
 				if(result!=null){
-					campaigns[currentSelectedIndex]={
-						...campaigns[currentSelectedIndex],
+					reticans[currentSelectedIndex]={
+						...reticans[currentSelectedIndex],
 						primaryReticanCard:{...result}
 					}
 				}
-				if(currentSelectedIndex==campaigns.length-1){
-					tempStackCampaignHolders.push(campaigns[currentSelectedIndex]);
-					tempStackCampaignHolders.push(campaigns[0]);
+				if(currentSelectedIndex==reticans.length-1){
+					tempStackCampaignHolders.push(reticans[currentSelectedIndex]);
+					tempStackCampaignHolders.push(reticans[0]);
 				}else{
 					const selectedIndex=currentSelectedIndex;
-					tempStackCampaignHolders.push(campaigns[selectedIndex]);
-					tempStackCampaignHolders.push(campaigns[selectedIndex+1]);
+					tempStackCampaignHolders.push(reticans[selectedIndex]);
+					tempStackCampaignHolders.push(reticans[selectedIndex+1]);
 				}
 				if(previousIndex!=null){
 					tempStackCampaignHolders.splice(0,0,{
-						...campaigns[previousIndex],
+						...reticans[previousIndex],
 						animationIndicator:true
 					});
 				}
-				changeStackCampaignView([...tempStackCampaignHolders]);
+				changeStackReticanView([...tempStackCampaignHolders]);
 			});
 		}else{
-			changeStackCampaignView(campaigns);
+			changeStackReticanView(reticans);
 		}
-	},[currentSelectedIndex,campaigns]);
+	},[currentSelectedIndex,reticans]);
 
 	const fetchData=async()=>{
 		const {confirmation,data}=await retrieveProfileSpecificReticanOverviews(
@@ -150,7 +135,7 @@ const Dashboard=()=>{
 		debugger;
 		if(confirmation=="Success"){
 			const {message}=data;
-			changeCampaigns(message);
+			changeReticans(message);
 		}else{	
 			const {statusCode}=data;
 			let errorAlertMessage;
@@ -177,23 +162,23 @@ const Dashboard=()=>{
 		changeCurrentSelectedIndex(selectedIndex);
 	}
 
-	const deleteCampaign=(index)=>{
+	const deleteRetican=(index)=>{
 		const currentStackIndex=currentSelectedIndex;
 		if(currentStackIndex!=0){
 			currentStackIndex--;
 		}
 		changeCurrentSelectedIndex(currentStackIndex);
-		const parentCampaigns=campaigns;
-		parentCampaigns.splice(index,1);
-		changeCampaigns(parentCampaigns);
-		removeCampaignFromStack(index);
+		const parentReticans=reticans;
+		parentReticans.splice(index,1);
+		changeReticans(parentReticans);
+		removeReticanFromStack(index);
 	}
 
-	const removeCampaignFromStack=(index)=>{
+	const removeReticanFromStack=(index)=>{
 		debugger;
-		const tempCampaigns=stackCampaignsView;
-		tempCampaigns.splice(index,1);
-		changeStackCampaignView([...tempCampaigns]);
+		const tempReticans=stackReticansView;
+		tempReticans.splice(index,1);
+		changeStackReticanView([...tempReticans]);
 	}
 
 	const closeErrorAlertScreen=()=>{
@@ -215,15 +200,15 @@ const Dashboard=()=>{
 	}
 
 	return(
-		<CampaignProvider
+		<ReticanProvider
 			value={{
-				campaigns:stackCampaignsView,
+				reticans:stackReticansView,
 				currentSelectedIndex,
-				removeTargetedIndexCampaign:(index)=>{
-					removeCampaignFromStack(index);
+				removeTargetedIndexRetican:(index)=>{
+					removeReticanFromStack(index);
 				},
-				deleteCampaign:(index)=>{
-					deleteCampaign(index);
+				deleteRetican:(index)=>{
+					deleteRetican(index);
 				}
 			}}
 		>
@@ -232,7 +217,7 @@ const Dashboard=()=>{
 					pageType={"Dashboard"}
 					parentDiv={"dashboard"}
 				/>
-				<CampaignContainer>
+				<ReticanContainer>
 					{reticanRetrievalOverviewErrorModal()}
 					{displayLoadingAnimation==true ?
 						<div style={{width:"100%"}}>
@@ -241,10 +226,10 @@ const Dashboard=()=>{
 							/>
 						</div>:
 						<React.Fragment>
-							<Campaign/>
+							<Retican/>
 							<div style={{height:"100%",width:"20%",borderLeft:"1px solid #ECECEC"}}>
-								<CampaignNavigation 
-									totalCards={campaigns}
+								<ReticanNavigation 
+									totalCards={reticans}
 									currentSelectedIndex={currentSelectedIndex}
 									specifiedFlexDirection={"column"}
 									triggerUpdatedSelectedIndex={updateSelectedIndex}
@@ -253,9 +238,9 @@ const Dashboard=()=>{
 						</React.Fragment>
 					}
 
-				</CampaignContainer>
+				</ReticanContainer>
 			</Container>
-		</CampaignProvider>
+		</ReticanProvider>
 	)
 }
 

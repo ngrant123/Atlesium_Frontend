@@ -1,6 +1,6 @@
 import React,{useState,useContext,useEffect} from "react";
 import styled from "styled-components";
-import SecondaryOptions from "../SecondaryOptions.js";
+import SecondaryOptions from "../../../SecondaryOptions.js";
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import Retican from "./Retican.js";
 import {AnalyticsContext} from "../../AnalyticsSet/AnalyticsContext.js";

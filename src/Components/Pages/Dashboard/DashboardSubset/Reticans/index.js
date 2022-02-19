@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import CampaignOptions from "./CampaignOptions.js";
-import CampaignDisplay from "./Campaign/index.js";
+import ReticanOptions from "./ReticanOptions.js";
+import ReticanDisplay from "./Retican/index.js";
 
 const Container=styled.div`
 	position:relative;
@@ -17,8 +17,8 @@ const Campaigns=()=>{
 	return(
 		<Container>
 			<div style={{position:"relative",display:"flex",flexDirection:"column",height:"85%",width:"70%"}}>
-				<CampaignOptions/>
-				<CampaignDisplay/>
+				<ReticanOptions/>
+				<ReticanDisplay/>
 			</div>
 		</Container>
 	)

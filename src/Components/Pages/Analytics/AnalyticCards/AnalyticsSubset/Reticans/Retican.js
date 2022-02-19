@@ -4,6 +4,7 @@ import COLOR_CONSTANTS from "../../../../../../Utils/ColorConstants.js";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import RemoveIcon from '@material-ui/icons/Remove';
+import {Link} from "react-router-dom";
 
 const Container=styled.div`
 	position:relative;
@@ -50,6 +51,7 @@ const AnalysisOptionCSS={
 
 
 const Retican=({reticanData,displayScreen})=>{
+	console.log(reticanData);
 	const [visitorsPercentageDecreaseIndicator,changeVisitorsDecreasePercentageIndicator]=useState(null);
 	const [completionPercentageDecreaseIndicator,changeCompletionDecreasePercentageIndicator]=useState(null);
 
@@ -164,9 +166,11 @@ const Retican=({reticanData,displayScreen})=>{
 				 	<p style={{color:COLOR_CONSTANTS.SUCCESS_ACTION_COLOR,marginLeft:"20%"}}>Active</p>
 				</div>
 
-				<div style={AnalysisOptionCSS} onClick={()=>displayScreen("Analyitcs")}>
-					Analysis
-				</div>
+				<Link to={{pathname:"/analytics/"+reticanData._id}} style={{textDecoration:"none"}}>
+					<div style={AnalysisOptionCSS} onClick={()=>displayScreen("Analyitcs")}>
+						Analysis
+					</div>
+				</Link>
 
 			</div>
 		</Container>

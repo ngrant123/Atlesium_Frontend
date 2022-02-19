@@ -2,7 +2,7 @@ import React,{useContext} from "react";
 import styled from "styled-components";
 import Chart from "./Chart.js";
 import NumericalStatistics from "./NumericalStatistics.js";
-import SecondaryOptions from "../SecondaryOptions"
+import SecondaryOptions from "../../../SecondaryOptions"
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import {AnalyticsContext} from "../../AnalyticsSet/AnalyticsContext.js";
 

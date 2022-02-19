@@ -71,12 +71,12 @@ const InitialScreen=({reticansLength,displayDefaultReticans})=>{
 					</div>
 					<div style={{display:"flex",flexDirection:"row",flexWrap:"wrap"}}>
 						<div style={ReticanOptionCSS}
-							onClick={()=>triggerDisplayReticanOptionCreation("VideoResponseRetican")}>
+							onClick={()=>triggerDisplayReticanOptionCreation("Video Response Retican")}>
 							Video Responses
 						</div>
 
 						<div style={ReticanOptionCSS}
-							onClick={()=>triggerDisplayReticanOptionCreation("TextResponseRetican")}>
+							onClick={()=>triggerDisplayReticanOptionCreation("Text Response Retican")}>
 							Text Responses
 						</div>
 

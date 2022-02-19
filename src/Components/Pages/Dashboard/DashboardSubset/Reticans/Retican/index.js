@@ -1,7 +1,7 @@
 import React,{useContext} from "react";
 import styled from "styled-components";
-import Campaign from "./IsolatedCampaign.js";
-import {CampaignContext} from "../../../DashboardSet/CampaignContext.js";
+import Retican from "./IsolatedRetican.js";
+import {ReticanContext} from "../../../DashboardSet/ReticanContext.js";
 import {Link} from "react-router-dom";
 
 const Container=styled.div`
@@ -13,21 +13,21 @@ const Container=styled.div`
 `;
 
 const CampaignInitialier=()=>{
-	const campaignConsumer=useContext(CampaignContext);
-	const {campaigns}=campaignConsumer;
-	console.log(campaigns);
+	const reticanConsumer=useContext(ReticanContext);
+	const {reticans}=reticanConsumer;
+	console.log(reticans);
 	debugger;
 	return(
 		<Container>
-			{campaigns.length==0?
+			{reticans.length==0?
 				<p>No reticans</p>:
 				<React.Fragment>
-					{campaigns.map((data,index)=>
-						<Campaign 
+					{reticans.map((data,index)=>
+						<Retican 
 							campaignInformation={data}
 							currentIndex={index}
-							removeTargetedIndexCampaign={campaignConsumer.removeTargetedIndexCampaign}
-							deleteCampaign={campaignConsumer.deleteCampaign}
+							removeTargetedIndexRetican={reticanConsumer.removeTargetedIndexRetican}
+							deleteCampaign={reticanConsumer.deleteCampaign}
 						/>
 					)}
 				</React.Fragment>

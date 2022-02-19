@@ -144,14 +144,14 @@ const ReticanOptions=({reticanOption,reticanInformation,displayInitialReticanScr
 							reticanInformation={reticanInformation}
 						/>
 						<TextResponseRetican 
-							optionType={"TextResponseRetican"}
+							optionType={"Text Response Retican"}
 							displayReticanInitialOptionCreation={displayInitialReticanScreen}
 							triggerCreateRetican={triggerCreateRetican}
 							reticanInformation={reticanInformation}
 						/>
-						<VideoResponseRetican optionType={"VideoResponseRetican"}/>
+						<VideoResponseRetican optionType={"Video Response Retican"}/>
 					</ReticanOptionsModals>
-					{(reticanOption=="General" || reticanOption=="VideoResponseRetican")==true &&(
+					{(reticanOption=="General" || reticanOption=="Video Response Retican")==true &&(
 						<div style={{display:"flex",flexDirection:"row"}}>
 							<div style={ButtonCSS} onClick={()=>displayInitialReticanScreen()}>
 								Close

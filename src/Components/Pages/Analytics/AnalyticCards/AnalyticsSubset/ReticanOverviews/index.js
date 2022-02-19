@@ -1,6 +1,6 @@
 import React,{useState,useEffect,useContext} from "react";
 import styled from "styled-components";
-import SecondaryOptions from "../SecondaryOptions.js";
+import SecondaryOptions from "../../../SecondaryOptions.js";
 import ReticanOverview from "./Overviews.js";
 import {
 	retrieveReticanOverviewCards

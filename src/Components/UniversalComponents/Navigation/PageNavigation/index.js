@@ -8,10 +8,11 @@ import GridOnIcon from '@material-ui/icons/GridOn';
 import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import {Link} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
 import ProfilePicture from "../../Modals/Profile/ProfilePicture.js";
 import {retrieveProfilePicture} from "../../../../Actions/Requests/ProfileRequests/Retrieval/ProfileInformation.js";
 import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
+import {storeEncodedProfilePicture} from "../../../../Actions/Redux/Actions/PersonalInformationActions.js";
 
 
 const Container=styled.div`
@@ -122,6 +123,7 @@ const Navigation=({pageType,parentDiv})=>{
 
 	const [errorMessage,changeErrorMessage]=useState();
 	const [displayProfilePictureErrorAlertMessage,changeDisplayProfilePictureErrorMessage]=useState(false);
+	const dispatch=useDispatch();
 
 	const {
 		firstName,
@@ -170,6 +172,13 @@ const Navigation=({pageType,parentDiv})=>{
 			if(confirmation=="Success"){
 				debugger;
 				const {message}=data;
+					
+				if(message!=null){
+					const encodedProfilePicture=btoa(message);
+					console.log(encodedProfilePicture);
+					dispatch(storeEncodedProfilePicture(encodedProfilePicture));
+				}
+
 				changeProfilePicture(message);
 			}else{
 				const {statusCode}=data;

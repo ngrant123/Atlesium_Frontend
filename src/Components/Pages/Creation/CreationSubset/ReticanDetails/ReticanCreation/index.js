@@ -38,7 +38,6 @@ const VideoOptionsCSS={
 
 const RankingInputContainer=styled.textarea`
 	position:relative;
-	width:10%;
 	height:60%;
 	border-style:solid;
 	border-width:1px;
@@ -84,6 +83,14 @@ const RankingInputContainer=styled.textarea`
 	}
 */
 
+const ReticanTypeCSS={
+	padding:"2%",
+	borderRadius:"5px",
+	borderStyle:"solid",
+	borderWidth:"1px",
+	borderColor:COLOR_CONSTANTS.PRIMARY_COLOR,
+	color:COLOR_CONSTANTS.PRIMARY_COLOR
+}
 
 const ProgressNodesCSS={
 	width:"30px",
@@ -126,6 +133,14 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 			document.getElementById("rankingContainer").value=currentReticanCounter+1;
 		}
 	},[reticans,currentReticanCounter]);
+
+	useEffect(()=>{
+		if(displayRankingReOrderSuccess){
+			setTimeout(()=>{
+				changeDisplayRankingReorderSuccess(null);
+			},1000);
+		}
+	},[displayRankingReOrderSuccess]);
 
 	const uuid=()=>{
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -237,36 +252,35 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 												<DeleteIcon/>
 											</div>
 
-											<div style={{marginLeft:"10%",display:"flex",flexDirection:"column"}}>
-												<div style={{display:"flex",flexDirection:"row"}}>
-													<p style={{marginLeft:"10%",marginRight:"2%"}}>
-														<b>Ranking:</b>
-													</p>
-													<RankingInputContainer type="number" id="rankingContainer"
-														onKeyPress={e=>analyzeInput(e)}
-													/>
-												</div> 
-												{displayRankingReOrderSuccess!=null &&(
-													<React.Fragment>
-														<p style={{
-															color:displayRankingReOrderSuccess==false?
-															COLOR_CONSTANTS.CALL_TO_ACTION_COLOR:
-															COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}>
-															<b>
-																{displayRankingReOrderSuccess==true?
-																	<>Ranking Re-Order Success</>:
-																	<>
-																		Ranking Re-Order Failure. Ranking provided is out of bounds. Please provide
-																		a number between 1 and {reticans.length}
-																	</>
-																}
-															</b>
-														</p>
-													</React.Fragment>
-												)}
-											</div>
+											<div style={{marginLeft:"10%",display:"flex",flexDirection:"row"}}>
+												<p style={{marginLeft:"10%",marginRight:"2%"}}>
+													<b>Ranking:</b>
+												</p>
+												<RankingInputContainer type="number" id="rankingContainer"
+													onKeyPress={e=>analyzeInput(e)}
+												/>
+											</div> 
 
 										</div>
+										{displayRankingReOrderSuccess!=null &&(
+											<React.Fragment>
+												<p style={{
+													color:displayRankingReOrderSuccess==false?
+													COLOR_CONSTANTS.CALL_TO_ACTION_COLOR:
+													COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}>
+													<b>
+														{displayRankingReOrderSuccess==true?
+															<>Ranking Re-Order Success</>:
+															<>
+																Ranking Re-Order Failure. Ranking provided is out of bounds. Please provide
+																a number between 1 and {reticans.length}
+															</>
+														}
+													</b>
+												</p>
+											</React.Fragment>
+										)}
+										<div style={ReticanTypeCSS}>{reticans[currentReticanCounter].reticanOption} </div>
 									</div>
 									<div style={{display:"flex",flexDirection:"column",marginLeft:"5%"}}>
 										{reticans.map((data,index)=>

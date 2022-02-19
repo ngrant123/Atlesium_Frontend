@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
 
-const CampaignOptionsCSS={
+const ReticanOptionsCSS={
 	backgroundColor:"white",
 	borderRadius:"5px",
 	padding:"10px",
@@ -19,7 +19,7 @@ const CampaignOptions=()=>{
 		<div style={{display:"flex",width:"100%",marginBottom:"2%"}}>
 			<div class="btn-group">
 				<button class="btn btn-primary dropdown-toggle" type="button" 
-					data-toggle="dropdown" style={CampaignOptionsCSS}>
+					data-toggle="dropdown" style={ReticanOptionsCSS}>
 					<p style={{fontSize:"18px",marginRight:"5%"}}>
 						<b>Reticans</b>
 					</p>

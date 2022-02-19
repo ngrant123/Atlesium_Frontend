@@ -12,15 +12,30 @@ const backendServiceErrorMessage={
 	}
 }
 
-
-export const retrieveTimeSpecifiedAnalytics=async(reticanOverviewId,timeRequestedFilterType)=>{
+export const retrieveSpecifiedAnaltyicsPage=async(targetId,profileId)=>{
 	try{
-		const {data}=await axois.get(`${AnalyticsRetrievalURL}/retrieveTimeConstraintAnalytics`,{
+		const {data}=await axios.get(`${AnalyticsRetrievalURL}/specifiedReticanAnalysisPage`,{
 			params:{
-				reticanOverviewId,
+				profileId,
+				targetId
+			}
+		});
+		return data;
+	}catch(err){
+		return backendServiceErrorMessage;
+	}
+}
+
+
+export const retrieveTimeSpecifiedAnalytics=async(targetId,timeRequestedFilterType)=>{
+	try{
+		const {data}=await axios.get(`${AnalyticsRetrievalURL}/retrieveTimeConstraintAnalytics`,{
+			params:{
+				targetId,
 				timeRequestedFilterType
 			}
 		})
+		return data;
 	}catch(err){
 		return backendServiceErrorMessage;
 	}
