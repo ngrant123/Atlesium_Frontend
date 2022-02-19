@@ -97,7 +97,7 @@ const Dashboard=()=>{
 	useEffect(()=>{
 		debugger;
 		if(reticans.length>1){
-			const tempStackCampaignHolders=[];
+			const tempStackReticanHolders=[];
 			fetchReticanUrlData(reticans[currentSelectedIndex].primaryReticanCard.toString()).then(result=>{
 				debugger;
 				if(result!=null){
@@ -107,20 +107,20 @@ const Dashboard=()=>{
 					}
 				}
 				if(currentSelectedIndex==reticans.length-1){
-					tempStackCampaignHolders.push(reticans[currentSelectedIndex]);
-					tempStackCampaignHolders.push(reticans[0]);
+					tempStackReticanHolders.push(reticans[currentSelectedIndex]);
+					tempStackReticanHolders.push(reticans[0]);
 				}else{
 					const selectedIndex=currentSelectedIndex;
-					tempStackCampaignHolders.push(reticans[selectedIndex]);
-					tempStackCampaignHolders.push(reticans[selectedIndex+1]);
+					tempStackReticanHolders.push(reticans[selectedIndex]);
+					tempStackReticanHolders.push(reticans[selectedIndex+1]);
 				}
 				if(previousIndex!=null){
-					tempStackCampaignHolders.splice(0,0,{
+					tempStackReticanHolders.splice(0,0,{
 						...reticans[previousIndex],
 						animationIndicator:true
 					});
 				}
-				changeStackReticanView([...tempStackCampaignHolders]);
+				changeStackReticanView([...tempStackReticanHolders]);
 			});
 		}else{
 			changeStackReticanView(reticans);

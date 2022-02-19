@@ -12,7 +12,7 @@ const Container=styled.div`
 	padding:10px;
 `;
 
-const CampaignInitialier=()=>{
+const ReticanInitialier=()=>{
 	const reticanConsumer=useContext(ReticanContext);
 	const {reticans}=reticanConsumer;
 	console.log(reticans);
@@ -24,7 +24,7 @@ const CampaignInitialier=()=>{
 				<React.Fragment>
 					{reticans.map((data,index)=>
 						<Retican 
-							campaignInformation={data}
+							reticanInformation={data}
 							currentIndex={index}
 							removeTargetedIndexRetican={reticanConsumer.removeTargetedIndexRetican}
 							deleteCampaign={reticanConsumer.deleteCampaign}
@@ -36,4 +36,4 @@ const CampaignInitialier=()=>{
 	)
 }
 
-export default CampaignInitialier;
+export default ReticanInitialier;

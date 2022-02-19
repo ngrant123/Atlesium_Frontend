@@ -13,7 +13,7 @@ const Container=styled.div`
 	flex-direction:column;
 `;
 
-const Campaigns=()=>{
+const Reticans=()=>{
 	return(
 		<Container>
 			<div style={{position:"relative",display:"flex",flexDirection:"column",height:"85%",width:"70%"}}>
@@ -24,4 +24,4 @@ const Campaigns=()=>{
 	)
 }
 
-export default Campaigns;
+export default Reticans;
