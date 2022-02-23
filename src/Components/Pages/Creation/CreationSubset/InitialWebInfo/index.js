@@ -45,7 +45,7 @@ const ReticanDetailsCreationCSS={
 	fontSize:"18px"
 }
 
-const InitialWebInformation=({progressScreen,reticanAssembly})=>{
+const InitialWebInformation=({progressScreen,reticanAssembly,isEditReticanDesired})=>{
 	console.log(reticanAssembly);
 	const [erroredInputIds,changeErroredInputIds]=useState([]);
 
@@ -94,7 +94,9 @@ const InitialWebInformation=({progressScreen,reticanAssembly})=>{
 	        />
 
 			<div style={ReticanDetailsCreationCSS} onClick={()=>triggerNextScreen()}>
-				<p>Create Retican Details</p>
+				<p>
+					{isEditReticanDesired==true?<>Edit</>:<>Create</>} Retican Details
+				</p>
 				<ArrowForwardRoundedIcon
 					style={{fontSize:"24"}}
 				/>

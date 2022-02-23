@@ -30,12 +30,15 @@ const ColorHeaderCSS={
 	cursor:"pointer"
 }
 
-const ReticanDetailsInit=({progressScreen,reticanAssembly})=>{
+const ReticanDetailsInit=({progressScreen,reticanAssembly,isEditReticanDesired})=>{
 	console.log(reticanAssembly);
+	console.log("Rerendered");
 
 	const [displayReticanHeaderColorOptions,changeReticanHeaderColorOptionsDisplay]=useState(false);
 	const [selectedColorHeader,changeSelectedColorHeader]=useState();
 	let [currentReticanDetails,changeReticanDetails]=useState(reticanAssembly==null?{}:reticanAssembly);
+	const [editedReticans,changeEditedReticans]=useState([]);
+
 	console.log(currentReticanDetails);
 
 
@@ -92,6 +95,13 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly})=>{
 			</svg>
 		)
 	}
+
+	const listReticanAsEdited=(editedReticanInformation)=>{
+		const currentEditedReticans=editedReticans;
+		currentEditedReticans.push(editedReticanInformation);
+		changeEditedReticans([...currentEditedReticans]);
+	}
+
 	return(
 		<ReticanOverviewProvider
 			value={{
@@ -106,7 +116,7 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly})=>{
 						style={{fontSize:"18",marginTop:"-10px",cursor:"pointer"}}
 					/>
 					<p style={{fontSize:"18px",marginLeft:"4%"}}>
-						<b>Retican Details</b>
+						<b>Retican Overview Details</b>
 					</p>
 					<div style={ColorWheelCSS}
 						onClick={()=>changeReticanHeaderColorOptionsDisplay(true)}
@@ -124,9 +134,14 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly})=>{
 					<Details
 						triggerProgressScreen={triggerUpdateReticanAssembler}
 						totalReticans={currentReticanDetails.reticans==null?[]:currentReticanDetails.reticans}
+						isEditReticanDesired={isEditReticanDesired}
+						selectedColorHeader={selectedColorHeader}
+						editedReticans={editedReticans}
 					/>
 					<ReticanCreation
 						triggerUpdateReticanParentInformation={triggerUpdateReticanParentInformation}
+						listReticanAsEdited={listReticanAsEdited}
+						isEditReticanDesired={isEditReticanDesired}
 					/>
 				</div>
 			</Container>

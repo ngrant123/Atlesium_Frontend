@@ -4,7 +4,9 @@ import test4 from "../../../../../../Assets/LandingPageSpecific/scrollingWindowB
 import EditIcon from '@material-ui/icons/ReplayRounded';
 import PauseIcon from '@material-ui/icons/Pause';
 import CropIcon from '@material-ui/icons/Crop';
-import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+
+
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 import CropBar from "./CropBar/index.js";
 import InitialialReticanOptionsScreen from "./InitialialReticanOptionsScreen.js";
@@ -14,6 +16,8 @@ import COLOR_CONSTANTS from "../../../../../../Utils/ColorConstants.js";
 import DeleteRetican from "../../../../Creation/CreationSet/Modals-Portals/DeleteRetican.js";
 import EditReticanModal from "./ReticanOptions/index.js";
 import {ReticanOverviewConsumer} from "../ReticanOverviewCreationContext.js";
+import {CreationContext} from "../../../CreationSet/CreationContext.js";
+import {reorderPointers} from "../../../../../../Actions/Tasks/ReorderPointers.js";
 
 
 
@@ -93,8 +97,8 @@ const ReticanTypeCSS={
 }
 
 const ProgressNodesCSS={
-	width:"30px",
-	height:"30px",
+	width:"35px",
+	height:"35px",
 	borderRadius:"50%",
 	backgroundColor:COLOR_CONSTANTS.PRIMARY_SECONDARY_COLOR,
 	transition:".8s",
@@ -106,7 +110,7 @@ const ProgressNodesCSS={
 	cursor:"pointer"
 }
 
-const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
+const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdited,isEditReticanDesired})=>{
 	debugger;
 	const [isVideoElementPaused,changeVideoElementPauseStatus]=useState(false);
 	
@@ -124,6 +128,10 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 		?true
 		:false);
 	const [displayRankingReOrderSuccess,changeDisplayRankingReorderSuccess]=useState();
+	const reticanCreationParentConsumer=useContext(CreationContext);
+
+
+
 
 	console.log(reticans);
 
@@ -149,12 +157,17 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 		});
 	}
 
+	const closeDeleteModal=()=>{
+		changeDisplayDeleteRetican(false);
+	}
+
 	const deleteReticanModal=()=>{
 		return(
 			<React.Fragment>
 				{displayDeleteRetican==true &&(
 					<DeleteRetican
 						deleteRetican={deleteRetican}
+						closeModal={closeDeleteModal}
 					/>
 				)}
 			</React.Fragment>
@@ -162,10 +175,12 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 	}
 
 	const deleteRetican=()=>{
+		debugger;
 		reticans.splice(currentReticanCounter,1);
-		triggerUpdateReticanParentInformation({reticans});
+		triggerUpdateReticanParentInformation({reticans:[...reticans]});
 		changeDisplayDeleteRetican(false);
-		changeCurrentReticanCounter(currentReticanCounter--);
+		const updatedCounter=currentReticanCounter==0?0:currentReticanCounter-1;
+		changeCurrentReticanCounter(updatedCounter);
 	}
 
 	const displayCurrentlySelectedReticans=()=>{
@@ -187,12 +202,26 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 				let currentSelectedRetican=reticans[currentReticanCounter];
 				currentReticans.splice(currentReticanCounter,1);
 				currentReticans.splice(event.key==0?0:event.key-1, 0, currentSelectedRetican);
-				changeDisplayRankingReorderSuccess(true);
+				let reorderedReticans=reorderPointers(currentReticans);
+
+				//changeDisplayRankingReorderSuccess(true);
 			}else{
 				event.preventDefault();
 				changeDisplayRankingReorderSuccess(false);
 			}
 		}
+	}
+
+	const triggerDisplayInitialReticanScreen=()=>{
+		if(isEditReticanDesired){
+			const possibleDisabledNotificationText={
+        		header:"(Warning) Editing will be disabled if continued",
+        		description:"If you continue and add a new retican then the editing feature will be disabled and we will create a new retican overview for you."
+			}
+			reticanCreationParentConsumer.displayAlertScreen(possibleDisabledNotificationText);
+		}
+
+		changeReticanScreen(true);
 	}
 
 	return(
@@ -208,11 +237,16 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 					triggerUpdateReticanParentInformation({reticans});
 					triggerDisplayReticanDisplay();
 					changeCurrentReticanCounter(currentReticanCounter++);
+					if(isEditReticanDesired){
+						reticanCreationParentConsumer.disableEditReticanStatus();
+					}
 				},
 				editRetican:(editedReticanInformation)=>{
 					reticans[currentReticanCounter]={
 						...editedReticanInformation
 					}
+
+					listReticanAsEdited(editedReticanInformation);
 					displayCurrentlySelectedReticans();
 				}
 			}}
@@ -220,7 +254,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 			<Container>
 				{editReticanModal==true?
 					<EditReticanModal
-						reticanOption={reticans[currentReticanCounter].reticanOption}
+						reticanOptionType={reticans[currentReticanCounter].reticanOptionType}
 						reticanInformation={reticans[currentReticanCounter]}
 						displayInitialReticanScreen={displayCurrentlySelectedReticans}
 					/>:
@@ -280,7 +314,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 												</p>
 											</React.Fragment>
 										)}
-										<div style={ReticanTypeCSS}>{reticans[currentReticanCounter].reticanOption} </div>
+										<div style={ReticanTypeCSS}>{reticans[currentReticanCounter].reticanOptionType} </div>
 									</div>
 									<div style={{display:"flex",flexDirection:"column",marginLeft:"5%"}}>
 										{reticans.map((data,index)=>
@@ -289,9 +323,8 @@ const ReticanCreation=({triggerUpdateReticanParentInformation})=>{
 											/>
 										)}
 
-										<div style={{...VideoOptionsCSS,transform:"rotate(130deg)"}}
-											onClick={()=>changeReticanScreen(true)}>
-											<CancelOutlinedIcon/>
+										<div style={VideoOptionsCSS} onClick={()=>triggerDisplayInitialReticanScreen()}>
+											<AddCircleOutlineIcon/>
 										</div>
 
 										{/*

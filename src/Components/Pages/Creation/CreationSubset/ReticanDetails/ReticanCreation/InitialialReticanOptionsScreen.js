@@ -28,8 +28,8 @@ const InitialScreen=({reticansLength,displayDefaultReticans})=>{
 	const [displayReticanOptionCreation,changeReticanOptionCreation]=useState(false);
 	const [selectedReticanOption,changeSelectedReticanOption]=useState();
 
-	const triggerDisplayReticanOptionCreation=(reticanOption)=>{
-		changeSelectedReticanOption(reticanOption);
+	const triggerDisplayReticanOptionCreation=(reticanOptionType)=>{
+		changeSelectedReticanOption(reticanOptionType);
 		changeReticanOptionCreation(true);
 	}
 
@@ -55,7 +55,7 @@ const InitialScreen=({reticansLength,displayDefaultReticans})=>{
 		<React.Fragment>
 			{displayReticanOptionCreation==true?
 				<ReticanOptions
-					reticanOption={selectedReticanOption}
+					reticanOptionType={selectedReticanOption}
 					displayInitialReticanScreen={triggerDisplayReticanInitialScreen}
 				/>:
 				<React.Fragment>

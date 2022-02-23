@@ -12,9 +12,9 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const editRetican=async(editedReticanInformation)=>{
+export const editReticans=async(editedReticanInformation)=>{
 	try{
-		const {data}=await axios.post(`${ReticanEditURL}/editRetican`,{
+		const {data}=await axios.post(`${ReticanEditURL}/editReticans`,{
 			...editedReticanInformation
 		});
 		return data;
@@ -24,7 +24,7 @@ export const editRetican=async(editedReticanInformation)=>{
 }
 
 
-export const editReticanOverview=(reticanOverviewId,reticanOverviewParams,profileId)=>{
+export const editReticanOverview=async(reticanOverviewId,reticanOverviewParams,profileId)=>{
 	try{
 		const {data}=await axios.post(`${ReticanEditURL}/editReticanOverview`,{
 			reticanOverviewId,

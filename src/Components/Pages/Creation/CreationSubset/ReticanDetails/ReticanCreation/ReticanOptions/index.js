@@ -45,8 +45,8 @@ const ButtonCSS={
 }
 
 
-const ReticanOptions=({reticanOption,reticanInformation,displayInitialReticanScreen})=>{
-	console.log(reticanOption);
+const ReticanOptions=({reticanOptionType,reticanInformation,displayInitialReticanScreen})=>{
+	console.log(reticanOptionType);
 	const reticanCreationConsumer=useContext(ReticanCreationContext);
 	const [displayMobileUI,changeDisplayMobileUI]=useState(false);
 
@@ -77,7 +77,7 @@ const ReticanOptions=({reticanOption,reticanInformation,displayInitialReticanScr
 				videoUrl,
 				isPhoneEnabled:displayMobileUI
 			},
-			reticanOption,
+			reticanOptionType,
 			videoUrlSize
 		});
 	}	
@@ -135,7 +135,7 @@ const ReticanOptions=({reticanOption,reticanInformation,displayInitialReticanScr
 						</div>
 					</div>
 
-					<ReticanOptionsModals currentSelectedReticanType={reticanOption}>
+					<ReticanOptionsModals currentSelectedReticanType={reticanOptionType}>
 						<GeneralRetican optionType={"General"}/>
 						<IntroductoryRetican 
 							optionType={"Introductory"}
@@ -151,13 +151,13 @@ const ReticanOptions=({reticanOption,reticanInformation,displayInitialReticanScr
 						/>
 						<VideoResponseRetican optionType={"Video Response Retican"}/>
 					</ReticanOptionsModals>
-					{(reticanOption=="General" || reticanOption=="Video Response Retican")==true &&(
+					{(reticanOptionType=="General" || reticanOptionType=="Video Response Retican")==true &&(
 						<div style={{display:"flex",flexDirection:"row"}}>
 							<div style={ButtonCSS} onClick={()=>displayInitialReticanScreen()}>
 								Close
 							</div>
 							<div style={ButtonCSS} onClick={()=>reticanCreationOrEdit(currentRetican)}>
-								Create Retican
+								{reticanInformation==null?<>Create</>:<>Edit</>} Retican
 							</div>
 						</div>
 					)} 

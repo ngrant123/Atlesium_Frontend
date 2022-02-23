@@ -96,6 +96,10 @@ const VideoCreation=({displaySelectedReticanOptionType})=>{
 	    )
   	}
 
+  	const initiateRedo=()=>{
+  		changeVideoUrl(null);
+  	}
+
 	return(
 		<Container videoUrl={videoUrl}>
 			{videoCreationErrorAlertModal()}
@@ -106,8 +110,8 @@ const VideoCreation=({displaySelectedReticanOptionType})=>{
 						autoPlay loop autoBuffer playsInline muted controls>
 						<source src={videoUrl} type="video/mp4"/>
 					</video>
-					<div style={{display:"flex",flexDirection:"row",marginTop:"5%"}}>
-						<div style={VideoOptionsCSS} onClick={()=>clickUploadVideoButton()}>
+					<div style={{display:"flex",flexDirection:"row",marginTop:"5%",width:"100%",justifyContent:"center"}}>
+						<div style={VideoOptionsCSS} onClick={()=>initiateRedo()}>
 							<ReplayRoundedIcon/>
 						</div>
 

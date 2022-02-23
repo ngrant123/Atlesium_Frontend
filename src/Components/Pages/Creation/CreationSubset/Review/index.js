@@ -59,6 +59,11 @@ const CloseButtonCSS={
 	fontSize:"18px"
 }
 
+/*
+	Now that there is an alert message modal on the creation set index.js file, alert modal
+	should be  refactored
+*/
+
 const Review=({progressScreen,reticanAssembly})=>{
 	console.log(reticanAssembly);
 	const [displayLoadingAnimation,changeDisplayLoadingAnimation]=useState(true);

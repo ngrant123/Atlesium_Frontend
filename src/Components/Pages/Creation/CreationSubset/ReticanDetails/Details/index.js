@@ -5,7 +5,13 @@ import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded';
 import Color_Constants from "../../../../../../Utils/ColorConstants.js";
 import RequiredFieldNotification from "../../../../../UniversalComponents/Notifications/RequiredFieldNotification.js";
 import {clearInputField} from "../../../../../../Actions/Tasks/ClearInputFields.js";
+import {
+	editReticans,
+	editReticanOverview
+} from "../../../../../../Actions/Requests/ReticanRequests/Adapter/EditRetican.js";
 import {ReticanOverviewConsumer} from "../ReticanOverviewCreationContext.js";
+import {CreationContext} from "../../../CreationSet/CreationContext.js";
+import {useSelector} from "react-redux";
 
 const Container=styled.div`
 	width:40%;
@@ -46,10 +52,35 @@ const CompressFileCSS={
 	borderRadius:"5px"
 }
 
-const ReticanDetails=({triggerProgressScreen,totalReticans})=>{
+const ReticanDetails=(props)=>{
+	const {
+		triggerProgressScreen,
+		totalReticans,
+		isEditReticanDesired,
+		selectedColorHeader,
+		editedReticans
+	}=props;
+
+	console.log(totalReticans);
+	debugger;
+
 	const [erroredInputIds,changeErroredInputIds]=useState([]);
 	let [currentReticansFileSize,changeCurrentReticansFileSize]=useState(0);
+	const [originalHeaderColor,changeOriginalHeaderColor]=useState("");
+	const [isEditing,changeIsEditingStatus]=useState(false);
+	const [originalReticanPointerMapping,changeOriginalReticanPointerMapping]=useState();
+
 	const reticanOverviewConsumer=useContext(ReticanOverviewConsumer);
+	const reticanCreationConsumer=useContext(CreationContext);
+	const profileId=useSelector(state=>state.personalInformation._id);
+
+	useEffect(()=>{
+		debugger;
+		if(selectedColorHeader!=originalHeaderColor){
+			clearInputField(changeErroredInputIds,erroredInputIds,"editReticanOverview");
+		}
+
+	},[selectedColorHeader]);
 
 	useEffect(()=>{
 		let compressFileReticanButtonErroredOut=false;
@@ -61,10 +92,24 @@ const ReticanDetails=({triggerProgressScreen,totalReticans})=>{
 		}
 
 		if(compressFileReticanButtonErroredOut){
-			clearInputField(changeErroredInputIds,erroredInputIds,"compressFile")
+			triggerClearInputField("compressFile");
 		}
 		calculateTotalFileSize();
+				
+		debugger;
+		if(originalReticanPointerMapping!=null){
+
+			const {reticanPointerAlterationStatus}=isReticanPointersAltered();
+			if(reticanPointerAlterationStatus){
+				clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
+			}
+		}
 	},[totalReticans]);
+
+	useEffect(()=>{
+		debugger;
+		clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
+	},[editedReticans]);
 
 
 	useEffect(()=>{
@@ -79,7 +124,31 @@ const ReticanDetails=({triggerProgressScreen,totalReticans})=>{
 		if(previousDescription!=null){
 			document.getElementById("description").value=previousDescription;
 		}
+		if(selectedColorHeader!=""){
+			changeOriginalHeaderColor(selectedColorHeader);
+		}
+		if(totalReticans.length!=0){
+			constructReticanPointerMapping();
+		}
 	},[]);
+
+	const constructReticanPointerMapping=()=>{
+		const reticanPointers=new Map();
+		for(var i=0;i<totalReticans.length;i++){
+			const {
+				previousCardPointer,
+				nextCardPointer,
+				_id
+			}=totalReticans[i];
+
+			reticanPointers.set(_id,{
+				previousCardPointer,
+				nextCardPointer
+			});
+		}
+
+		changeOriginalReticanPointerMapping(reticanPointers);
+	}
 
 
 	const calculateTotalFileSize=()=>{
@@ -117,6 +186,177 @@ const ReticanDetails=({triggerProgressScreen,totalReticans})=>{
 		}	
 	}
 
+	const validateEditReticanOverview=()=>{
+		debugger;
+		const {reticanAssembly}=reticanOverviewConsumer;
+		const previousDescription=reticanAssembly.description;
+		const previousTitle=reticanAssembly.title;
+
+		const currentDescription=document.getElementById("description").value;
+		const currentTitle=document.getElementById("title").value;
+
+
+		if(previousDescription==currentDescription && currentTitle==previousTitle && selectedColorHeader==originalHeaderColor){
+			let tempErrorIds=[];
+			tempErrorIds.push("editReticanOverview");
+
+			changeErroredInputIds([...tempErrorIds]);
+		}else{
+			let updatedReticanOverviewInformation={};
+			if(previousDescription!=currentDescription){
+				updatedReticanOverviewInformation={
+					...updatedReticanOverviewInformation,
+					description:currentDescription
+				}
+			}
+			if(previousTitle!=currentTitle){
+				updatedReticanOverviewInformation={
+					...updatedReticanOverviewInformation,
+					title:currentTitle
+				}		
+			}	
+
+			if(originalHeaderColor!=selectedColorHeader){
+				updatedReticanOverviewInformation={
+					...updatedReticanOverviewInformation,
+					headerColor:selectedColorHeader
+				}
+			}
+			triggerEditReticanOverview(updatedReticanOverviewInformation);
+		}
+	}
+
+	const triggerEditReticanOverview=async(updatedReticanOverviewInformation)=>{
+		changeIsEditingStatus(true);
+		const {confirmation,data}=await editReticanOverview(
+			reticanOverviewConsumer.reticanAssembly._id,
+			updatedReticanOverviewInformation,
+			profileId);
+
+		let editedReticanOverviewAlertMessage;
+		if(confirmation=="Success"){
+			editedReticanOverviewAlertMessage={
+        		header:"Retican Overview Details Edited",
+        		description:""
+			}
+		}else{
+			const {statusCode}=data;
+			if(statusCode==400){
+				editedReticanOverviewAlertMessage={
+	        		header:"Edit Retican Overview Details Error",
+	        		description:"Unfortunately there has been an error when editing your retican overview. Please try again"
+				}
+			}else{
+				editedReticanOverviewAlertMessage={
+	        		header:"Internal Server Error",
+	        		description:"Unfortunately there has been an error on our part. Please try again later"
+				}
+			}
+
+		}
+		reticanCreationConsumer.displayAlertScreen(editedReticanOverviewAlertMessage);
+		changeIsEditingStatus(false);
+	}
+
+	const isReticanPointersAltered=()=>{
+
+		let reticanPointerAlterationStatus=false;
+		let editedReticanMapping=new Map();
+
+		for(var i=0;i<totalReticans.length;i++){
+			const {
+				previousCardPointer,
+				nextCardPointer
+			}=totalReticans[i];
+
+			if(reticanPointerAlterationStatus==false){
+				const originalSpecifiedIdReticanPreviousPointer=originalReticanPointerMapping.get(totalReticans[i]._id).previousCardPointer;
+				const originalSpecifiedIdReticanNextPointer=originalReticanPointerMapping.get(totalReticans[i]._id).nextCardPointer;
+
+				if(originalSpecifiedIdReticanPreviousPointer!=previousCardPointer || originalSpecifiedIdReticanNextPointer!=nextCardPointer){
+					reticanPointerAlterationStatus=true;
+				}
+			}
+				editedReticanMapping.set(totalReticans[i]._id,{
+					previousCardPointer,
+					nextCardPointer
+				});
+		}
+		return{
+			reticanPointerAlterationStatus,
+			editedReticanMapping
+		};
+	}
+
+	const validateRetican=()=>{
+		debugger;
+		const {
+			reticanPointerAlterationStatus,
+			editedReticanMapping
+		}=isReticanPointersAltered();
+
+		if(!reticanPointerAlterationStatus && editedReticans.length==0){
+			let tempErrorIds=[];
+			tempErrorIds.push("editRetican");
+
+			changeErroredInputIds([...tempErrorIds]);
+		}else{
+			let editedReticansInformation={};
+			if(reticanPointerAlterationStatus){
+				editedReticansInformation={
+					...editedReticansInformation,
+					reticanMappings:editedReticanMapping
+				}
+			}
+
+			if(editedReticans.length>0){
+				editedReticansInformation={
+					...editedReticansInformation,
+					updatedReticans:editedReticans
+				}
+			}
+			triggerEditReticans(editedReticansInformation);
+		}
+	}
+
+	const triggerEditReticans=async(editedReticansInformation)=>{
+		changeIsEditingStatus(true);
+		const {confirmation,data}=await editedReticans(editedReticansInformation);
+
+
+		let editedReticanAlertMessage;
+		if(confirmation=="Success"){
+			editedReticanAlertMessage={
+        		header:"Reticans Edited",
+        		description:""
+			}
+		}else{
+			const {statusCode}=data;
+			if(statusCode==400){
+				editedReticanAlertMessage={
+	        		header:"Edit Retican Error",
+	        		description:"Unfortunately there has been an error when editing your reticans. Please try again"
+				}
+			}else{
+				editedReticanAlertMessage={
+	        		header:"Internal Server Error",
+	        		description:"Unfortunately there has been an error on our part. Please try again later"
+				}
+			}
+
+		}
+		reticanCreationConsumer.displayAlertScreen(editedReticanAlertMessage);
+		changeIsEditingStatus(true);
+	}
+
+	const triggerClearInputField=(divId)=>{
+		if(isEditReticanDesired==false){
+			clearInputField(changeErroredInputIds,erroredInputIds,divId);
+		}else{
+			clearInputField(changeErroredInputIds,erroredInputIds,"editReticanOverview");
+		}
+	}
+
 	return(
 		<Container>
 			<div>
@@ -126,7 +366,7 @@ const ReticanDetails=({triggerProgressScreen,totalReticans})=>{
 		          		<InputContainer
 							id="title" 
 							placeholder="Title"
-							onClick={()=>clearInputField(changeErroredInputIds,erroredInputIds,"title")}
+							onClick={()=>triggerClearInputField("title")}
 						/>
 		         	}
 		          	erroredInputIds={erroredInputIds}
@@ -139,7 +379,7 @@ const ReticanDetails=({triggerProgressScreen,totalReticans})=>{
 							id="description" 
 							style={{height:"200px"}} 
 							placeholder="Description"
-							onClick={()=>clearInputField(changeErroredInputIds,erroredInputIds,"description")}
+							onClick={()=>triggerClearInputField("description")}
 						/>
 		         	}
 		          	erroredInputIds={erroredInputIds}
@@ -155,19 +395,58 @@ const ReticanDetails=({triggerProgressScreen,totalReticans})=>{
 					</p>
 				</div>
 
-				<RequiredFieldNotification
-					id={"compressFile"}
-					notificationText={"Reticans required"}
-		          	InputComponent={
-		          		<div id="compressFile" style={CompressFileCSS} onClick={()=>validateInputs()}>
-							<p>Compress File</p>
-							<ArrowForwardRoundedIcon
-								style={{fontSize:"18"}}
-							/>
-						</div>
-		         	}
-		          	erroredInputIds={erroredInputIds}
-				/>
+				{isEditReticanDesired==true?
+					<React.Fragment>
+						{isEditing==true?
+							<p>Editing...</p>:
+							<div style={{display:"flex",flexDirection:"row",width:"100%"}}>
+								<div style={{display:"flex",flexDirection:"column"}}>
+									<RequiredFieldNotification
+										id={"editReticanOverview"}
+										notificationText={"Alter current retican overview details"}
+							          	InputComponent={
+							          		<div id="editReticanOverview" style={CompressFileCSS} onClick={()=>validateEditReticanOverview()}>
+												<p>Edit Retican Overivew</p>
+												<ArrowForwardRoundedIcon
+													style={{fontSize:"18"}}
+												/>
+											</div>
+							         	}
+							    		erroredInputIds={erroredInputIds}
+									/>
+								</div>
+								<div style={{display:"flex",flexDirection:"column"}}>
+									<RequiredFieldNotification
+										id={"editRetican"}
+										notificationText={"Alter current reticans"}
+							          	InputComponent={
+							          		<div id="editRetican" style={{...CompressFileCSS,marginLeft:"2%"}} onClick={()=>validateRetican()}>
+												<p>Edit Retican</p>
+												<ArrowForwardRoundedIcon
+													style={{fontSize:"18"}}
+												/>
+											</div>
+							         	}
+							    		erroredInputIds={erroredInputIds}
+									/>
+								</div>
+							</div>
+						}
+					</React.Fragment>:
+					<RequiredFieldNotification
+						id={"compressFile"}
+						notificationText={"Reticans required"}
+			          	InputComponent={
+			          		<div id="compressFile" style={CompressFileCSS} onClick={()=>validateInputs()}>
+								<p>Compress File</p>
+								<ArrowForwardRoundedIcon
+									style={{fontSize:"18"}}
+								/>
+							</div>
+			         	}
+			    		erroredInputIds={erroredInputIds}
+					/>
+				}
 			</div>
 		</Container>
 	)

@@ -69,9 +69,18 @@ export const retrieveReticanAndResponses=async(reticanRetrievalInformation)=>{
 	}
 }
 
-
-
-
+export const retrieveReticanOverviewForEditPage=async(reticanOverviewId)=>{
+	try{
+		const {data}=await axios.get(`${ReticanRetrievalURL}/retrieveReticanOverviewForEdit`,{
+			params:{
+				reticanOverviewId
+			}
+		});
+		return data;
+	}catch(err){
+		return backendServiceErrorMessage;
+	}
+}
 
 
 

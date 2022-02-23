@@ -77,7 +77,7 @@ const VerticalLineCSS={
 
 const CampaignDisplay=(props)=>{
 	const {
-		campaignInformation,
+		reticanInformation,
 		currentIndex,
 		removeTargetedIndexCampaign,
 		deleteCampaign
@@ -99,7 +99,7 @@ const CampaignDisplay=(props)=>{
 	}
 
 	useEffect(()=>{
-		const {animationIndicator}=campaignInformation;
+		const {animationIndicator}=reticanInformation;
 		const uniqueId=uuid();
 		debugger;
 		if(animationIndicator==true){
@@ -151,7 +151,7 @@ const CampaignDisplay=(props)=>{
 
 	const initiateDeleteReticanOverview=async()=>{
 		debugger;
-		const {confirmation,data}=await deleteReticanOverview(campaignInformation._id,userId);
+		const {confirmation,data}=await deleteReticanOverview(reticanInformation._id,userId);
 		if(confirmation=="Success"){
 			deleteCampaign(currentIndex);
 		}else{
@@ -243,16 +243,16 @@ const CampaignDisplay=(props)=>{
 						style={{borderRadius:"5px",backgroundColor:"#151515"}}
 						width="75%" height="40%" borderRadius="50%"
 						autoPlay loop autoBuffer playsInline muted>
-						<source src={campaignInformation.primaryReticanCard.videoUrl}
+						<source src={reticanInformation.primaryReticanCard.videoUrl}
 							type="video/mp4"/>
 					</video>
 
 					<div style={{marginTop:"5%",display:"flex",flexDirection:"row",width:"75%",justifyContent:"space-between"}}>
 						<div style={{display:"flex",flexDirection:"column"}}>
 							<p style={{fontSize:"24px"}}>
-								<b>{campaignInformation.title}</b>
+								<b>{reticanInformation.title}</b>
 							</p>
-							<p style={{fontSize:"18px"}}>{campaignInformation.description}</p>
+							<p style={{fontSize:"18px"}}>{reticanInformation.description}</p>
 						</div>
 						<div style={ActiveStatusCSS}/>
 					</div>
