@@ -34,3 +34,30 @@ export const storeEncodedProfilePicture=(encodedProfilePicture)=>{
 		payload:encodedProfilePicture
 	}
 }
+
+export const editPersonalAccessToken=(accessToken)=>{
+	return{
+		type:'EDIT_PERSONAL_ACCESS_TOKEN',
+		payload:accessToken
+	}
+}
+
+
+export const editPersonalRefreshToken=(refreshToken)=>{
+	return{
+		type:'EDIT_PERSONAL_REFRESH_TOKEN',
+		payload:refreshToken
+	}
+}
+
+export const logoutUser=()=>{
+	return{
+		type:'LOGOUT_USER',
+		palyoad:''
+	}
+}
+
+
+
+
+

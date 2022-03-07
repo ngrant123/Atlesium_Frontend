@@ -4,9 +4,14 @@
  import InitialWebInformation from "../CreationSubset/InitialWebInfo"
  import ReticanDetails from "../CreationSubset/ReticanDetails/index.js";
  import ReviewStage from "../CreationSubset/Review/index.js";
- import {retrieveReticanOverviewForEditPage} from "../../../../Actions/Requests/ReticanRequests/Retrieval/ReticanRetrieval.js";
+ import {
+ 	retrieveReticanOverviewForEditPage
+ } from "../../../../Actions/Requests/ReticanRequests/Retrieval/ReticanRetrieval.js";
 import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
 import {CreationProvider} from "./CreationContext.js";
+import {useSelector,useDispatch} from "react-redux";
+import {tokensRegeneration} from "../../../../Actions/Tasks/UpdateTokens.js";
+
 
 const Container=styled.div`
 	position:absolute;
@@ -19,6 +24,13 @@ const Container=styled.div`
 	align-items:center;
 	padding:15%;
 	padding-top:7%;
+
+	@media screen and (max-width:650px){
+		#componentParentContainer{
+			margin-top:25% !important;
+		}
+		padding:10%;
+	}
 `;
 
 const Creation=(props)=>{
@@ -28,15 +40,36 @@ const Creation=(props)=>{
 	const [alertMessage,changeAlertMessage]=useState();
 	const [displayAlertMessage,changeDisplayAlertMessage]=useState(false);
 	const [isEditReticanDesired,changeIsEditReticanDesiredStatus]=useState(false);
+	const [isLoadingEditedReticanInformation,changeIsLoadingEditedReticanInformation]=useState(true);
+	const dispatch=useDispatch();
+
+	const {
+		_id,
+		accessToken,
+		refreshToken
+	}=useSelector(state=>state.personalInformation);
 
 	useEffect(()=>{
-		if(props.match.params.id!=null){
-			fetchReticanOverviewInformation();
+		debugger;
+		if(_id=="" || _id==null){
+			props.history.push('/');
 		}
 	},[]);
 
-	const fetchReticanOverviewInformation=async()=>{
-		const {confirmation,data}=await retrieveReticanOverviewForEditPage(props.match.params.id);
+	useEffect(()=>{
+		if(props.match.params.id!=null){
+			fetchReticanOverviewInformation({});
+		}else{
+			changeIsLoadingEditedReticanInformation(false);
+		}
+	},[]);
+
+	const fetchReticanOverviewInformation=async({updatedAccessToken})=>{
+		changeIsLoadingEditedReticanInformation(true);
+		const {confirmation,data}=await retrieveReticanOverviewForEditPage(
+											props.match.params.id,
+											_id,
+											updatedAccessToken==null?accessToken:updatedAccessToken);
 		if(confirmation=="Success"){
 			const {message}=data;
 			changeIsEditReticanDesiredStatus(true);
@@ -44,20 +77,33 @@ const Creation=(props)=>{
 		}else{
 			const {statusCode}=data;
 			let reticanOverviewCreationErrorMessage;
-			if(statusCode==400){
-				reticanOverviewCreationErrorMessage={
-	        		header:"Edit Retican Overview Retrieval Error",
-	        		description:"Unfortunately there has been an error when retrieving your retican overview. Please try again"
-				}
+
+			if(statusCode==401){
+				tokensRegeneration({
+					currentRefreshToken:refreshToken,
+					userId:_id,
+					parentApiTrigger:fetchReticanOverviewInformation,
+					dispatch,
+					parameters:{}
+				})
 			}else{
-				reticanOverviewCreationErrorMessage={
-	        		header:"Internal Server Error",
-	        		description:"Unfortunately there has been an error on our part. Please try again later"
+				if(statusCode==400){
+					reticanOverviewCreationErrorMessage={
+		        		header:"Edit Retican Overview Retrieval Error",
+		        		description:"Unfortunately there has been an error when retrieving your retican overview. Please try again"
+					}
+				}else{
+					reticanOverviewCreationErrorMessage={
+		        		header:"Internal Server Error",
+		        		description:"Unfortunately there has been an error on our part. Please try again later"
+					}
 				}
+				changeAlertMessage(reticanOverviewCreationErrorMessage);
+				changeDisplayAlertMessage(true);
 			}
-			changeAlertMessage(reticanOverviewCreationErrorMessage);
-			changeDisplayAlertMessage(true);
+
 		}
+		changeIsLoadingEditedReticanInformation(false);
 	}
 
 	const ComponentDecider=({children,componentSelectedName})=>{
@@ -107,6 +153,7 @@ const Creation=(props)=>{
 					progressScreen={displaySelectedScreen}
 					reticanAssembly={reticanAssembly}
 					isEditReticanDesired={isEditReticanDesired}
+					isLoadingEditedReticanInformation={isLoadingEditedReticanInformation}
 				/>
 				<ReticanDetails 
 					name="reticanDetails"
@@ -123,7 +170,8 @@ const Creation=(props)=>{
   	},[
   		currentSelectedComponent,
   		reticanAssembly,
-  		isEditReticanDesired
+  		isEditReticanDesired,
+  		isLoadingEditedReticanInformation
   	]);
 
 
@@ -144,7 +192,7 @@ const Creation=(props)=>{
 				<CreationProgressBar
 					currentScreen={currentSelectedComponent}
 				/>
-				<div style={{marginTop:"7%",width:"100%"}}>
+				<div id="componentParentContainer" style={{marginTop:"7%",width:"100%"}}>
 					{componentDeciderMemo}
 				</div>
 			</Container>

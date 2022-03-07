@@ -1,4 +1,4 @@
-import React,{useState,useRef,useEffect} from "react";
+import React,{useState,useRef,useEffect,useContext} from "react";
 import styled,{keyframes} from "styled-components";
 import TestImahge from "../../../../../../Assets/LandingPageSpecific/scrollingWindowBlock_1.png";
 import TimelineIcon from '@material-ui/icons/Timeline';
@@ -8,14 +8,14 @@ import COLOR_CONSTANTS from "../../../../../../Utils/ColorConstants.js";
 import DeleteRetican from "../../../../../UniversalComponents/Skeletons/CallToActionSkeleton.js";
 import {deleteReticanOverview} from "../../../../../../Actions/Requests/ReticanRequests/Adapter/DeleteRetican.js";
 import ErrorAlertSystem from "../../../../../UniversalComponents/Skeletons/Alerts.js";
-import {useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
+import {tokensRegeneration} from "../../../../../../Actions/Tasks/UpdateTokens.js";
+import {ReticanContext} from "../../../DashboardSet/ReticanContext.js";
 
-
-const Campaign=styled.div`
+const ReticanContainer=styled.div`
 	position:absolute;
 	width:95%;
-	height:100%;
 	background-color:white;
 	border-radius:5px;
 	border-style:solid;
@@ -24,6 +24,57 @@ const Campaign=styled.div`
 	display:flex;
 	flex-direction:row;
 	padding:5%;
+
+	@media screen and (max-width:1370px){
+		#reticanOption{
+			width:40px !important;
+			height:35px !important;
+		}
+	}
+
+	@media screen and (max-width:650px){
+		border-style:none;
+		#reticanOptions{
+			flex-direction:column !important;
+			width:100% !important;
+		}
+		#deleteButton{
+			width:100% !important;
+			margin-left:0% !important;
+			height:50px !important;
+		}
+
+		#verticalLineCSS{
+			margin-left:5% !important;
+			mragin-right:5% !important;
+		}
+
+		#specificReticanOptions{
+			justify-content:space-between !important;
+			margin-bottom:2% !important;
+		}
+
+		#retican{
+			justify-content:start !important;
+			align-items:start !important;
+		}
+
+		#videoElement{
+			width:100% !important;
+		}
+
+		#activeStatus{
+			display:none !important;
+		}
+	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+
+		#videoElement{
+			width:100% !important;
+			height:100% !important;
+		}
+    }
 `;
 
 const ActiveStatusCSS={
@@ -50,12 +101,18 @@ const DeleteButtonCSS={
 	backgroundColor:COLOR_CONSTANTS.CALL_TO_ACTION_COLOR,
 	width:"30%",
 	borderRadius:"5px",
-	cursor:"pointer"
+	cursor:"pointer",
+	marginLeft:"40%"
 }
 
 
 const ReticanOptionButtonCSS={
-	padding:"20%",
+	width:"50px",
+	height:"50px",
+	padding:"20px",
+	display:"flex",
+	justifyContent:"center",
+	alignItems:"center",
 	borderRadius:"5px",
 	borderStyle:"solid",
 	borderWidth:"1px",
@@ -73,22 +130,37 @@ const VerticalLineCSS={
  	marginLeft:"15%"
 }
 
+const ReticanCSS={
+	position:"relative",
+	display:"flex",
+	flexDirection:"column",
+	justifyContent:"center",
+	width:"100%",
+	height:"100%",
+	alignItems:"center"
+}
 
-
-const CampaignDisplay=(props)=>{
+const ReticanDisplay=(props)=>{
 	const {
 		reticanInformation,
 		currentIndex,
-		removeTargetedIndexCampaign,
-		deleteCampaign
+		removeTargetedIndexRetican,
+		deleteRetican
 	}=props;
 
 	const [displayDeleteReticanModal,changeDeleteReticanModal]=useState(false);
 	const [displayErrorAlertModal,changeErrorAlertModal]=useState(false);
 	const [errorMessage,changeErrorMessage]=useState();
-	const userId=useSelector(state=>state.personalInformation._id);
+	const {
+		_id,
+		accessToken,
+		refreshToken
+	}=useSelector(state=>state.personalInformation);
+	const [isMobile,changeIsMobileStatus]=useState(false);
+	const dispatch=useDispatch();
+	const reticanConsumer=useContext(ReticanContext);
 
-	const campaignRef=useRef();
+	const reticanRef=useRef();
 	let dynamicStyles;
 
 	const uuid=()=>{
@@ -98,6 +170,19 @@ const CampaignDisplay=(props)=>{
 		});
 	}
 
+	const triggerUIChange=()=>{
+		if(window.innerWidth<1370){
+			changeIsMobileStatus(true)
+		}else{
+			changeIsMobileStatus(false);
+		}
+	}
+
+	useEffect(()=>{
+		triggerUIChange();
+		window.addEventListener('resize', triggerUIChange)
+	},[window.innerWidth]);
+
 	useEffect(()=>{
 		const {animationIndicator}=reticanInformation;
 		const uniqueId=uuid();
@@ -105,20 +190,20 @@ const CampaignDisplay=(props)=>{
 		if(animationIndicator==true){
 			setTimeout(()=>{
 				poppedFromStackAnimation(uniqueId);
-				campaignRef.current.style.animation= `${'poppedOffStackAnimation'+uniqueId} 1s ease-in-out 0s forwards`;
+				reticanRef.current.style.animation= `${'poppedOffStackAnimation'+uniqueId} 1s ease-in-out 0s forwards`;
 			},1000);
 		}else{
 			if(currentIndex==0){
-				campaignRef.current.style.display="block";
-				campaignRef.current.style.marginLeft="-20px";
-				campaignRef.current.style.marginTop="-20px";
-				campaignRef.current.style.zIndex=10+(0-currentIndex);
+				reticanRef.current.style.display="block";
+				reticanRef.current.style.marginLeft=isMobile?"0px":"-20px";
+				reticanRef.current.style.marginTop="-20px";
+				reticanRef.current.style.zIndex=10+(0-currentIndex);
 
 			}else if(currentIndex==1){
-				campaignRef.current.style.display="block";
-				campaignRef.current.style.zIndex=10+(0-currentIndex);
+				reticanRef.current.style.display=isMobile?"none":"block";
+				reticanRef.current.style.zIndex=10+(0-currentIndex);
 			}
-			campaignRef.current.style.animation='none';
+			reticanRef.current.style.animation='none';
 		}
 	})
 
@@ -149,27 +234,41 @@ const CampaignDisplay=(props)=>{
 	  dynamicStyles.sheet.insertRule(animationKeyFrame, dynamicStyles.length);
 	}
 
-	const initiateDeleteReticanOverview=async()=>{
-		debugger;
-		const {confirmation,data}=await deleteReticanOverview(reticanInformation._id,userId);
+	const initiateDeleteReticanOverview=async({updatedAccessToken})=>{
+		const {confirmation,data}=await deleteReticanOverview(
+											reticanInformation._id,
+											_id,
+											updatedAccessToken==null?accessToken:updatedAccessToken);
 		if(confirmation=="Success"){
-			deleteCampaign(currentIndex);
+			deleteRetican(currentIndex);
+			closeModal();
 		}else{
 			const {statusCode}=data;
 			let deleteReticanErrorMessage;
-			if(statusCode==500){
-				deleteReticanErrorMessage={
-					header:"Internal Server Error",
-					description:"Unfortunately there has been an error on our part. Please try again later"
-				}
+
+			if(statusCode==401){
+				tokensRegeneration({
+					currentRefreshToken:refreshToken,
+					userId:_id,
+					parentApiTrigger:initiateDeleteReticanOverview,
+					dispatch,
+					parameters:{}
+				})
 			}else{
-				deleteReticanErrorMessage={
-					header:"Retican Deletion Error",
-            		description:"Unfortunately, there has been an error when deleting this retican. Please try again."
+				if(statusCode==500){
+					deleteReticanErrorMessage={
+						header:"Internal Server Error",
+						description:"Unfortunately there has been an error on our part. Please try again later"
+					}
+				}else{
+					deleteReticanErrorMessage={
+						header:"Retican Deletion Error",
+	            		description:"Unfortunately, there has been an error when deleting this retican. Please try again."
+					}
 				}
+				changeErrorMessage(deleteReticanErrorMessage);
+				changeErrorAlertModal(true);
 			}
-			changeErrorMessage(deleteReticanErrorMessage);
-			changeErrorAlertModal(true);
 		}
 	}
 
@@ -200,7 +299,7 @@ const CampaignDisplay=(props)=>{
 					</p>
 				</div>
 				<hr style={HorizontalLineCSS}/>
-				<div style={{...DeleteButtonCSS,padding:"5%"}} onClick={()=>initiateDeleteReticanOverview()}>
+				<div style={{...DeleteButtonCSS,padding:"5%"}} onClick={()=>initiateDeleteReticanOverview({})}>
 					Delete
 				</div>
 			</React.Fragment>
@@ -227,6 +326,7 @@ const CampaignDisplay=(props)=>{
 
 	/*
 		<Link to={{pathname:`/reticanDetails/${data.primaryReticanCard._id}`}}>
+		<Link to={{pathname:`/creation/${reticanInformation.primaryReticanCard._id}`}}>
 	*/
 
 
@@ -234,10 +334,9 @@ const CampaignDisplay=(props)=>{
 		<React.Fragment>
 			{deleteReticanModal()}
 			{errorAlertModal()}
-			<Campaign ref={campaignRef}
-				onAnimationEnd={() => removeTargetedIndexCampaign(currentIndex)}>
-				<div style={{display:"flex",flexDirection:"column",justifyContent:"center",width:"100%",height:"100%",alignItems:"center"}}>
-
+			<ReticanContainer ref={reticanRef}
+				onAnimationEnd={() => removeTargetedIndexRetican(currentIndex)}>
+				<div id="retican" style={ReticanCSS}>
 					<video id="videoElement"
 						key={uuid()}
 						style={{borderRadius:"5px",backgroundColor:"#151515"}}
@@ -254,44 +353,47 @@ const CampaignDisplay=(props)=>{
 							</p>
 							<p style={{fontSize:"18px"}}>{reticanInformation.description}</p>
 						</div>
-						<div style={ActiveStatusCSS}/>
+						<div id="activeStatus" style={ActiveStatusCSS}/>
 					</div>
 
 					<hr style={HorizontalLineCSS}/>
-					<div style={{display:"flex",flexDirection:"row",width:"80%",justifyContent:"space-between",marginTop:"10%"}}>
-						<div style={{display:"flex",flexDirection:"row"}}>
-							<div style={ReticanOptionButtonCSS}>
+					<div id="reticanOptions"
+						style={{display:"flex",flexDirection:"row",width:"80%",justifyContent:"space-between",marginTop:"10%"}}>
+						<div id="specificReticanOptions" style={{display:"flex",flexDirection:"row"}}>
+							<div id="reticanOption" style={ReticanOptionButtonCSS}>
 								<TimelineIcon
 									style={{fontSize:"24"}}
 								/>
 							</div>
 
-							<div style={VerticalLineCSS}/>
+							<div id="verticalLineCSS" style={VerticalLineCSS}/>
 
-							<div style={ReticanOptionButtonCSS}>
+							<div id="reticanOption" style={ReticanOptionButtonCSS}
+								onClick={()=>reticanConsumer.history.push(`/reticanDetails/${reticanInformation._id}`)}>
 								<ChatBubbleOutlineIcon
 									style={{fontSize:"24"}}
 								/>
 							</div>
 
-							<div style={VerticalLineCSS}/>
+							<div id="verticalLineCSS" style={VerticalLineCSS}/>
 
-							<div style={ReticanOptionButtonCSS}>
+							<div id="reticanOption" style={ReticanOptionButtonCSS} 
+								onClick={()=>reticanConsumer.history.push(`/creation/${reticanInformation._id}`)}>
 								<BorderColorIcon
 									style={{fontSize:"24"}}
 								/>
 							</div>
 						</div>
 
-						<div style={DeleteButtonCSS} onClick={()=>changeDeleteReticanModal(true)}>
+						<div id="deleteButton" style={DeleteButtonCSS} onClick={()=>changeDeleteReticanModal(true)}>
 							Delete
 						</div>
 					</div>
 				</div>
 
-			</Campaign>
+			</ReticanContainer>
 		</React.Fragment>
 	)
 }
 
-export default CampaignDisplay;
+export default ReticanDisplay;

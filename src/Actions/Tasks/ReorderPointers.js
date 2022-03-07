@@ -51,6 +51,7 @@
 
 
 export const reorderPointers=(reticans)=>{
+	debugger;
 	if(reticans.length==1){
 		reticans[0].nextCardPointer=null;
 		reticans[0].previousCardPointer=null;

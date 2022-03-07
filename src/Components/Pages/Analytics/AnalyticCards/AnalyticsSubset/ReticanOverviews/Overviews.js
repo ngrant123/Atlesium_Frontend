@@ -14,11 +14,57 @@ const Container=styled.div`
 	position:relative;
 	width:80%;
 	margin-bottom:20px;
-	display:flex;
-	flex-direction:column;
 	padding:2%;
 	border-radius:5px;
 	box-shadow:1px 1px 5px ${COLOR_CONSTANTS.GREY};
+
+
+	@media screen and (max-width:1370px){
+		width:100%;
+		#videoAndOptionsContainer{
+			height:160px !important;
+		}
+		#videoElement{
+			height:100% !important;
+		}
+	}
+
+	@media screen and (max-width:650px){
+		#videoAndOptionsContainer{
+			flex-direction:column !important;
+		}
+		#progressRatesContainer{
+			flex-direction:row !important;
+			justify-content:space-between !important;
+		}
+
+
+		#videoAndOptionsContainer{
+			justify-content:start !important;
+			height:300px !important;
+		}
+
+		#videoElement{
+			width:100% !important;
+			height:90px !important;
+		}
+
+		#completionProgressRates{
+			margin-top:0% !important;
+		}
+
+		#mobileProgressRatesDivider{
+			display:block !important;
+		}
+
+		#statusIcon{
+			margin-top:0% !important;
+		}
+
+		#analyticOption{
+			flex-direction:row !important;
+		}
+	}
 `;
 
 const HorizontalLineCSS={
@@ -29,11 +75,23 @@ const HorizontalLineCSS={
 	borderRadius:"5px"
 }
 
+const VerticalLineCSS={
+	borderStyle:"solid",
+	borderWidth:"1px",
+	borderColor:"#EBEBEB",
+	borderLeft:"2px",
+ 	height:"50px",
+ 	marginRight:"2%",
+ 	marginLeft:"2%",
+ 	display:"none"
+}
+
+
 const ReticanAnalysisOptionsCSS={
 	display:"flex",
 	flexDirection:"row",
 	width:"120px",
-	height:"30%",
+	height:"60px",
 	borderRadius:"5px",
 	boxShadow:`1px 1px 5px ${COLOR_CONSTANTS.GREY}`,
 	marginBottom:"5px",
@@ -126,7 +184,8 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 
 	return(
 		<Container>
-			<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",height:"60%"}}>
+			<div id="videoAndOptionsContainer"
+			 	style={{display:"flex",flexDirection:"row",justifyContent:"space-between",height:"25%"}}>
 				<video id="videoElement"
 					key={uuid()}
 					style={{borderRadius:"5px",backgroundColor:"#151515"}}
@@ -135,8 +194,7 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 					<source src={overviewData.videoUrl}
 						type="video/mp4"/>
 				</video>
-
-				<div style={{display:"column",flexDirection:"column"}}>
+				<div id="progressRatesContainer" style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
 					<div style={{display:"flex",flexDirection:"column"}}>
 						<p style={{fontSize:"16px"}}>Unique Visitors</p>
 						<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
@@ -150,8 +208,10 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 							</p>
 						</div>
 					</div>
+					
+					<div id="mobileProgressRatesDivider" style={VerticalLineCSS}/>
 
-					<div style={{display:"flex",flexDirection:"column",marginTop:"10%"}}>
+					<div id="completionProgressRates" style={{display:"flex",flexDirection:"column",marginTop:"10%"}}>
 						<p style={{fontSize:"16px"}}>Completion Rate</p>
 						<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
 							<p>
@@ -165,35 +225,38 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 					</div>
 				</div>
 
-				<div style={{display:"column",flexDirection:"column",justifyContent:"space-between",height:"100%"}}>
-					<div style={ReticanAnalysisOptionsCSS} 
-						onClick={()=>analyticsConsumer.triggerDisplayScreen("Reticans",overviewData._id)}>
-						<div style={{padding:"10px"}}>
-							<p>Reticans</p>
+				<div id="analyticsOptions" 
+					style={{display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+					<div id="analyticOption" style={{display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+						<div style={ReticanAnalysisOptionsCSS} 
+							onClick={()=>analyticsConsumer.triggerDisplayScreen("Reticans",overviewData._id)}>
+							<div style={{padding:"10px"}}>
+								<p>Reticans</p>
+							</div>
+							<div style={ArrowButtonCSS}>
+								<ArrowForwardIosIcon
+									style={{color:"white"}}
+								/>
+							</div>
 						</div>
-						<div style={ArrowButtonCSS}>
-							<ArrowForwardIosIcon
-								style={{color:"white"}}
-							/>
-						</div>
+
+						<Link to={{pathname:"/analytics/"+overviewData._id}} style={{textDecoration:"none"}}>
+							<div style={ReticanAnalysisOptionsCSS}>
+									<div style={{padding:"10px"}}>
+										Overview
+									</div>
+
+									<div style={ArrowButtonCSS}>
+										<ArrowForwardIosIcon
+											style={{color:"white"}}
+										/>
+									</div>
+							</div>
+						</Link> 
 					</div>
 
-					<Link to={{pathname:"/analytics/"+overviewData._id}} style={{textDecoration:"none"}}>
-						<div style={ReticanAnalysisOptionsCSS}>
-								<div style={{padding:"10px"}}>
-									Overview
-								</div>
-
-								<div style={ArrowButtonCSS}>
-									<ArrowForwardIosIcon
-										style={{color:"white"}}
-									/>
-								</div>
-						</div>
-					</Link> 
-
 					<div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginTop:"15%"}}>
-						<div style={{...ReticanOverviewStatusIndicator,
+						<div id="statusIcon" style={{...ReticanOverviewStatusIndicator,
 							backgroundColor:selectedReticanStatus=="Active"?
 					 				COLOR_CONSTANTS.SUCCESS_ACTION_COLOR:
 					 				COLOR_CONSTANTS.CALL_TO_ACTION_COLOR
@@ -206,12 +269,14 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 					</div>
 				</div>
 			</div>
-			<hr style={HorizontalLineCSS}/>
-			<p>
-				<b>{overviewData.title}</b>
-			</p>
+			<div>
+				<hr style={HorizontalLineCSS}/>
+				<p>
+					<b>{overviewData.title}</b>
+				</p>
 
-			<p>{overviewData.description}</p>
+				<p>{overviewData.description}</p>
+			</div>
 		</Container>
 	)
 }

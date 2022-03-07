@@ -12,6 +12,12 @@ const Container=styled.div`
 	margin-top:20%;
 	align-items:center;
 	text-align: center;
+
+	@media screen and (max-width:650px){
+		#secondaryText{
+			width:100% !important;
+		}
+	}
 `;
 
 const keyFrame=keyframes`
@@ -61,7 +67,7 @@ const LoadingAnimation=({loadingText,secondaryText,referralLinkPresent})=>{
 			<p style={{marginTop:"2%"}}>
 				<b>{loadingText}</b>
 			</p>
-			<p style={{marginTop:"2%",width:"40%"}}>
+			<p id="secondaryText" style={{marginTop:"2%",width:"40%"}}>
 				<b>{secondaryText}</b>
 			</p>
 			{referralLinkPresent!=null &&(

@@ -12,10 +12,10 @@ import {
 import {
 	deleteProfilePicture
 } from "../../../../Actions/Requests/ProfileRequests/Adapter/ProfileDeletion.js";
-import {useSelector} from "react-redux";
 import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
-import {useDispatch} from "react-redux";
+import {useDispatch,useSelector} from "react-redux";
 import {storeEncodedProfilePicture} from "../../../../Actions/Redux/Actions/PersonalInformationActions.js";
+import {tokensRegeneration} from "../../../../Actions/Tasks/UpdateTokens.js";
 
 const Container=styled.div`
 	position:fixed;
@@ -30,6 +30,11 @@ const Container=styled.div`
 	display:flex;
 	overflow:hidden;
 	flex-direction:column;
+
+	@media screen and (max-width:1370px){
+		left:20%;
+		width:60%;
+	}
 
 	@media screen and (max-width:650px){
 		top:0%;
@@ -116,7 +121,9 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 
 	const {
 		_id,
-		encodedProfilePicture
+		encodedProfilePicture,
+		accessToken,
+		refreshToken
 	}=useSelector(state=>state.personalInformation);
 
 
@@ -140,7 +147,7 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 			</svg>
 		)
 	}
-
+//
 	const handleUploadPicture=()=>{
 		let reader= new FileReader();
 		const picture=document.getElementById("uploadPictureFile").files[0];
@@ -188,36 +195,50 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 		)
 	}
 
-	const triggerCreateProfile=async()=>{
+	const triggerCreateProfilePicture=async({updatedAccessToken})=>{
 		changeSubmittingStatus(true);
-
-		const {confirmation,data}=await createProfilePicture(profilePicture,_id);
+		debugger;
+		const {confirmation,data}=await createProfilePicture(
+											profilePicture,
+											_id,
+											updatedAccessToken==null?accessToken:updatedAccessToken);
 		if(confirmation=="Success"){
 			dispatch(storeEncodedProfilePicture(profilePictureBlob));
 			updateNavigationProfilePicture(profilePicture);
 		}else{
 			const {statusCode}=data;
 			let errorAlertMessage;
-			if(statusCode==500){
-				errorAlertMessage={
-					header:"Internal Server Error",
-					description:"Unfortunately there has been an error on our part. Please try again later"
-				}
-			}else{
-				errorAlertMessage={
-					header:"Profile Creation Error",
-					description:"Unfortunately, an error has occured when creating your profile picture. Please try again."
-				}
-			}
 
-			changeErrorMessage(errorAlertMessage);
-			changeDisplayProfilePictureCreationErrorMessage(true);
+			if(statusCode==401){
+				tokensRegeneration({
+					currentRefreshToken:refreshToken,
+					userId:_id,
+					parentApiTrigger:triggerCreateProfilePicture,
+					dispatch,
+					parameters:{}
+				})
+			}else{
+				if(statusCode==500){
+					errorAlertMessage={
+						header:"Internal Server Error",
+						description:"Unfortunately there has been an error on our part. Please try again later"
+					}
+				}else{
+					errorAlertMessage={
+						header:"Profile Creation Error",
+						description:"Unfortunately, an error has occured when creating your profile picture. Please try again."
+					}
+				}
+
+				changeErrorMessage(errorAlertMessage);
+				changeDisplayProfilePictureCreationErrorMessage(true);
+			}
 		}
 		changeSubmittingStatus(false);
 	}
 
-	const triggerDeleteProfilePicture=async()=>{
-		const {confirmation,data}=await deleteProfilePicture(_id);
+	const triggerDeleteProfilePicture=async({updatedAccessToken})=>{
+		const {confirmation,data}=await deleteProfilePicture(_id,updatedAccessToken==null?accessToken:updatedAccessToken);
 		if(confirmation=="Success"){
 			changeProfilePicture(null);
 			dispatch(storeEncodedProfilePicture(null));
@@ -225,20 +246,31 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 		}else{
 			const {statusCode}=data;
 			let errorAlertMessage;
-			if(statusCode==500){
-				errorAlertMessage={
-					header:"Internal Server Error",
-					description:"Unfortunately there has been an error on our part. Please try again later"
-				}
-			}else{
-				errorAlertMessage={
-					header:"Profile Deletion Error",
-					description:"Unfortunately, an error has occured when deleting your profile picture. Please try again."
-				}
-			}
 
-			changeErrorMessage(errorAlertMessage);
-			changeDisplayProfilePictureCreationErrorMessage(true);
+			if(statusCode==401){
+				tokensRegeneration({
+					currentRefreshToken:refreshToken,
+					userId:_id,
+					parentApiTrigger:triggerDeleteProfilePicture,
+					dispatch,
+					parameters:{}
+				})
+			}else{
+				if(statusCode==500){
+					errorAlertMessage={
+						header:"Internal Server Error",
+						description:"Unfortunately there has been an error on our part. Please try again later"
+					}
+				}else{
+					errorAlertMessage={
+						header:"Profile Deletion Error",
+						description:"Unfortunately, an error has occured when deleting your profile picture. Please try again."
+					}
+				}
+
+				changeErrorMessage(errorAlertMessage);
+				changeDisplayProfilePictureCreationErrorMessage(true);
+			}
 		}
 	}
 
@@ -250,7 +282,7 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 						{submittingStatus==true?
 							<p>Please wait...</p>:
 							<React.Fragment>
-								<div style={ButtonCSS} onClick={()=>triggerCreateProfile()}>
+								<div style={ButtonCSS} onClick={()=>triggerCreateProfilePicture({})}>
 									Submit
 								</div>
 								<hr/>
@@ -272,7 +304,7 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 						<p>Are you sure you want to delete your profile picture?</p>
 						<hr style={HorizontalLineCSS}/>
 						<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
-							<div style={DeleteButtonCSS} onClick={()=>triggerDeleteProfilePicture()}>
+							<div style={DeleteButtonCSS} onClick={()=>triggerDeleteProfilePicture({})}>
 								Delete
 							</div>
 							<div style={ButtonCSS} onClick={()=>changeDeleteOptions(false)}>
@@ -287,12 +319,17 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 
 	const profilePictureEditOrUpload=()=>{
 		return(
-			<div style={{display:"flex",flexDirection:"row"}}>
-				<img src={profilePicture} style={{height:"120px",width:"120px",borderRadius:"5px"}}/>
-				<div style={{display:"flex",flexDirection:"column",marginLeft:"5%",width:"50%"}}>
-					{options()}	
+			<React.Fragment>
+				<div style={{marginBottom:"5%"}}>
+					{closeModalIcon()}
 				</div>
-			</div>
+				<div style={{display:"flex",flexDirection:"row"}}>
+					<img src={profilePicture} style={{height:"120px",width:"120px",borderRadius:"5px"}}/>
+					<div style={{display:"flex",flexDirection:"column",marginLeft:"5%",width:"50%"}}>
+						{options()}	
+					</div>
+				</div>
+			</React.Fragment>
 		)
 	}
 
@@ -320,7 +357,7 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 			<ShadowContainer 
 				onClick={()=>closeProfilePictureCreationModal()}
 			/>
-			<Container>
+			<Container>	
 				{profilePicture==null?
 					<>{creationDisplay()}</>:
 					<>{profilePictureEditOrUpload()}</>

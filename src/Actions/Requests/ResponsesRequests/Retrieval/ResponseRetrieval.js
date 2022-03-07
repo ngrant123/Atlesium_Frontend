@@ -12,10 +12,18 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const retrieveReticanResponses=async(reticanRetrievalInformation)=>{
+export const retrieveReticanResponses=async(reticanRetrievalInformationProps)=>{
 	try{
+		const {
+			accessToken,
+			...reticanRetrievalInformation
+		}=reticanRetrievalInformationProps;
+
 		const {data}=await axios.get(`${ResponsesRetrievalURL}/retrieveResponses`,{
-			params:{...reticanRetrievalInformation}
+			params:{...reticanRetrievalInformation},
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){

@@ -36,6 +36,26 @@ const PersonalInformationReducer=(state={...initialState},action)=>{
 				encodedProfilePicture:payload
 			}
 		}
+
+		case 'EDIT_PERSONAL_ACCESS_TOKEN':{
+			return{
+				...state,
+				accessToken:payload
+			}
+		}
+
+		case 'EDIT_PERSONAL_REFRESH_TOKEN':{
+			return{
+				...state,
+				refreshToken:payload
+			}
+		}
+
+		case 'LOGOUT_USER':{
+			return{...initialState}
+		}
+
+
 		default:{
 			return state;
 		}

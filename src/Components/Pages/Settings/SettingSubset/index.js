@@ -4,6 +4,7 @@ import PersonalInformation from "./PersonalInformation.js";
 import AccountSettings from "./AccountSettings.js";
 
 const Container=styled.div`
+	position:relative;
 	background-color:white;
 	width:100%;
 	height:100%;

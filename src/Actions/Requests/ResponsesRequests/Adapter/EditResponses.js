@@ -13,11 +13,16 @@ const backendServiceErrorMessage={
 }
 
 
-export const deleteResponse=async(responseId,reticanId)=>{
+export const deleteResponse=async(responseId,reticanId,profileId,accessToken)=>{
 	try{
 		const {data}=await axios.post(`${ResponsesCreationURL}/deleteResponse`,{
 			responseId,
-			reticanId
+			reticanId,
+			profileId
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){

@@ -16,6 +16,10 @@ const Container=styled.div`
 	border-radius:5px;
 	box-shadow:1px 1px 5px ${COLOR_CONSTANTS.GREY};
 	margin-right:10px;
+
+	@media screen and (max-width:1370px){
+		width:100%;
+	}
 `;
 
 const VerticalLineCSS={
@@ -39,7 +43,7 @@ const AnalysisOptionCSS={
 	display:"flex",
 	flexDirection:"row",
 	width:"120px",
-	height:"100%",
+	height:"40px",
 	borderRadius:"5px",
 	backgroundColor:COLOR_CONSTANTS.BLACK,
 	color:"white",
@@ -119,15 +123,17 @@ const Retican=({reticanData,displayScreen})=>{
 
 	return(
 		<Container>
-			<video id="videoElement"
-				key={uuid()}
-				style={{borderRadius:"5px",backgroundColor:"#151515"}}
-				width="100%" height="100%" borderRadius="50%"
-				autoPlay loop autoBuffer playsInline muted>
-				<source src={reticanData.videoUrl}
-					type="video/mp4"
-				/>
-			</video>
+			<div style={{height:"40%"}}>
+				<video id="videoElement"
+					key={uuid()}
+					style={{borderRadius:"5px",backgroundColor:"#151515"}}
+					width="100%" height="100%" borderRadius="50%"
+					autoPlay loop autoBuffer playsInline muted>
+					<source src={reticanData.videoUrl}
+						type="video/mp4"
+					/>
+				</video>
+			</div>
 
 			<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",marginTop:"5%"}}>
 				<div style={{display:"flex",flexDirection:"column"}}>

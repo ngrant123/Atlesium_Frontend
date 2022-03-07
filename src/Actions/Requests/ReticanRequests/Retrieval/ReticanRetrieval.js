@@ -27,12 +27,15 @@ export const retrieveRetican=async(reticanId,profileId)=>{
 }
 
 
-export const retrieveProfileSpecificReticanOverviews=async(profileId,statusType)=>{
+export const retrieveProfileSpecificReticanOverviews=async(profileId,statusType,accessToken)=>{
 	try{
 		const {data}=await axios.get(`${ReticanRetrievalURL}/retrieveProfileSpecificReticanOverviews`,{
 			params:{
 			    profileId,
             	statusType
+			},
+			headers:{
+				authorization:accessToken
 			}
 		})
 		return data;
@@ -41,13 +44,16 @@ export const retrieveProfileSpecificReticanOverviews=async(profileId,statusType)
 	}
 }
 
-export const retrieveResponseEligibleForResponses=async(profileId,feedTrackerId,reticanOverviewId)=>{
+export const retrieveResponseEligibleForResponses=async(profileId,feedTrackerId,reticanOverviewId,accessToken)=>{
 	try{
 		const {data}=await axios.get(`${ReticanRetrievalURL}/retrieveEligibleResponseReticans`,{
 			params:{
 				profileId,
 				feedTrackerId,
 				reticanOverviewId
+			},
+			headers:{
+				authorization:accessToken
 			}
 		});
 		return data;
@@ -56,11 +62,19 @@ export const retrieveResponseEligibleForResponses=async(profileId,feedTrackerId,
 	}
 }
 
-export const retrieveReticanAndResponses=async(reticanRetrievalInformation)=>{
+export const retrieveReticanAndResponses=async(reticanRetrievalInformationProps)=>{
 	try{
+		const {
+			accessToken,
+			...reticanRetrievalInformation
+		}=reticanRetrievalInformationProps;
+
 		const {data}=await axios.get(`${ReticanRetrievalURL}/retrieveReticanAndResponses`,{
 			params:{
 				...reticanRetrievalInformation
+			},
+			headers:{
+				authorization:accessToken
 			}
 		});
 		return data;
@@ -69,11 +83,15 @@ export const retrieveReticanAndResponses=async(reticanRetrievalInformation)=>{
 	}
 }
 
-export const retrieveReticanOverviewForEditPage=async(reticanOverviewId)=>{
+export const retrieveReticanOverviewForEditPage=async(reticanOverviewId,profileId,accessToken)=>{
 	try{
 		const {data}=await axios.get(`${ReticanRetrievalURL}/retrieveReticanOverviewForEdit`,{
 			params:{
-				reticanOverviewId
+				reticanOverviewId,
+				profileId
+			},
+			headers:{
+				authorization:accessToken
 			}
 		});
 		return data;

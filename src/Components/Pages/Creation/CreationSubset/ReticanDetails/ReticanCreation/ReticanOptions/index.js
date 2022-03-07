@@ -9,6 +9,19 @@ import VideoResponseRetican from "./VideoResponse.js";
 import Color_Constants from "../../../../../../../Utils/ColorConstants.js";
 import {ReticanCreationContext} from "../ReticanCreationContext.js";
 
+const Container=styled.div`
+	@media screen and (max-width:1370px){
+		#videoElement{
+			height:200px !important;
+			width:90% !important;
+		}
+
+		#finalStageVideoCreation{
+			flex-direction:column !important;
+		}
+	}
+`;
+
 const VideoOptionsCSS={
 	width:"35px",
 	height:"35px",
@@ -87,6 +100,7 @@ const ReticanOptions=({reticanOptionType,reticanInformation,displayInitialRetica
 	}
 
 	const triggerCreateRetican=(secondaryInformation)=>{
+		debugger;
 		currentRetican={
 			...currentRetican,
 			...secondaryInformation
@@ -117,14 +131,14 @@ const ReticanOptions=({reticanOptionType,reticanInformation,displayInitialRetica
 	}
 
 	return(
-		<React.Fragment>
+		<Container>
 			{closeModalIcon()}
 			{currentRetican==null?
 				<VideoCreation 
 					displaySelectedReticanOptionType={displaySelectedReticanOptionType}
 				/>:
 				<React.Fragment>
-					<div style={{display:"flex",flexDirection:"row"}}>
+					<div id="finalStageVideoCreation" style={{display:"flex",flexDirection:"row"}}>
 						<video id="videoElement"
 							width="200px" height="100px" borderRadius="50%"
 							autoPlay loop autoBuffer playsInline muted controls>
@@ -164,7 +178,7 @@ const ReticanOptions=({reticanOptionType,reticanInformation,displayInitialRetica
 				</React.Fragment>
 			}
 
-		</React.Fragment>
+		</Container>
 	)
 }
 

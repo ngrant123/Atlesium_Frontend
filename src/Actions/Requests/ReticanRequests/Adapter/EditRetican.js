@@ -12,10 +12,18 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const editReticans=async(editedReticanInformation)=>{
+export const editReticans=async(editedReticanInformationProps)=>{
 	try{
+		const {
+			accessToken,
+			...editedReticanInformation
+		}=editedReticanInformationProps;
 		const {data}=await axios.post(`${ReticanEditURL}/editReticans`,{
 			...editedReticanInformation
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){
@@ -24,12 +32,16 @@ export const editReticans=async(editedReticanInformation)=>{
 }
 
 
-export const editReticanOverview=async(reticanOverviewId,reticanOverviewParams,profileId)=>{
+export const editReticanOverview=async(reticanOverviewId,reticanOverviewParams,profileId,accessToken)=>{
 	try{
 		const {data}=await axios.post(`${ReticanEditURL}/editReticanOverview`,{
 			reticanOverviewId,
 			reticanOverviewParams,
 			profileId
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){

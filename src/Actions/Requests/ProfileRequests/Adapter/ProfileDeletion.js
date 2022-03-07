@@ -12,10 +12,14 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const deleteProfile=async(profileId)=>{
+export const deleteProfile=async(profileId,accessToken)=>{
 	try{
 		const {data}=await axios.post(`${ProfileCreationURL}/deleteProfile`,{
 			profileId
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){
@@ -23,10 +27,14 @@ export const deleteProfile=async(profileId)=>{
 	}
 }
 
-export const deleteProfilePicture=async(profileId)=>{
+export const deleteProfilePicture=async(profileId,accessToken)=>{
 	try{
 		const {data}=await axios.post(`${ProfileCreationURL}/deleteProfilePicture`,{
 			profileId
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){

@@ -8,19 +8,24 @@ import ErrorAlertSystem from "../../../../../UniversalComponents/Skeletons/Alert
 
 const Container=styled.div`
 	position:relative;
-	width:100%;
-
 	${({videoUrl})=>
 		videoUrl!=null?
 		`background-color:white;`:
 		`background-color:${Color_Constants.GREY};`
 	}
-	height:100%;
+	width:400px;
+	height:400px;
 	display:flex;
 	justify-content:center;
 	flex-direction:column;
 	align-items:center;
 	border-radius:5px;
+
+
+	@media screen and (max-width:1370px){
+		height:200px !important;
+		width:90% !important;
+	}
 `;
 
 const VideoOptionsCSS={

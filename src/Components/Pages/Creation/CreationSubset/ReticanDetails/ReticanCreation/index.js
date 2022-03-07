@@ -25,6 +25,25 @@ const Container=styled.div`
 	width:40%;
 	display:flex;
 	flex-direction:column;
+
+	@media screen and (max-width:1370px){
+		width:100%;
+		#videoElement{
+			height:200px !important;
+			width:90% !important;
+		}
+
+	}
+
+	@media screen and (max-width:650px){
+		#reticanOptions{
+			flex-direction:column !important;
+		}
+
+		#reticansNavigation{
+			margin-left:0% !important;
+		}
+	}
 `;
 
 const VideoOptionsCSS={
@@ -42,7 +61,7 @@ const VideoOptionsCSS={
 
 const RankingInputContainer=styled.textarea`
 	position:relative;
-	height:60%;
+	height:40px;
 	border-style:solid;
 	border-width:1px;
 	border-color:${COLOR_CONSTANTS.GREY};
@@ -177,7 +196,8 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 	const deleteRetican=()=>{
 		debugger;
 		reticans.splice(currentReticanCounter,1);
-		triggerUpdateReticanParentInformation({reticans:[...reticans]});
+		let reorderedReticans=reorderPointers(reticans);
+		triggerUpdateReticanParentInformation({reticans:[...reorderedReticans]});
 		changeDisplayDeleteRetican(false);
 		const updatedCounter=currentReticanCounter==0?0:currentReticanCounter-1;
 		changeCurrentReticanCounter(updatedCounter);
@@ -190,7 +210,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 	const triggerDisplayReticanDisplay=()=>{
 		changeReticanScreen(false);
 	}
-
+//
 	const analyzeInput=(event)=>{
 		debugger;
 		changeDisplayRankingReorderSuccess(null);
@@ -203,8 +223,10 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 				currentReticans.splice(currentReticanCounter,1);
 				currentReticans.splice(event.key==0?0:event.key-1, 0, currentSelectedRetican);
 				let reorderedReticans=reorderPointers(currentReticans);
+				changeReticans([...reorderedReticans]);
+				triggerUpdateReticanParentInformation({reticans:[...reorderedReticans]});
 
-				//changeDisplayRankingReorderSuccess(true);
+				changeDisplayRankingReorderSuccess(true);
 			}else{
 				event.preventDefault();
 				changeDisplayRankingReorderSuccess(false);
@@ -234,7 +256,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 					debugger;
 					reticans.push(reticanInformation);
 					changeReticans([...reticans]);
-					triggerUpdateReticanParentInformation({reticans});
+					triggerUpdateReticanParentInformation({reticans:[...reticans]});
 					triggerDisplayReticanDisplay();
 					changeCurrentReticanCounter(currentReticanCounter++);
 					if(isEditReticanDesired){
@@ -242,12 +264,29 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 					}
 				},
 				editRetican:(editedReticanInformation)=>{
-					reticans[currentReticanCounter]={
-						...editedReticanInformation
-					}
+					debugger;
+					const {
+						videoInformation:{
+							videoUrl,
+							isPhoneEnabled
+						},
+						...reticanInformationSansVideoInformation
+					}=editedReticanInformation;
 
-					listReticanAsEdited(editedReticanInformation);
+					reticans[currentReticanCounter]={
+						...reticans[currentReticanCounter],
+						...reticanInformationSansVideoInformation,
+						videoInformation:{
+							...reticans[currentReticanCounter].videoInformation,
+							videoUrl
+						}
+					}
+					listReticanAsEdited({
+						...editedReticanInformation,
+						reticanId:reticans[currentReticanCounter]._id
+					});
 					displayCurrentlySelectedReticans();
+					triggerUpdateReticanParentInformation({reticans:[...reticans]});
 				}
 			}}
 		>
@@ -275,15 +314,18 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 											<source src={reticans[currentReticanCounter].videoInformation.videoUrl}
 												type="video/mp4"/>
 										</video>
-										<div style={{display:"flex",flexDirection:"row",marginTop:"5%"}}>
-											<div style={{...VideoOptionsCSS}}
-												onClick={()=>changeEditReticanModal(true)}>
-												<EditIcon/>
-											</div>
+										<div id="reticanOptions" 
+											style={{display:"flex",flexDirection:"row",marginTop:"5%",marginBottom:"5%"}}>
+											<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+												<div style={{...VideoOptionsCSS}}
+													onClick={()=>changeEditReticanModal(true)}>
+													<EditIcon/>
+												</div>
 
-											<div style={{...VideoOptionsCSS,marginLeft:"5%"}}
-												onClick={()=>changeDisplayDeleteRetican(true)}>
-												<DeleteIcon/>
+												<div style={{...VideoOptionsCSS,marginLeft:"5%"}}
+													onClick={()=>changeDisplayDeleteRetican(true)}>
+													<DeleteIcon/>
+												</div>
 											</div>
 
 											<div style={{marginLeft:"10%",display:"flex",flexDirection:"row"}}>
@@ -316,7 +358,8 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 										)}
 										<div style={ReticanTypeCSS}>{reticans[currentReticanCounter].reticanOptionType} </div>
 									</div>
-									<div style={{display:"flex",flexDirection:"column",marginLeft:"5%"}}>
+									<div id="reticansNavigation" 
+										style={{display:"flex",flexDirection:"column",marginLeft:"5%"}}>
 										{reticans.map((data,index)=>
 											<div style={ProgressNodesCSS}
 												onClick={()=>changeCurrentReticanCounter(index)}

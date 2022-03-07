@@ -13,6 +13,7 @@ const Container=styled.div`
 	box-shadow:1px 1px 5px #6e6e6e;
 	transition:.8s;
 	margin-bottom:20%;
+	margin-right:20px;
 	cursor:pointer;
 `;
 

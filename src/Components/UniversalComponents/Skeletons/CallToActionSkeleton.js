@@ -13,7 +13,7 @@ const Container=styled.div`
 	left:35%;
 	padding:40px;
 	display:flex;
-	overflow:hidden;
+	overflow-y:auto;
 	flex-direction:column;
 
 	@media screen and (max-width:650px){

@@ -14,9 +14,23 @@ const ReticanOptionsCSS={
 	alignItems:"center"
 }
 
+const Container=styled.div`
+	display:flex;
+	width:100%;
+	margin-bottom:2%;
+
+	@media screen and (max-width:650px){
+		margin-bottom:10%;
+	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		margin-bottom:5%;
+    }
+`;
+
 const CampaignOptions=()=>{
 	return(
-		<div style={{display:"flex",width:"100%",marginBottom:"2%"}}>
+		<Container>
 			<div class="btn-group">
 				<button class="btn btn-primary dropdown-toggle" type="button" 
 					data-toggle="dropdown" style={ReticanOptionsCSS}>
@@ -30,7 +44,7 @@ const CampaignOptions=()=>{
 				<ul class="dropdown-menu" style={{padding:"10px"}}>
 				</ul>
 			</div>
-		</div>
+		</Container>
 	)
 }
 export default CampaignOptions;

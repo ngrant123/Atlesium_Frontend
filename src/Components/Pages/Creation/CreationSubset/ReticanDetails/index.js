@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import styled from "styled-components";
 import Details from "./Details/index.js";
 import ReticanCreation from "./ReticanCreation/index.js";
@@ -9,7 +9,44 @@ import {ReticanOverviewProvider} from "./ReticanOverviewCreationContext.js";
 
 const Container=styled.div`
 	width:100%;
+
+	@media screen and (max-width:1370px){
+		#horizontalLineDivider{
+			display:block !important;
+		}
+	}
+
+	@media screen and (max-width:650px){
+		#headerColor{
+			width:80% !important;
+		}
+		#overviewDetailsHeaderText{
+			font-size:14px !important;
+		}
+		#colorWheel{
+			padding:10px !important;
+		}
+	}
 `;
+
+const ReticanDetails=styled.div`
+	display:flex;
+	flex-direction:row;
+	justify-content:space-between;
+
+	@media screen and (max-width:1370px){
+		flex-direction:column-reverse;
+	}
+`;
+
+const HorizontalLineCSS={
+	position:"relative",
+	width:"100%",
+	height:"2px",
+	borderRadius:"5px",
+	borderRadius:"5px",
+	display:"none"
+}
 
 const ColorWheelCSS={
 	background:"linear-gradient(90deg, rgba(255, 255, 0, 1) 0%, rgba(0, 188, 212, 1) 50%, rgba(238, 130, 238, 1) 100%)",
@@ -40,6 +77,11 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly,isEditReticanDesired})
 	const [editedReticans,changeEditedReticans]=useState([]);
 
 	console.log(currentReticanDetails);
+	useEffect(()=>{
+		if(reticanAssembly!=null){
+			changeSelectedColorHeader(reticanAssembly.headerColor);
+		}
+	},[]);
 
 
 	const closeModal=()=>{
@@ -115,22 +157,26 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly,isEditReticanDesired})
 						onClick={()=>progressScreen("webInformation")}
 						style={{fontSize:"18",marginTop:"-10px",cursor:"pointer"}}
 					/>
-					<p style={{fontSize:"18px",marginLeft:"4%"}}>
+					<p id="overviewDetailsHeaderText" style={{fontSize:"18px",marginLeft:"4%"}}>
 						<b>Retican Overview Details</b>
 					</p>
-					<div style={ColorWheelCSS}
+					<div id="colorWheel" style={ColorWheelCSS}
 						onClick={()=>changeReticanHeaderColorOptionsDisplay(true)}
 					/>
 				</div>
 
 				{selectedColorHeader!=null &&(
 					<div style={{display:"flex",flexDirection:"row"}}>
-						<div style={{...ColorHeaderCSS,background:selectedColorHeader}}/>
+						<div id="headerColor" style={{
+							...ColorHeaderCSS,
+							background:selectedColorHeader.color,
+							backgroundColor:selectedColorHeader.color
+						}}/>
 						{closeModalIcon()}
 					</div>
 				)}
-
-				<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
+				<hr style={HorizontalLineCSS} id="horizontalLineDivider"/>
+				<ReticanDetails>
 					<Details
 						triggerProgressScreen={triggerUpdateReticanAssembler}
 						totalReticans={currentReticanDetails.reticans==null?[]:currentReticanDetails.reticans}
@@ -138,12 +184,14 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly,isEditReticanDesired})
 						selectedColorHeader={selectedColorHeader}
 						editedReticans={editedReticans}
 					/>
+					<hr style={HorizontalLineCSS} id="horizontalLineDivider"/>
+
 					<ReticanCreation
 						triggerUpdateReticanParentInformation={triggerUpdateReticanParentInformation}
 						listReticanAsEdited={listReticanAsEdited}
 						isEditReticanDesired={isEditReticanDesired}
 					/>
-				</div>
+				</ReticanDetails>
 			</Container>
 		</ReticanOverviewProvider>
 	)

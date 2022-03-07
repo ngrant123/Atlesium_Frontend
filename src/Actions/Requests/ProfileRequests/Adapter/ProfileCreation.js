@@ -23,11 +23,15 @@ export const createProfile=async(personalInformation)=>{
 	}
 }
 
-export const createProfilePicture=async(imgUrl,profileId)=>{
+export const createProfilePicture=async(imgUrl,profileId,accessToken)=>{
 	try{
 		const {data}=await axios.post(`${ProfileCreationURL}/createProfilePicture`,{
 			imgUrl,
 			profileId
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){

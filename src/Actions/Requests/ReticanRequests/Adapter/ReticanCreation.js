@@ -13,10 +13,19 @@ const backendServiceErrorMessage={
 }
 
 
-export const createReticanOverview=async(reticanOverviewInformation)=>{
+export const createReticanOverview=async(reticanOverviewInformationProps)=>{
 	try{
+		const {
+			accessToken,
+			...reticanOverviewInformation
+		}=reticanOverviewInformationProps;
+
 		const {data}=await axios.post(`${ReticanCreationURL}/createRetican`,{
 			...reticanOverviewInformation
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){

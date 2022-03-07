@@ -7,12 +7,39 @@ import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
 import LoadingAnimation from "../../../../UniversalComponents/Loading/index.js";
 import {createReticanOverview} from "../../../../../Actions/Requests/ReticanRequests/Adapter/ReticanCreation.js";
 import AlertSystem from "../../../../UniversalComponents/Skeletons/Alerts.js";
-import {useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
+import {tokensRegeneration} from "../../../../../Actions/Tasks/UpdateTokens.js";
 
 const Container=styled.div`
 	width:100%;
 	height:100%;
+
+	@media screen and (max-width:1370px){
+		#reviewResults{
+			flex-direction:column !important;
+		}
+		#atlesiumLogo{
+			display:none !important;
+		}
+		#copyScriptDescription{
+			width:100% !important;
+		}
+
+		#scriptParentDiv{
+			margin-left:0% !important;
+		}
+
+		#scriptContents{
+			margin-left:0% !important;
+			margin-top:5% !important;
+		}
+
+		#closeButton{
+			width:100% !important;
+			height:40px !important;
+		}
+	}
 `;
 
 
@@ -25,6 +52,13 @@ const ScriptContainer=styled.div`
 	align-items:center;
 	padding:5px;
 	overflow-x:auto;
+
+	@media screen and (max-width:650px){
+		height:80px;
+		#script{
+			font-size:14px !important;
+		}
+	}
 `;
 
 const ScriptParams=styled.div`
@@ -72,16 +106,22 @@ const Review=({progressScreen,reticanAssembly})=>{
 	const [reticanOverviewId,changeReticanOverviewId]=useState();
 	const [displayCopySuccessAlert,changeCopySuccessDisplay]=useState(false);
 
-	const profileId=useSelector(state=>state.personalInformation._id);
+	const {
+		_id,
+		accessToken,
+		refreshToken
+	}=useSelector(state=>state.personalInformation);
+	const dispatch=useDispatch();
 
 
 	const script="<script defer data-domain=(1) src=(2)></script>"
 
 	useEffect(()=>{
-		const processReticanOverviewCreation=async()=>{
+		const processReticanOverviewCreation=async({updatedAccessToken})=>{
 			const {confirmation,data}=await createReticanOverview({
-				profileId,
-				reticanInformation:reticanAssembly
+				profileId:_id,
+				reticanInformation:reticanAssembly,
+				accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
 			});
 			changeDisplayLoadingAnimation(false);
 			if(confirmation=="Success"){
@@ -91,23 +131,34 @@ const Review=({progressScreen,reticanAssembly})=>{
 			}else{
 				const {statusCode}=data;
 				let reticanOverviewCreationErrorMessage;
-				if(statusCode==400){
-					reticanOverviewCreationErrorMessage={
-	            		header:"Retican Overview Creation Error",
-	            		description:"Unfortunately there has been an error when creating your retican overview. Please try again"
-					}
+
+				if(statusCode==401){
+					tokensRegeneration({
+						currentRefreshToken:refreshToken,
+						userId:_id,
+						parentApiTrigger:processReticanOverviewCreation,
+						dispatch,
+						parameters:{}
+					})
 				}else{
-					reticanOverviewCreationErrorMessage={
-	            		header:"Internal Server Error",
-	            		description:"Unfortunately there has been an error on our part. Please try again later"
+					if(statusCode==400){
+						reticanOverviewCreationErrorMessage={
+		            		header:"Retican Overview Creation Error",
+		            		description:"Unfortunately there has been an error when creating your retican overview. Please try again"
+						}
+					}else{
+						reticanOverviewCreationErrorMessage={
+		            		header:"Internal Server Error",
+		            		description:"Unfortunately there has been an error on our part. Please try again later"
+						}
 					}
+					changeAlertMessage(reticanOverviewCreationErrorMessage);
+					changeReticanOverviewCreationErrorDisplay(true);
 				}
-				changeAlertMessage(reticanOverviewCreationErrorMessage);
-				changeReticanOverviewCreationErrorDisplay(true);
 			}
 		}
 
-		processReticanOverviewCreation();
+		processReticanOverviewCreation({});
 	},[]);
 
 	const closeErrorAlertScreen=()=>{
@@ -160,6 +211,7 @@ const Review=({progressScreen,reticanAssembly})=>{
 		<Container id="reticanReview">
 			{copySuccessAlert()}
 			{reticanCreationErrorAlertModal()}
+
 			{displayLoadingAnimation==true?
 				<div style={{position:"relative",width:"100%",height:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
 					<LoadingAnimation
@@ -178,19 +230,21 @@ const Review=({progressScreen,reticanAssembly})=>{
 						</p>
 					</div>
 
-					<div style={{display:"flex",flexDirection:"row",width:"90%"}}>
+					<div id="reviewResults" style={{display:"flex",flexDirection:"row",width:"90%"}}>
 						<div>
-							<img src={AtlesiumLogo} 
+							<img src={AtlesiumLogo} id="atlesiumLogo"
 								style={{width:"300px",height:"230px",borderRadius:"50%"}}
 							/>
 							<div style={{width:"100%",display:"flex",justifyContent:"center"}}>
-								<p style={{width:"60%"}}>Copy the script tag and add it to your websites header file</p>
+								<p id="copyScriptDescription" style={{width:"60%"}}>
+									Copy the script tag and add it to your websites header file
+								</p>
 							</div>
 						</div>
-						<div style={{display:"flex",flexDirection:"column",width:"90%",marginLeft:"5%"}}>
+						<div id="scriptContents" style={{display:"flex",flexDirection:"column",width:"90%",marginLeft:"5%"}}>
 							<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 								<ScriptContainer>
-									<p style={{fontSize:"18px"}}>
+									<p id="script" style={{fontSize:"18px"}}>
 										<b>{script}</b>
 									</p>
 								</ScriptContainer>
@@ -210,12 +264,12 @@ const Review=({progressScreen,reticanAssembly})=>{
 							</ScriptParams>
 
 							<Link to={{pathname:`/dashboard`}} style={{textDecoration:"none"}}>
-								<div style={CloseButtonCSS}>
+								<div id="closeButton" style={CloseButtonCSS}>
 									<p style={{color:Color_Constants.PRIMARY_COLOR}}>Close</p>
 								</div>
 							</Link>
 						</div>
-					</div>
+					</div>	
 				</React.Fragment>
 			}
 		</Container>

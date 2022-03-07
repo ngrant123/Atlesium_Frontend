@@ -26,11 +26,14 @@ export const hasEmailBeenPreviouslyUsed=async(email)=>{
 	}
 }
 
-export const retrieveEmail=async(profileId)=>{
+export const retrieveEmail=async(profileId,accessToken)=>{
 	try{
 		const {data}=await axios.get(`${SearchURL}/retrieveProfileEmail`,{
 			params:{
 				profileId
+			},
+			headers:{
+				authorization:accessToken
 			}
 		})
 		return data;

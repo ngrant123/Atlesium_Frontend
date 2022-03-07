@@ -12,25 +12,15 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const retrieveReticanAnalytics=async(reticanOverviewId)=>{
-	try{
-		const {data}=await axios.get(`${AnalyticsRetrievalURL}/reticanAnalytics`,{
-			params:{
-				reticanOverviewId
-			}
-		});
-		return data;
-	}catch(err){
-		return backendServiceErrorMessage;
-	}
-}
-
-export const retrieveReticanOverviewCards=async(profileId,statusType)=>{
+export const retrieveReticanOverviewCards=async(profileId,statusType,accessToken)=>{
 	try{	
 		const {data}=await axios.get(`${AnalyticsRetrievalURL}/reticanOverviewCards`,{
 			params:{
 				profileId,
 				statusType
+			},
+			headers:{
+				authorization:accessToken
 			}
 		});
 		return data;
@@ -40,12 +30,15 @@ export const retrieveReticanOverviewCards=async(profileId,statusType)=>{
 }
 
 
-export const retrieveReticanCards=async(reticanOverviewId,profileId)=>{
+export const retrieveReticanCards=async(reticanOverviewId,profileId,accessToken)=>{
 	try{
 		const {data}=await axios.get(`${AnalyticsRetrievalURL}/reticanCards`,{
 			params:{
 				reticanOverviewId,
             	profileId
+			},
+			headers:{
+				authorization:accessToken
 			}
 		});
 		return data;

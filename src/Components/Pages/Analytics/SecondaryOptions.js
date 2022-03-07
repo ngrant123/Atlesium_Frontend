@@ -29,7 +29,8 @@ const SecondaryOptions=({headerText,options})=>{
 			<ul class="dropdown-menu" style={{padding:"10px"}}>
 				{options.map(data=>
 					<React.Fragment>
-						<li style={{listStyle:"none",cursor:"pointer"}}>
+						<li style={{listStyle:"none",cursor:"pointer"}} 
+							onClick={()=>data.methodRetrieval(data.methodRetrievalParams)}>
 							{data.option}
 						</li>
 						<hr/>

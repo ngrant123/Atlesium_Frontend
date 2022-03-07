@@ -13,9 +13,11 @@ import ProfilePicture from "../../Modals/Profile/ProfilePicture.js";
 import {retrieveProfilePicture} from "../../../../Actions/Requests/ProfileRequests/Retrieval/ProfileInformation.js";
 import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
 import {storeEncodedProfilePicture} from "../../../../Actions/Redux/Actions/PersonalInformationActions.js";
+import BorderColorIcon from '@material-ui/icons/BorderColor';
 
 
-const Container=styled.div`
+const Container=styled.div`	
+	position:relative;
 	display:flex;
 	flex-direction:column;
 	width:35%;
@@ -29,6 +31,17 @@ const Container=styled.div`
 
 		#navigationOptionHeaderText{
 			margin-top:10px !important; 
+		}
+	}
+
+	@media screen and (max-width:650px){
+		#profilePicture{
+			height:30px !important;
+			width:30px !important;
+		}
+
+		#defaultProfilePicture{
+			font-size:30px !important;
 		}
 	}
 
@@ -203,48 +216,89 @@ const Navigation=({pageType,parentDiv})=>{
 
 	const dashBoardDisplay=()=>{
 		return(
-			<React.Fragment>
+			<div style={{display:"flex",flexDirection:"row",justifyContent:"center"}}>
 				<DesktopWindowsIcon
 					style={{fontSize:"24"}}
 				/>
 				<p style={{fontSize:"18px",marginLeft:"5%"}}>
 					<b>Dashboard</b>
 				</p>
-			</React.Fragment>
+			</div>
 		)
 	}
 
 	const analysisDisplay=()=>{
 		return(
-			<React.Fragment>
+			<div style={{display:"flex",flexDirection:"row",justifyContent:"center"}}>
 				<ShowChartIcon
 					style={{fontSize:"24"}}
 				/>
 				<p style={{fontSize:"18px",marginLeft:"5%"}}>
 					<b>Analytics</b>
 				</p>
-			</React.Fragment>
+			</div>
 		)
 	}
 
 	const settingsDisplay=()=>{
 		return(
-			<React.Fragment>
+			<div style={{display:"flex",flexDirection:"row",justifyContent:"center"}}>
 				<GridOnIcon
 					style={{fontSize:"24"}}
 				/>
 				<p id="navigationOptionHeaderText" style={{fontSize:"18px",marginLeft:"5%",marginTop:"4%"}}>
 					<b>Settings</b>
 				</p>
-			</React.Fragment>
+			</div>
+		)
+	}
+
+	const creationDisplay=()=>{
+		return(
+			<div style={{display:"flex",flexDirection:"row",justifyContent:"center"}}>
+				<BorderColorIcon
+					style={{fontSize:"24"}}
+				/>
+				<p id="navigationOptionHeaderText" style={{fontSize:"18px",marginLeft:"5%",marginTop:"4%"}}>
+					<b>Create</b>
+				</p>
+			</div>
+		)
+	}
+
+	const profilePictureIcon=()=>{
+		return(
+			<div style={{cursor:"pointer"}} onClick={()=>changeProfilePictureCreationDisplay(true)}>
+				{profilePicture==null?
+					<AccountCircleIcon id="defaultProfilePicture"
+						style={{fontSize:"40"}}
+					/>:
+					<img src={profilePicture} id="profilePicture"
+						style={{width:"40px",height:"40px",borderRadius:"50%"}}
+					/>
+				}
+			</div>
 		)
 	}
 
 	const mobileNavigation=()=>{
 		let component;
+		console.log(pageType);
 		switch(pageType){
 			case "Settings":{
 				component=settingsDisplay();
+				break;
+			}
+			case "Dashboard":{
+				component=dashBoardDisplay();
+				break;
+			}
+			case "Analytics":{
+				component=analysisDisplay();
+				break;
+			}
+			case "Creation":{
+				component:creationDisplay();
 				break;
 			}
 		}
@@ -263,22 +317,35 @@ const Navigation=({pageType,parentDiv})=>{
 						/>
 					</button>
 					<ul class="dropdown-menu" style={{padding:"10px"}}>
-						<li style={{cursor:"pointer"}}>
-							Dashboard
-						</li>
+						<Link to={{pathname:'/dashboard'}} style={{textDecoration:"none",color:"black"}}>
+							<li style={{cursor:"pointer"}}>
+								Dashboard
+							</li>
+						</Link>
 						<hr/>
 
-						<li style={{cursor:"pointer"}}>
-							Analytics
-						</li>
+						<Link to={{pathname:'/analytics'}} style={{textDecoration:"none",color:"black"}}>
+							<li style={{cursor:"pointer"}}>
+								Analytics
+							</li>
+						</Link>
 						<hr/>
 
-						<li style={{cursor:"pointer"}}>
-							Settings
-						</li>
+						<Link to={{pathname:'/settings'}} style={{textDecoration:"none",color:"black"}}>
+							<li style={{cursor:"pointer"}}>
+								Settings
+							</li>
+						</Link>
+						<hr/>
+						<Link to={{pathname:'/creation'}} style={{textDecoration:"none",color:"black"}}>
+							<li style={{cursor:"pointer"}}>
+								Create
+							</li>
+						</Link>
 					</ul>
-					</div>
-				<img src={AtlesiumLogo} style={{width:"40px",height:"40px",borderRadius:"50px",marginRight:"2%"}}/>
+				</div>
+
+				{profilePictureIcon()}
 			</div>
 		)
 	}
@@ -312,16 +379,7 @@ const Navigation=({pageType,parentDiv})=>{
 			<React.Fragment>	
 				<div style={{display:"flex",justifyContent:"center",flexDirection:"column",marginTop:"15%"}}>
 					<div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"center",width:"100%"}}>
-						<div style={{cursor:"pointer"}} onClick={()=>changeProfilePictureCreationDisplay(true)}>
-							{profilePicture==null?
-								<AccountCircleIcon
-									style={{fontSize:"40"}}
-								/>:
-								<img src={profilePicture} 
-									style={{width:"50px",height:"50px",borderRadius:"50%"}}
-								/>
-							}
-						</div>
+						{profilePictureIcon()}
 
 						<p style={{fontSize:"18px",marginLeft:"5%"}}>
 							<b>{firstName}</b>

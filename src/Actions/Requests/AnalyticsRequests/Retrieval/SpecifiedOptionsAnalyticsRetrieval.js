@@ -12,12 +12,15 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const retrieveSpecifiedAnaltyicsPage=async(targetId,profileId)=>{
+export const retrieveSpecifiedAnaltyicsPage=async(targetId,profileId,accessToken)=>{
 	try{
 		const {data}=await axios.get(`${AnalyticsRetrievalURL}/specifiedReticanAnalysisPage`,{
 			params:{
 				profileId,
 				targetId
+			},
+			headers:{
+				authorization:accessToken
 			}
 		});
 		return data;
@@ -27,12 +30,23 @@ export const retrieveSpecifiedAnaltyicsPage=async(targetId,profileId)=>{
 }
 
 
-export const retrieveTimeSpecifiedAnalytics=async(targetId,timeRequestedFilterType)=>{
+export const retrieveTimeSpecifiedAnalytics=async(
+	targetId,
+	timeRequestedFilterType,
+	isAnalyticsReticanOverview,
+	accessToken,
+	profileId)=>{
 	try{
+		debugger;
 		const {data}=await axios.get(`${AnalyticsRetrievalURL}/retrieveTimeConstraintAnalytics`,{
 			params:{
 				targetId,
-				timeRequestedFilterType
+				timeRequestedFilterType,
+				isAnalyticsReticanOverview,
+				profileId
+			},
+			headers:{
+				authorization:accessToken
 			}
 		})
 		return data;

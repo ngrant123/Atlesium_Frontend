@@ -12,11 +12,15 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const deleteReticanOverview=async(reticanOverviewId,profileId)=>{
+export const deleteReticanOverview=async(reticanOverviewId,profileId,accessToken)=>{
 	try{
 		const {data}=await axios.post(`${ReticanDeletionURL}/deleteReticanOverview`,{
 			reticanOverviewId,
             profileId
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 
 		return data;

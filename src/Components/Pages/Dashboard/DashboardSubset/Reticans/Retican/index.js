@@ -27,7 +27,7 @@ const ReticanInitialier=()=>{
 							reticanInformation={data}
 							currentIndex={index}
 							removeTargetedIndexRetican={reticanConsumer.removeTargetedIndexRetican}
-							deleteCampaign={reticanConsumer.deleteCampaign}
+							deleteRetican={reticanConsumer.deleteRetican}
 						/>
 					)}
 				</React.Fragment>

@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from "react";
 import styled from "styled-components";
 import Navigation from "../../../UniversalComponents/Navigation/PageNavigation/index.js";
-import Retican from "../DashboardSubset/Reticans/index.js";
+import Reticans from "../DashboardSubset/Reticans/index.js";
 import ReticanNavigation from "../../../UniversalComponents/Navigation/CardNavigationCircle/index.js";
 import {ReticanProvider} from "./ReticanContext.js";
 import {
@@ -10,7 +10,8 @@ import {
 } from "../../../../Actions/Requests/ReticanRequests/Retrieval/ReticanRetrieval.js";
 import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
 import LoadingAnimation from "../../../UniversalComponents/Loading/index.js";
-import {useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
+import {tokensRegeneration} from "../../../../Actions/Tasks/UpdateTokens.js";
 
 
 const Container=styled.div`
@@ -37,10 +38,37 @@ const ReticanContainer=styled.div`
 	height:100%;
 	width:100%;
 	display:flex;
-	flex-direction:row
+	flex-direction:row;
+
+	@media screen and (max-width:1370px){
+		flex-direction:column-reverse;
+
+		#reticanNavigationParentDiv{
+			height:10% !important;
+			width:100% !important;
+		}
+	}
+
+	@media screen and (max-width:650px){
+		margin-top:5%;
+	}
+
+	@media screen and (max-width:1370px) and (max-height:1030px) and (orientation:landscape){
+		#reticanNavigationParentDiv{
+			margin-top:5%;
+		}
+		margin-top:10%;
+		position:absolute;
+	}
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		#reticanNavigationParentDiv{
+			margin-top:10%;
+		}
+    }
+
 `;
 
-const Dashboard=()=>{
+const Dashboard=(props)=>{
 	const [currentSelectedIndex,changeCurrentSelectedIndex]=useState(0);
 	const [reticans,changeReticans]=useState([]);
 	const [stackReticansView,changeStackReticanView]=useState(reticans);
@@ -49,12 +77,40 @@ const Dashboard=()=>{
 	const [errorMessage,changeErrorMessage]=useState();
 	const [reticanStatus,changeReticanStatus]=useState("Active");
 	const [displayLoadingAnimation,changeDisplayLoadingAniamtion]=useState(true);
-	const userId=useSelector(state=>state.personalInformation._id);
+	const {
+		_id,
+		accessToken,
+		refreshToken
+	}=useSelector(state=>state.personalInformation);
+	const dispatch=useDispatch();
+	const [reticanCardDirection,changeReticanCardDirection]=useState("block");
+
 	const [indexesPreviouslyVisited,changeIndexesPreviouslyVisited]=useState({});
 
 	useEffect(()=>{
-		fetchData();
+		debugger;
+		if(_id=="" || _id==null){
+			props.history.push('/');
+		}
 	},[]);
+
+	useEffect(()=>{
+		fetchData({});
+	},[]);
+
+	const triggerUIChange=()=>{
+		if(window.innerWidth<1370){
+			changeReticanCardDirection("inline-block")
+		}else{
+			changeReticanCardDirection("block");
+		}
+	}
+
+	useEffect(()=>{
+		triggerUIChange();
+		window.addEventListener('resize', triggerUIChange)
+	},[window.innerWidth]);
+
 
 	const fetchReticanUrlData=async(reticanId)=>{
 		debugger;
@@ -63,7 +119,7 @@ const Dashboard=()=>{
 		console.log(tempIndexesVisited[currentSelectedIndex]);
 
 		if(Object.keys(tempIndexesVisited).length>0 && tempIndexesVisited[currentSelectedIndex]==null){
-			const {confirmation,data}=await retrieveRetican(reticanId,userId);
+			const {confirmation,data}=await retrieveRetican(reticanId,_id);
 			if(confirmation=="Success"){
 				const {message}=data;
 				tempIndexesVisited[currentSelectedIndex]=true;
@@ -127,10 +183,13 @@ const Dashboard=()=>{
 		}
 	},[currentSelectedIndex,reticans]);
 
-	const fetchData=async()=>{
+
+
+	const fetchData=async({updatedAccessToken})=>{
 		const {confirmation,data}=await retrieveProfileSpecificReticanOverviews(
-			userId,
-			reticanStatus
+			_id,
+			reticanStatus,
+			updatedAccessToken==null?accessToken:updatedAccessToken
 		);
 		debugger;
 		if(confirmation=="Success"){
@@ -139,19 +198,30 @@ const Dashboard=()=>{
 		}else{	
 			const {statusCode}=data;
 			let errorAlertMessage;
-			if(statusCode==500){
-				errorAlertMessage={
-					header:"Internal Server Error",
-					description:"Unfortunately there has been an error on our part. Please try again later"
-				}
+
+			if(statusCode==401){
+				tokensRegeneration({
+					currentRefreshToken:refreshToken,
+					userId:_id,
+					parentApiTrigger:fetchData,
+					dispatch,
+					parameters:{}
+				})
 			}else{
-				errorAlertMessage={
-					header:"Retican Overview Retrieval Error",
-					description:"Unfortunately, an error has occured when retrieving your retican overviews. Please try again."
+				if(statusCode==500){
+					errorAlertMessage={
+						header:"Internal Server Error",
+						description:"Unfortunately there has been an error on our part. Please try again later"
+					}
+				}else{
+					errorAlertMessage={
+						header:"Retican Overview Retrieval Error",
+						description:"Unfortunately, an error has occured when retrieving your retican overviews. Please try again."
+					}
 				}
+				changeErrorMessage(errorAlertMessage);
+				changeDisplayReticanOverviewAlertMessage(true);
 			}
-			changeErrorMessage(errorAlertMessage);
-			changeDisplayReticanOverviewAlertMessage(true);
 		}
 		changeDisplayLoadingAniamtion(false);
 	}
@@ -162,16 +232,17 @@ const Dashboard=()=>{
 		changeCurrentSelectedIndex(selectedIndex);
 	}
 
-	const deleteRetican=(index)=>{
-		const currentStackIndex=currentSelectedIndex;
+	const deleteRetican=()=>{
+		debugger;
+		let currentStackIndex=currentSelectedIndex;
 		if(currentStackIndex!=0){
 			currentStackIndex--;
 		}
 		changeCurrentSelectedIndex(currentStackIndex);
 		const parentReticans=reticans;
-		parentReticans.splice(index,1);
-		changeReticans(parentReticans);
-		removeReticanFromStack(index);
+		parentReticans.splice(currentSelectedIndex,1);
+		changeReticans([...parentReticans]);
+		removeReticanFromStack(currentSelectedIndex);
 	}
 
 	const removeReticanFromStack=(index)=>{
@@ -209,7 +280,8 @@ const Dashboard=()=>{
 				},
 				deleteRetican:(index)=>{
 					deleteRetican(index);
-				}
+				},
+				history:props.history
 			}}
 		>
 			<Container id="dashboard">
@@ -222,16 +294,17 @@ const Dashboard=()=>{
 					{displayLoadingAnimation==true ?
 						<div style={{width:"100%"}}>
 							<LoadingAnimation
-								loadingText={"Retrieveing retican overviews..."}
+								loadingText={"Retrieving retican overviews..."}
 							/>
 						</div>:
 						<React.Fragment>
-							<Retican/>
-							<div style={{height:"100%",width:"20%",borderLeft:"1px solid #ECECEC"}}>
+							<Reticans/>
+							<div id="reticanNavigationParentDiv" 
+								style={{height:"100%",width:"20%",borderLeft:"1px solid #ECECEC"}}>
 								<ReticanNavigation 
 									totalCards={reticans}
 									currentSelectedIndex={currentSelectedIndex}
-									specifiedFlexDirection={"column"}
+									specifiedDirection={reticanCardDirection}
 									triggerUpdatedSelectedIndex={updateSelectedIndex}
 								/>
 							</div>

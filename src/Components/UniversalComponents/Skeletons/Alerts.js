@@ -32,6 +32,10 @@ const Container=styled.div`
 		width:100%;
 		left:0%;
 		height:100%;
+
+		#headerText{
+			flex-direction:column-reverse !important;
+		}
 	}
 `;
 
@@ -63,7 +67,7 @@ const AlertSkeleton=({closeModal,targetDomId,alertMessage})=>{
 		<React.Fragment>
 			<ShadowContainer onClick={()=>closeModal()}/>
 			<Container>
-				<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
+				<div id="headerText" style={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
 					<p style={{fontSize:"28px"}}>
 						<b>{header}</b>
 					</p>

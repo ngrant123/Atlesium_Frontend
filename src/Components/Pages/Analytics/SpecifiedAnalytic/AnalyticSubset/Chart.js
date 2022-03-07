@@ -63,6 +63,7 @@ const ChartDisplay=(props)=>{
     xAxisLabels,
     timeRequestedType
   }=props;
+  console.log(props);
 
   const [isDataReformatComplete,changeIsDataReformatComplete]=useState(false);
   const [chartData,changeChartData]=useState();
@@ -93,7 +94,11 @@ const ChartDisplay=(props)=>{
     };
     changeChartData(data);
     changeIsDataReformatComplete(true);
-  },[]);
+  },[
+    timeRequestedType,
+    visitorsDataset,
+    completionDataset
+  ]);
 
   const reformatMonthLabels=()=>{
     debugger;

@@ -14,11 +14,12 @@ import{
 } from "../../../../Actions/Requests/ReticanRequests/Retrieval/ReticanRetrieval.js";
 import LoadingAnimation from "../../../UniversalComponents/Loading/index.js";
 import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
-import {useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
 import {DetailsProvider} from "./DetailsContext.js";
 import {
 	deleteResponse
 } from "../../../../Actions/Requests/ResponsesRequests/Adapter/EditResponses.js";
+import {tokensRegeneration} from "../../../../Actions/Tasks/UpdateTokens.js";
 
 const Container=styled.div`
 	position:absolute;
@@ -112,15 +113,6 @@ const reticanVideos=[
 ]
 
 
-/*	
-	Thought process:
-		Not all reticans have responses right?
-		Create api that  retrieves one with responses 
-			Populating the video url in the process and get the comments also 
-
-		Then seperates
-*/
-
 const ReticanDetails=(props)=>{
 	debugger;
 	const [currentSelectedIndex,changeCurrentSelectedIndex]=useState(0);
@@ -134,7 +126,12 @@ const ReticanDetails=(props)=>{
 	const [isLoadingNextPosts,changeIsLoadingNextPosts]=useState(false);
 	const [endOfPostIndicator,changeEndOfPostIndicator]=useState(false);
 
-	const userId=useSelector(state=>state.personalInformation._id);
+	const {
+		_id,
+		accessToken,
+		refreshToken
+	}=useSelector(state=>state.personalInformation);
+	const dispatch=useDispatch();
 
 	const uuid=()=>{
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -142,6 +139,13 @@ const ReticanDetails=(props)=>{
 			return v.toString(16);
 		});
 	}
+
+	useEffect(()=>{
+		debugger;
+		if(_id=="" || _id==null){
+			props.history.push('/');
+		}
+	},[])
 
 	useEffect(()=>{
 		const {
@@ -152,12 +156,13 @@ const ReticanDetails=(props)=>{
 			}
 		}=props;
 
-		const fetchInitialData=async()=>{
+		const fetchInitialData=async({updatedAccessToken})=>{
 			const trackerId=uuid();
 			const {confirmation,data}=await retrieveResponseEligibleForResponses(
-				userId,
+				_id,
 				trackerId,
-				reticanOverviewId
+				reticanOverviewId,
+				updatedAccessToken==null?accessToken:updatedAccessToken
 			);
 
 			if(confirmation=="Success"){
@@ -172,46 +177,57 @@ const ReticanDetails=(props)=>{
 				changeReticans(message);
 			}else{
 				const {statusCode}=data;
-				reticanResponsesErrorMessage(statusCode);
+				reticanResponsesErrorMessage(statusCode,fetchInitialData);
 			}
 			changeFeedTrackerId(trackerId);
 			changeIsLoadingStatus(false);
 			changeInitialLoadCompleted(true);
 		}
-		fetchInitialData();
+		fetchInitialData({});
 	},[]);
 
-	const reticanResponsesErrorMessage=(statusCode)=>{
+	const reticanResponsesErrorMessage=(statusCode,parentApiTrigger)=>{
 		let currentErrorMessage;
-		if(statusCode==500){
-			currentErrorMessage={
-				header:"Internal Server Error",
-				description:"Unfortunately there has been an error on our part. Please try again later"
-			}
+		if(statusCode==401){
+			tokensRegeneration({
+				currentRefreshToken:refreshToken,
+				userId:_id,
+				parentApiTrigger:parentApiTrigger,
+				dispatch,
+				parameters:{}
+			})
 		}else{
-			currentErrorMessage={
-				header:"Retican Respsonse Retrieval Error",
-				description:"Unfortunately, an error has occured when retrieving this retican's responses. Please try again."
+			if(statusCode==500){
+				currentErrorMessage={
+					header:"Internal Server Error",
+					description:"Unfortunately there has been an error on our part. Please try again later"
+				}
+			}else{
+				currentErrorMessage={
+					header:"Retican Respsonse Retrieval Error",
+					description:"Unfortunately, an error has occured when retrieving this retican's responses. Please try again."
+				}
 			}
+			changeErrorMessage(currentErrorMessage);
+			changeDisplayResponseRetrievalMessage(true);
 		}
-		changeErrorMessage(currentErrorMessage);
-		changeDisplayResponseRetrievalMessage(true);
 	}
 
 	useEffect(()=>{
 		if(initialLoadCompleted){	
-			fetchReticanAndResponses();
+			fetchReticanAndResponses({});
 		}
 
 	},[currentSelectedIndex]);
 
-	const fetchReticanAndResponses=async()=>{
+	const fetchReticanAndResponses=async({updatedAccessToken})=>{
 		const trackerId=uuid();
 		const {confirmation,data}=await retrieveReticanAndResponses({
 			reticanId:reticans[currentSelectedIndex]._id.toString(),
 			responsesType:reticans[currentSelectedIndex].reticanOptionType,
             feedTrackerId:trackerId,
-            profileId:userId
+            profileId:_id,
+            accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
 		});
 
         if(confirmation=="Success"){
@@ -231,16 +247,17 @@ const ReticanDetails=(props)=>{
 			changeEndOfPostIndicator(false);
         }else{
 			const {statusCode}=data;
-			reticanResponsesErrorMessage(statusCode);
+			reticanResponsesErrorMessage(statusCode,fetchReticanAndResponses);
         }
 	}
 
-	const fetchResponses=async()=>{
+	const fetchResponses=async({updatedAccessToken})=>{
 		const reticanResponseRetrievalInformation={
-			ownerId:userId,
+			ownerId:_id,
             reticanId:reticans[currentSelectedIndex]._id.toString(),
             feedTrackerId,
-            responsesType:reticans[currentSelectedIndex].reticanOptionType
+            responsesType:reticans[currentSelectedIndex].reticanOptionType,
+            accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
 		}
 		changeIsLoadingNextPosts(true);
 		const {confirmation,data}=await retrieveReticanResponses(reticanResponseRetrievalInformation);
@@ -257,15 +274,17 @@ const ReticanDetails=(props)=>{
 
 		}else{
 			const {statusCode}=data;
-			reticanResponsesErrorMessage(statusCode);
+			reticanResponsesErrorMessage(statusCode,fetchResponses);
 		}
 		changeIsLoadingNextPosts(false);
 	}
 
-	const triggerDeleteResponse=async(responseId)=>{
+	const triggerDeleteResponse=async({responseId,updatedAccessToken})=>{
 		const {confirmation,data}=await deleteResponse(
 			responseId,
-			reticans[currentSelectedIndex]._id);
+			reticans[currentSelectedIndex]._id,
+			_id,
+			updatedAccessToken==null?accessToken:updatedAccessToken);
 		if(confirmation=="Success"){
 			for(var i=0;i<reticanSpecificResponses.length;i++){
 				if(responseId==reticanSpecificResponses[i]._id){
@@ -276,7 +295,7 @@ const ReticanDetails=(props)=>{
 			changeReticanSpecificResponses([...reticanSpecificResponses]);
 		}else{
 			const {statusCode}=data;
-			reticanResponsesErrorMessage(statusCode);
+			reticanResponsesErrorMessage(statusCode,triggerDeleteResponse);
 		}
 
 	}
@@ -309,10 +328,10 @@ const ReticanDetails=(props)=>{
 		<DetailsProvider
 			value={{
 				triggerFetchResponses:()=>{
-					fetchResponses();
+					fetchResponses({});
 				},
 				deleteResponse:(responseId)=>{
-					triggerDeleteResponse(responseId);
+					triggerDeleteResponse({responseId});
 				},
 				isLoadingNextPosts,
 				endOfPostIndicator

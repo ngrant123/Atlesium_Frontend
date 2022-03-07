@@ -5,12 +5,12 @@ import AlertSystem from "../../../../UniversalComponents/Skeletons/Alerts.js";
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import Chart from "../AnalyticSubset/Chart.js";
 import NumericalStatistics from "../AnalyticSubset/NumericalStatistics.js";
-import SecondaryOptions from "../../SecondaryOptions.js";
 import {
 	retrieveTimeSpecifiedAnalytics,
 	retrieveSpecifiedAnaltyicsPage
 } from "../../../../../Actions/Requests/AnalyticsRequests/Retrieval/SpecifiedOptionsAnalyticsRetrieval.js";
-import {useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
+import {tokensRegeneration} from "../../../../../Actions/Tasks/UpdateTokens.js";
 
 const Container=styled.div`
 	position:absolute;
@@ -41,7 +41,7 @@ const Analytics=styled.div`
 	flex-direction:column;
 	padding-bottom:10px;
 	overflow-y:auto;
-	justify-content:center;
+	margin-top:5%;
 `;
 
 
@@ -56,14 +56,29 @@ const SpecifiedAnalytics=(props)=>{
 	const [completionDataset,changeCompletionDataset]=useState();
 	const [isLoading,changeIsLoading]=useState(true);
 	const [chartProgressRateInformation,changeChartProgressRateInformation]=useState();
+	const [isAnalyticsReticanOverview,changeIsAnalyticsReticanOverview]=useState(false);
 
-	const userId=useSelector(state=>state.personalInformation._id);
+	const {
+		_id,
+		accessToken,
+		refreshToken
+	}=useSelector(state=>state.personalInformation);
+	const dispatch=useDispatch();
 
 	useEffect(()=>{
-		const fetchSpecifiedAnalyticsPage=async()=>{
+		debugger;
+		if(_id=="" || _id==null){
+			props.history.push('/');
+		}
+	},[])
+
+	useEffect(()=>{
+		const fetchSpecifiedAnalyticsPage=async({updatedAccessToken})=>{
+			debugger;
 			const {confirmation,data}=await retrieveSpecifiedAnaltyicsPage(
 				props.match.params.id,
-				userId);
+				_id,
+				updatedAccessToken==null?accessToken:updatedAccessToken);
 
 			if(confirmation=="Success"){
 				const {
@@ -73,62 +88,38 @@ const SpecifiedAnalytics=(props)=>{
 		                    completionReticanAnalytics,
 		                    xAxisLabels	
 						},
-						progressRate
+						progressRate,
+						isIdReticanOverview
 					}
 				}=data;
 
+				changeIsAnalyticsReticanOverview(isIdReticanOverview);
 				changeChartProgressRateInformation(progressRate);
 				changeVisitorDataset(visitorReticanAnalytics);
 				changeCompletionDataset(completionReticanAnalytics);
 				changeDataXAxisLabels(xAxisLabels);
 			}else{
-				const {statusCode}=data;
-				let alertMessage;
-
-				if(statusCode==400){
-					alertMessage={
-						header:"Analytics Page Retrieval Error",
-						description:"Unfortunately there has been an error when retrieving your analytics. Please try again"
-					}
-				}else{
-					alertMessage={
-						header:"Internal Server Error",
-						description:"Unfortunately there has been an error on our part. Please try again later"
-					}
-				}
-				changeAlertMessage(alertMessage);
-				changeDisplayAlertMessage(true);
+				errorMessage(data,fetchSpecifiedAnalyticsPage,null);
 			}
 			changeIsLoading(false);
 		}
 
-		fetchSpecifiedAnalyticsPage();
+		fetchSpecifiedAnalyticsPage({});
 	},[]);
 
-	const fetchAnalytics=async()=>{
-		debugger;
-		const {confirmation,data}=await retrieveTimeSpecifiedAnalytics(
-			props.match.params.id,
-			timeRequestedType);
+	const errorMessage=(data,parentApiTrigger,params)=>{
+		const {statusCode}=data;
+		let alertMessage;
 
-		if(confirmation=="Success"){
-			debugger;
-			const {
-				message:{
-					visitorReticanAnalytics,
-                    completionReticanAnalytics,
-                    xAxisLabels
-				}
-			}=data;
-
-			changeVisitorDataset(visitorReticanAnalytics);
-			changeCompletionDataset(completionReticanAnalytics);
-			changeDataXAxisLabels(xAxisLabels);
-
+		if(statusCode==401){
+			tokensRegeneration({
+				currentRefreshToken:refreshToken,
+				userId:_id,
+				parentApiTrigger,
+				dispatch,
+				parameters:params==null?{}:{params}
+			})
 		}else{
-			const {statusCode}=data;
-			let alertMessage;
-
 			if(statusCode==400){
 				alertMessage={
 					header:"Analytics Retrieval Error",
@@ -142,6 +133,35 @@ const SpecifiedAnalytics=(props)=>{
 			}
 			changeAlertMessage(alertMessage);
 			changeDisplayAlertMessage(true);
+		}
+
+	}
+
+	const fetchAnalytics=async({requestedAnaltyicsType,updatedAccessToken})=>{
+		debugger;
+		const {confirmation,data}=await retrieveTimeSpecifiedAnalytics(
+			props.match.params.id,
+			requestedAnaltyicsType,
+			isAnalyticsReticanOverview,
+			updatedAccessToken==null?accessToken:updatedAccessToken,
+			_id);
+
+		if(confirmation=="Success"){
+			debugger;
+			const {
+				message:{
+					visitorReticanAnalytics,
+                    completionReticanAnalytics,
+                    xAxisLabels
+				}
+			}=data;
+			changeVisitorDataset([...visitorReticanAnalytics]);
+			changeCompletionDataset([...completionReticanAnalytics]);
+			changeDataXAxisLabels([...xAxisLabels]);
+			changeTimeRequestedType(requestedAnaltyicsType);
+
+		}else{
+			errorMessage(data,fetchAnalytics,requestedAnaltyicsType);
 		}
 		changeIsLoading(false);
 	}
@@ -187,6 +207,7 @@ const SpecifiedAnalytics=(props)=>{
 						<React.Fragment>
 							<NumericalStatistics
 								progressRates={chartProgressRateInformation}
+								fetchAnalytics={fetchAnalytics}
 							/>
 							<Chart
 								visitorsDataset={visitorsDataset}
@@ -196,15 +217,6 @@ const SpecifiedAnalytics=(props)=>{
 							/>
 						</React.Fragment>
 					}
-					<div style={{width:"100%",marginTop:"2%"}}>
-						<SecondaryOptions
-							headerText={"Sort-By"}
-							options={[
-								{option:"Date"},
-								{option:"Popularity"}
-							]} 
-						/>
-					</div>
 				</div>
 			</Analytics>
 		</Container>

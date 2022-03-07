@@ -12,11 +12,15 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const editName=async(profileId,name)=>{
+export const editName=async(profileId,name,accessToken)=>{
 	try{
 		const {data}=await axios.post(`${ProfileCreationURL}/editName`,{
 			profileId,
 			name
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){
@@ -24,23 +28,15 @@ export const editName=async(profileId,name)=>{
 	}
 }
 
-export const editEmail=async(profileId,email)=>{
+export const editEmail=async(profileId,email,accessToken)=>{
 	try{
 		const {data}=await axios.post(`${ProfileCreationURL}/editEmail`,{
 			profileId,
 			email
-		});
-		return data;
-	}catch(err){
-		return backendServiceErrorMessage;
-	}
-}
-
-export const editProfilePicture=async(profileId,profilePicture)=>{
-	try{
-		const {data}=await axios.post(`${ProfileCreationURL}/editProfilePicture`,{
-			profileId,
-			profilePicture
+		},{
+			headers:{
+				authorization:accessToken
+			}
 		});
 		return data;
 	}catch(err){

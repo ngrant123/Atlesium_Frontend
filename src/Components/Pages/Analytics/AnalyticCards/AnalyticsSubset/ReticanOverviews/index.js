@@ -5,8 +5,10 @@ import ReticanOverview from "./Overviews.js";
 import {
 	retrieveReticanOverviewCards
 } from "../../../../../../Actions/Requests/AnalyticsRequests/Retrieval/AnalyticsRetrieval.js";
-import {useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
 import {AnalyticsContext} from "../../AnalyticsSet/AnalyticsContext.js";
+import {tokensRegeneration} from "../../../../../../Actions/Tasks/UpdateTokens.js";
+
 
 const Container=styled.div`
 	position:relative;
@@ -14,8 +16,6 @@ const Container=styled.div`
 	height:100%;
 	padding-left:5%;
 	padding-right:5%;
-	display:flex;
-	flex-direction:column;
 	padding-bottom:10px;
 	overflow-y:auto;
 `;
@@ -32,14 +32,22 @@ const ReticanOverviewContainer=styled.div`
 const ReticanOverviewAnalysis=()=>{
 	const [selectedReticanStatus,changeSelectedReticanStatus]=useState("Active");
 	const [reticanOverviews,changeReticanOverviews]=useState([]);
-	const userId=useSelector(state=>state.personalInformation._id);
-	const [loading,changeLoadingIndicator]=useState(true);
+	const {
+		_id,
+		accessToken,
+		refreshToken
+	}=useSelector(state=>state.personalInformation);
+	const dispatch=useDispatch();
 
+	const [loading,changeLoadingIndicator]=useState(true);
 	const analyticsConsumer=useContext(AnalyticsContext);
 
 	useEffect(()=>{
-		const fetchData=async()=>{
-			const {confirmation,data}=await retrieveReticanOverviewCards(userId,selectedReticanStatus);
+		const fetchData=async({updatedAccessToken})=>{
+			const {confirmation,data}=await retrieveReticanOverviewCards(
+												_id,
+												selectedReticanStatus,
+												updatedAccessToken==null?accessToken:updatedAccessToken);
 			if(confirmation=="Success"){
 				const {message}=data;
 				changeReticanOverviews(message);
@@ -47,22 +55,33 @@ const ReticanOverviewAnalysis=()=>{
 				const {statusCode}=data;
 				let alertMessage;
 
-				if(statusCode==400){
-					alertMessage={
-						header:"Retican Overview Retrieval Error",
-						description:"Unfortunately there has been an error when retrieving your retican overviews. Please try again"
+				if(statusCode==401){
+					tokensRegeneration({
+						currentRefreshToken:refreshToken,
+						userId:_id,
+						parentApiTrigger:fetchData,
+						dispatch,
+						parameters:{}
+					})
+				}else{					
+					if(statusCode==400){
+						alertMessage={
+							header:"Retican Overview Retrieval Error",
+							description:"Unfortunately there has been an error when retrieving your retican overviews. Please try again"
+						}
+					}else{
+						alertMessage={
+							header:"Internal Server Error",
+							description:"Unfortunately there has been an error on our part. Please try again later"
+						}
 					}
-				}else{
-					alertMessage={
-						header:"Internal Server Error",
-						description:"Unfortunately there has been an error on our part. Please try again later"
-					}
+					analyticsConsumer.triggerDisplayAlertMessage(alertMessage);
 				}
-				analyticsConsumer.triggerDisplayAlertMessage(alertMessage);
+
 			}
 			changeLoadingIndicator(false);
 		}
-		fetchData();
+		fetchData({});
 	},[]);
 	return(
 		<Container>

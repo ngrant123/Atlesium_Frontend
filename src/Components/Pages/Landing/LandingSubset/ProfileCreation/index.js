@@ -1,4 +1,4 @@
-import React,{useState,useContext,useRef} from "react";
+import React,{useState,useContext,useRef,useEffect} from "react";
 import styled from "styled-components";
 import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import {LandingPageContext} from "../../LandingSet/LandingPageContext.js";
@@ -9,6 +9,7 @@ import ErrorAlertSystem from "../../../../UniversalComponents/Skeletons/Alerts.j
 import {useDispatch} from "react-redux";
 import {initializeProfile} from "../../../../../Actions/Redux/Actions/PersonalInformationActions.js";
 import {Link} from "react-router";
+import Payment from "../../../../UniversalComponents/Modals/Payment/index.js";
 
 const Container=styled.div`
 	display:flex;
@@ -65,7 +66,14 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 	const [displayProfileCreationErrorAlert,changeProfileCreationErrorAlert]=useState(false);
 	const [errorMessage,changeErrorMessage]=useState();
 	const [createProfileIndicator,changeCreatingProfileIndicator]=useState(false);
+	const [displayPaymentScreen,changeDisplayPaymentScreen]=useState(false);
+
 	const dispatcher=useDispatch();
+
+	useEffect(()=>{
+		changeDisplayPaymentScreen(true);
+	},[]);
+
 
 	const triggerCreateProfile=async()=>{
 		debugger;
@@ -135,6 +143,11 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 		}
 	}
 
+
+
+
+
+
 	const RequiredField=({inputComponent,inputId})=>{
 		return(
 			<RequiredFieldNotification
@@ -178,8 +191,27 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 			</React.Fragment>
 		)
 	}
+
+	const closePaymentModal=()=>{
+		changeDisplayPaymentScreen(false);
+	}
+
+	const paymentModal=()=>{
+		return(
+			<React.Fragment>
+				{displayPaymentScreen==true &&(
+					<Payment
+						targetIdDom={parentContainerId}
+						closePaymentModal={closePaymentModal}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
+
 	return(
 		<Container>
+			{paymentModal()}
 			{creationErrorAlertModal()}
 			<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 				<ArrowBackIosRoundedIcon

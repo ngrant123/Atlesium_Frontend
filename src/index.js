@@ -38,7 +38,7 @@ const PasswordReset=React.lazy(()=>import('./Components/Pages/PasswordReset/Pass
 const application=(
 	<Provider store={store}>
 		<Router>
-			<Suspense fallback={<p>Hold on</p>}>
+			<Suspense fallback={<p>Atlesium</p>}>
 				<Switch>
 					<Route exact path="/" component={Landing}/>
 					<Route exact path="/settings" component={Settings}/>

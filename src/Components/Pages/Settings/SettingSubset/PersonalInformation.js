@@ -19,6 +19,7 @@ import {
 import {
 	editFirstName
 } from "../../../../Actions/Redux/Actions/PersonalInformationActions.js";
+import {tokensRegeneration} from "../../../../Actions/Tasks/UpdateTokens.js";
 
 const Container=styled.div`
 	@media screen and (max-width:650px){
@@ -73,26 +74,60 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 	const [displayPauseProfileModal,changeDisplayPauseProfileModal]=useState(false);
 	const {
 		firstName,
-		_id
+		_id,
+		accessToken,
+		refreshToken
 	}=useSelector(state=>state.personalInformation);
+
 	const [alertMessage,changeAlertMessage]=useState();
 	const [displayAlertModal,changeDisplayAlertModal]=useState(false);
 	const [userEmail,changeUserEmail]=useState();
 	const dispatch=useDispatch();
+	const [isNameEditing,changeNameEditingStatus]=useState(false);
+	const [isEmailEditing,changeEmailEditingStatus]=useState(false);
 
 	useEffect(()=>{
-		const fetchData=async()=>{
+		const fetchData=async({updatedAccessToken})=>{
 			debugger;
-			const {confirmation,data}=await retrieveEmail(_id);
+			const {confirmation,data}=await retrieveEmail(
+												_id,
+												updatedAccessToken==null?accessToken:updatedAccessToken);
 			if(confirmation=="Success"){
 				const {message}=data;
 				document.getElementById("email").value=message;
 				changeUserEmail(message);
 			}else{
-				//handle exception		
+				const {statusCode}=data;
+				let errorAlertMessage;
+
+				if(statusCode==401){
+					tokensRegeneration({
+						currentRefreshToken:refreshToken,
+						userId:_id,
+						parentApiTrigger:fetchData,
+						dispatch,
+						parameters:{}
+					})
+				}else{
+					let emailRetrievalAlertMessage;
+					if(statusCode==500){
+						errorAlertMessage={
+							header:"Internal Server Error",
+							description:"Unfortunately there has been an error on our part. Please try again later"
+						}
+					}else{					
+						errorAlertMessage={
+							header:"Email Retrieval Error",
+							description:"Unfortunately, there has been an error when retrieving your email. Please try again"
+						}
+					}			
+
+					changeAlertMessage(errorAlertMessage);
+					changeDisplayAlertModal(true);
+				}
 			}
 		}
-		fetchData();
+		fetchData({});
 		document.getElementById("firstName").value=firstName;
 	},[]);
 
@@ -105,6 +140,7 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 				{displayDeleteProfileModal==true &&(
 					<DeleteProfileModal
 						closeModal={closeDeleteModal}
+						history={history}
 					/>
 				)}
 			</React.Fragment>
@@ -126,71 +162,139 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 		)
 	}
 
-	const triggerEditName=async()=>{
+	const triggerEditName=async({updatedAccessToken})=>{
 		const userSubmittedName=document.getElementById("firstName").value;
 		let editedNameAlertMessage;
+		changeNameEditingStatus(true);
+
 		if(userSubmittedName==firstName){
+			changeNameEditingStatus(false);
 			editedNameAlertMessage={
 				header:"No change detected.",
 				description:"Please alter your first name."
 			}
+			changeAlertMessage(editedNameAlertMessage);
+			changeDisplayAlertModal(true);
+
 		}else{
-			const {confirmation,data}=await editName(_id,userSubmittedName);
+			const {confirmation,data}=await editName(
+												_id,
+												userSubmittedName,
+												updatedAccessToken==null?accessToken:updatedAccessToken);
 			if(confirmation=="Success"){
+				changeNameEditingStatus(false);
+				document.getElementById("firstName").value=userSubmittedName;
+
 				editedNameAlertMessage={
 					header:"Success",
 					description:"First name changed"
 				}
+				changeAlertMessage(editedNameAlertMessage);
+				changeDisplayAlertModal(true);
 				dispatch(editFirstName(userSubmittedName));
 			}else{
-				editedNameAlertMessage={
-					header:"Edited Name Error",
-					description:"Unfortunately, there has been an error when attempting to change your name. Please try again"
+				const {statusCode}=data;
+				let errorAlertMessage;
+
+				if(statusCode==401){
+					tokensRegeneration({
+						currentRefreshToken:refreshToken,
+						userId:_id,
+						parentApiTrigger:triggerEditName,
+						dispatch,
+						parameters:{}
+					})
+				}else{
+					if(statusCode==500){
+						errorAlertMessage={
+							header:"Internal Server Error",
+							description:"Unfortunately there has been an error on our part. Please try again later"
+						}
+					}else{					
+						errorAlertMessage={
+							header:"Edited Name Error",
+							description:"Unfortunately, there has been an error when attempting to change your name. Please try again"
+						}
+					}			
+
+					changeAlertMessage(errorAlertMessage);
+					changeDisplayAlertModal(true);
 				}
+
+				changeNameEditingStatus(false);
+
 			}
 		}
-		changeAlertMessage(editedNameAlertMessage);
-		changeDisplayAlertModal(true);
+
+		
 	}
 
-	const triggerEditEmail=async()=>{
+	const triggerEditEmail=async({updatedAccessToken})=>{
 		debugger;
 		const userSubmittedEmail=document.getElementById("email").value;
 		let editedEmailAlterMessage;
+		changeEmailEditingStatus(true);
+
 		if(userEmail==userSubmittedEmail){
+			changeEmailEditingStatus(false);
 			editedEmailAlterMessage={
 				header:"No change detected.",
 				description:"Please alter your email."
 			}
+
+			changeAlertMessage(editedEmailAlterMessage);
+			changeDisplayAlertModal(true);
 		}else{
-			const {confirmation,data}=await editEmail(_id,userSubmittedEmail);
+			const {confirmation,data}=await editEmail(
+												_id,
+												userSubmittedEmail,
+												updatedAccessToken==null?accessToken:updatedAccessToken);
 			if(confirmation=="Success"){
+				changeEmailEditingStatus(false);
+				changeUserEmail(userSubmittedEmail);
+				document.getElementById("email").value=userSubmittedEmail;
+
 				editedEmailAlterMessage={
 					header:"Success",
 					description:"Email changed"
 				}
+
+				changeAlertMessage(editedEmailAlterMessage);
+				changeDisplayAlertModal(true);
 			}else{
 				const {statusCode}=data;
 				if(statusCode==401){
-					editedEmailAlterMessage={
-						header:"Email Taken",
-						description:"The email you have typed has already been taken by someone else. Please add another one."
-					}
-				}else if(statusCode==500){
-					editedEmailAlterMessage={
-						header:"Internal Server Error",
-						description:"Unfortunately there has been an error on our part. Please try again later"
-					}
+					tokensRegeneration({
+						currentRefreshToken:refreshToken,
+						userId:_id,
+						parentApiTrigger:triggerEditEmail,
+						dispatch,
+						parameters:{}
+					})
 				}else{
-					editedEmailAlterMessage={
-						header:"Edited Email Error",
-						description:"Unfortunately, there has been an error when attempting to change your name. Please try again"
+					if(statusCode==403){
+						editedEmailAlterMessage={
+							header:"Email Taken",
+							description:"The email you have typed has already been taken by someone else. Please add another one."
+						}
+					}else if(statusCode==500){
+						editedEmailAlterMessage={
+							header:"Internal Server Error",
+							description:"Unfortunately there has been an error on our part. Please try again later"
+						}
+					}else{
+						editedEmailAlterMessage={
+							header:"Edited Email Error",
+							description:"Unfortunately, there has been an error when attempting to change your name. Please try again"
+						}
 					}
+					
+					changeAlertMessage(editedEmailAlterMessage);
+					changeDisplayAlertModal(true);
 				}
+				changeEmailEditingStatus(false);
 			}
 		}
-		changeAlertMessage(editedEmailAlterMessage);
-		changeDisplayAlertModal(true);
 	}
 
 	const closeAlertModal=()=>{
@@ -234,10 +338,12 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 						<li style={{cursor:"pointer"}} onClick={()=>changeDisplayDeleteProfileModal(true)}>
 							Delete Profile
 						</li>
-						<hr/>
-						<li style={{cursor:"pointer"}} onClick={()=>changeDisplayPauseProfileModal(true)}>
-							Pause Profile
-						</li>
+						{/*
+							<hr/>
+							<li style={{cursor:"pointer"}} onClick={()=>changeDisplayPauseProfileModal(true)}>
+								Pause Profile
+							</li>
+						*/}
 					</ul>
 				</div>
 			</div>
@@ -246,32 +352,37 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 				<p>
 					<b>First Name</b>
 				</p>
-				<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-					<TextArea id="firstName" placeholder="First Name"/>
-					<div style={VerticalLineCSS}/>
-					<div id="editButtonIcon" style={EditButtonCSS}>
-						<BorderColorIcon
-							onClick={()=>triggerEditName()}
-							style={{color:Color_Constants.PRIMARY_COLOR,}}
-						/>
+
+				{isNameEditing==true?
+					<p>Editing...</p>:
+					<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+						<TextArea id="firstName" placeholder="First Name"/>
+						<div style={VerticalLineCSS}/>
+						<div id="editButtonIcon" style={EditButtonCSS} onClick={()=>triggerEditName({})}>
+							<BorderColorIcon
+								style={{color:Color_Constants.PRIMARY_COLOR,}}
+							/>
+						</div>
 					</div>
-				</div>
+				}
 			</div>
 
 			<div>
 				<p>
 					<b>Email</b>
 				</p>
-				<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-					<TextArea id="email" placeholder="Email"/>
-					<div style={VerticalLineCSS}/>
-					<div id="editButtonIcon" style={EditButtonCSS}>
-						<BorderColorIcon
-							onClick={()=>triggerEditEmail()}
-							style={{color:Color_Constants.PRIMARY_COLOR}}
-						/>
+				{isEmailEditing==true?
+					<p>Editing...</p>:
+					<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+						<TextArea id="email" placeholder="Email"/>
+						<div style={VerticalLineCSS}/>
+						<div id="editButtonIcon" style={EditButtonCSS} onClick={()=>triggerEditEmail({})}>
+							<BorderColorIcon
+								style={{color:Color_Constants.PRIMARY_COLOR}}
+							/>
+						</div>
 					</div>
-				</div>
+				}
 				<div style={{display:"flex",flexDirection:"row"}}>
 					<input type="checkbox" style={{cursor:"pointer"}}
 						onClick={()=>history.push(`/passwordReset`)}

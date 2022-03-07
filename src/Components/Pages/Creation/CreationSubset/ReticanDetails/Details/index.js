@@ -11,7 +11,8 @@ import {
 } from "../../../../../../Actions/Requests/ReticanRequests/Adapter/EditRetican.js";
 import {ReticanOverviewConsumer} from "../ReticanOverviewCreationContext.js";
 import {CreationContext} from "../../../CreationSet/CreationContext.js";
-import {useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
+import {tokensRegeneration} from "../../../../../../Actions/Tasks/UpdateTokens.js";
 
 const Container=styled.div`
 	width:40%;
@@ -19,6 +20,20 @@ const Container=styled.div`
 	flex-direction:column;
 	justify-content:space-between;
 	margin-right:2%;
+
+	@media screen and (max-width:1370px){
+		width:100%;
+	}
+
+	@media screen and (max-width:650px){
+		#reticanEditOptions{
+			flex-direction:column !important;
+		}
+		#editRetican{
+			margin-left:0% !important;
+			margin-top:5% !important;
+		}
+	}
 `;
 
 const InputContainer=styled.textarea`
@@ -72,7 +87,12 @@ const ReticanDetails=(props)=>{
 
 	const reticanOverviewConsumer=useContext(ReticanOverviewConsumer);
 	const reticanCreationConsumer=useContext(CreationContext);
-	const profileId=useSelector(state=>state.personalInformation._id);
+	const {
+		_id,
+		accessToken,
+		refreshToken
+	}=useSelector(state=>state.personalInformation);
+	const dispatch=useDispatch();
 
 	useEffect(()=>{
 		debugger;
@@ -95,15 +115,16 @@ const ReticanDetails=(props)=>{
 			triggerClearInputField("compressFile");
 		}
 		calculateTotalFileSize();
-				
+		
 		debugger;
-		if(originalReticanPointerMapping!=null){
+		clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
+		// if(originalReticanPointerMapping!=null){
 
-			const {reticanPointerAlterationStatus}=isReticanPointersAltered();
-			if(reticanPointerAlterationStatus){
-				clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
-			}
-		}
+		// 	const {reticanPointerAlterationStatus}=isReticanPointersAltered();
+		// 	if(reticanPointerAlterationStatus){
+		// 		clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
+		// 	}
+		// }
 	},[totalReticans]);
 
 	useEffect(()=>{
@@ -222,16 +243,18 @@ const ReticanDetails=(props)=>{
 					headerColor:selectedColorHeader
 				}
 			}
-			triggerEditReticanOverview(updatedReticanOverviewInformation);
+			triggerEditReticanOverview({updatedReticanOverviewInformation});
 		}
 	}
 
-	const triggerEditReticanOverview=async(updatedReticanOverviewInformation)=>{
+	const triggerEditReticanOverview=async({updatedReticanOverviewInformation,updatedAccessToken})=>{
 		changeIsEditingStatus(true);
 		const {confirmation,data}=await editReticanOverview(
 			reticanOverviewConsumer.reticanAssembly._id,
 			updatedReticanOverviewInformation,
-			profileId);
+			_id,
+            updatedAccessToken==null?accessToken:updatedAccessToken);
+
 
 		let editedReticanOverviewAlertMessage;
 		if(confirmation=="Success"){
@@ -239,28 +262,40 @@ const ReticanDetails=(props)=>{
         		header:"Retican Overview Details Edited",
         		description:""
 			}
+			reticanCreationConsumer.displayAlertScreen(editedReticanOverviewAlertMessage);
+			changeIsEditingStatus(false);
 		}else{
 			const {statusCode}=data;
-			if(statusCode==400){
-				editedReticanOverviewAlertMessage={
-	        		header:"Edit Retican Overview Details Error",
-	        		description:"Unfortunately there has been an error when editing your retican overview. Please try again"
-				}
+			if(statusCode==401){
+				tokensRegeneration({
+					currentRefreshToken:refreshToken,
+					userId:_id,
+					parentApiTrigger:triggerEditReticanOverview,
+					dispatch,
+					parameters:{updatedReticanOverviewInformation}
+				})
 			}else{
-				editedReticanOverviewAlertMessage={
-	        		header:"Internal Server Error",
-	        		description:"Unfortunately there has been an error on our part. Please try again later"
+				if(statusCode==400){
+					editedReticanOverviewAlertMessage={
+		        		header:"Edit Retican Overview Details Error",
+		        		description:"Unfortunately there has been an error when editing your retican overview. Please try again"
+					}
+				}else{
+					editedReticanOverviewAlertMessage={
+		        		header:"Internal Server Error",
+		        		description:"Unfortunately there has been an error on our part. Please try again later"
+					}
 				}
+				reticanCreationConsumer.displayAlertScreen(editedReticanOverviewAlertMessage);
+				changeIsEditingStatus(false);
 			}
-
 		}
-		reticanCreationConsumer.displayAlertScreen(editedReticanOverviewAlertMessage);
-		changeIsEditingStatus(false);
 	}
 
 	const isReticanPointersAltered=()=>{
 
 		let reticanPointerAlterationStatus=false;
+		let editedReticanPointers={};
 		let editedReticanMapping=new Map();
 
 		for(var i=0;i<totalReticans.length;i++){
@@ -277,14 +312,20 @@ const ReticanDetails=(props)=>{
 					reticanPointerAlterationStatus=true;
 				}
 			}
-				editedReticanMapping.set(totalReticans[i]._id,{
-					previousCardPointer,
-					nextCardPointer
-				});
+			editedReticanMapping.set(totalReticans[i]._id,{
+				previousCardPointer,
+				nextCardPointer
+			});
+
+
+			editedReticanPointers[totalReticans[i]._id]={
+				previousCardPointer,
+				nextCardPointer
+			}
 		}
 		return{
 			reticanPointerAlterationStatus,
-			editedReticanMapping
+			editedReticanPointers
 		};
 	}
 
@@ -292,7 +333,7 @@ const ReticanDetails=(props)=>{
 		debugger;
 		const {
 			reticanPointerAlterationStatus,
-			editedReticanMapping
+			editedReticanPointers
 		}=isReticanPointersAltered();
 
 		if(!reticanPointerAlterationStatus && editedReticans.length==0){
@@ -301,11 +342,15 @@ const ReticanDetails=(props)=>{
 
 			changeErroredInputIds([...tempErrorIds]);
 		}else{
-			let editedReticansInformation={};
+			let editedReticansInformation={
+				reticanOverviewId:reticanOverviewConsumer.reticanAssembly._id,
+				profileId:_id
+			};
+
 			if(reticanPointerAlterationStatus){
 				editedReticansInformation={
 					...editedReticansInformation,
-					reticanMappings:editedReticanMapping
+					reticanMappings:editedReticanPointers
 				}
 			}
 
@@ -315,13 +360,16 @@ const ReticanDetails=(props)=>{
 					updatedReticans:editedReticans
 				}
 			}
-			triggerEditReticans(editedReticansInformation);
+			triggerEditReticans({editedReticansInformation});
 		}
 	}
 
-	const triggerEditReticans=async(editedReticansInformation)=>{
+	const triggerEditReticans=async({editedReticansInformation,updatedAccessToken})=>{
 		changeIsEditingStatus(true);
-		const {confirmation,data}=await editedReticans(editedReticansInformation);
+		const {confirmation,data}=await editReticans({
+			...editedReticansInformation,
+			accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
+		});
 
 
 		let editedReticanAlertMessage;
@@ -330,23 +378,35 @@ const ReticanDetails=(props)=>{
         		header:"Reticans Edited",
         		description:""
 			}
+			reticanCreationConsumer.displayAlertScreen(editedReticanAlertMessage);
+			changeIsEditingStatus(false);
 		}else{
 			const {statusCode}=data;
-			if(statusCode==400){
-				editedReticanAlertMessage={
-	        		header:"Edit Retican Error",
-	        		description:"Unfortunately there has been an error when editing your reticans. Please try again"
-				}
-			}else{
-				editedReticanAlertMessage={
-	        		header:"Internal Server Error",
-	        		description:"Unfortunately there has been an error on our part. Please try again later"
-				}
-			}
 
+			if(statusCode==401){
+				tokensRegeneration({
+					currentRefreshToken:refreshToken,
+					userId:_id,
+					parentApiTrigger:triggerEditReticans,
+					dispatch,
+					parameters:{editedReticansInformation}
+				})
+			}else{
+				if(statusCode==400){
+					editedReticanAlertMessage={
+		        		header:"Edit Retican Error",
+		        		description:"Unfortunately there has been an error when editing your reticans. Please try again"
+					}
+				}else{
+					editedReticanAlertMessage={
+		        		header:"Internal Server Error",
+		        		description:"Unfortunately there has been an error on our part. Please try again later"
+					}
+				}
+				reticanCreationConsumer.displayAlertScreen(editedReticanAlertMessage);
+				changeIsEditingStatus(false);
+			}
 		}
-		reticanCreationConsumer.displayAlertScreen(editedReticanAlertMessage);
-		changeIsEditingStatus(true);
 	}
 
 	const triggerClearInputField=(divId)=>{
@@ -355,6 +415,14 @@ const ReticanDetails=(props)=>{
 		}else{
 			clearInputField(changeErroredInputIds,erroredInputIds,"editReticanOverview");
 		}
+	}
+
+	const fileSizeType=()=>{
+		return(
+			<React.Fragment>
+				{currentReticansFileSize>0?<p>MB</p>:<p>KB</p>}
+			</React.Fragment>
+		)
 	}
 
 	return(
@@ -386,12 +454,12 @@ const ReticanDetails=(props)=>{
 				/>
 			</div>
 			<div>
-				<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",fontSize:"18px",marginTop:"15%"}}>
+				<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",fontSize:"18px",marginTop:"2%"}}>
 					<p>
 						<b>Total Estimated Size:</b>
 					</p>
 					<p>
-						<b>{currentReticansFileSize} MB</b>
+						<b>{currentReticansFileSize} {fileSizeType}</b>
 					</p>
 				</div>
 
@@ -399,7 +467,7 @@ const ReticanDetails=(props)=>{
 					<React.Fragment>
 						{isEditing==true?
 							<p>Editing...</p>:
-							<div style={{display:"flex",flexDirection:"row",width:"100%"}}>
+							<div id="reticanEditOptions" style={{display:"flex",flexDirection:"row",width:"100%"}}>
 								<div style={{display:"flex",flexDirection:"column"}}>
 									<RequiredFieldNotification
 										id={"editReticanOverview"}

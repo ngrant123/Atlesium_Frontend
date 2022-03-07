@@ -1,12 +1,12 @@
-import React from "react";
+import React,{useEffect} from "react";
 import styled from "styled-components";
 import Navigation from "../../../UniversalComponents/Navigation/PageNavigation/index.js";
 import SettingsOptions from "../SettingSubset/index.js";
+import {useSelector} from "react-redux";
 
 const Container=styled.div`
 	position:absolute;
 	width:100%;
-	height:100%;
 	padding:0px;
 	display:flex;
 	flex-direction:row;
@@ -25,6 +25,15 @@ const Container=styled.div`
 
 
 const Settings=(props)=>{
+	const profileId=useSelector(state=>state.personalInformation._id);
+
+	useEffect(()=>{
+		debugger;
+		if(profileId=="" || profileId==null){
+			props.history.push('/');
+		}
+	},[])
+
 	return(
 		<Container id="settings">
 			<Navigation

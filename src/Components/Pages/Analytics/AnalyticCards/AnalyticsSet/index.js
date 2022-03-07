@@ -1,10 +1,11 @@
-import React,{useState,useMemo} from "react";
+import React,{useEffect,useState,useMemo} from "react";
 import styled from "styled-components";
 import Navigation from "../../../../UniversalComponents/Navigation/PageNavigation/index.js";
 import ReticanOverviews from "../AnalyticsSubset/ReticanOverviews/index.js";
 import Reticans from "../AnalyticsSubset/Reticans/index.js";
 import {AnaylticsProvider} from "./AnalyticsContext.js";
 import AlertSystem from "../../../../UniversalComponents/Skeletons/Alerts.js";
+import {useSelector} from "react-redux";
 
 const Container=styled.div`
 	position:absolute;
@@ -25,11 +26,19 @@ const Container=styled.div`
 `;
 
 
-const Analytics=()=>{
+const Analytics=(props)=>{
 	const [currentAnalyticsScreenType,changeCurrentAnalyticsScreenType]=useState("Overviews");
 	const [alertMessage,changeAlertMessage]=useState();
 	const [displayAlertMessage,changeDisplayAlertMessage]=useState(false);
 	const [targetReticanId,changeTargetReticanId]=useState();
+	const profileId=useSelector(state=>state.personalInformation._id);
+
+	useEffect(()=>{
+		debugger;
+		if(profileId=="" || profileId==null){
+			props.history.push('/');
+		}
+	},[])
 
 	const ComponentDecider=({screenType,children})=>{
 		return children.filter(child=>child.props.componentName==screenType)

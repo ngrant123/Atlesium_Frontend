@@ -8,21 +8,26 @@ const ColorHeaderCSS={
 	height:"60px",
 	borderRadius:"5px",
 	marginBottom:"2%",
-	cursor:"pointer"
+	cursor:"pointer",
+	flexShrink:0
 }
 
 const ReticanHeaderColorOptions=({closeModal,updateReticanDetailInformationInformation})=>{
 	const reticanHeaderColorOptions=()=>{
 		return(
-			<div style={{overflowY:"auto"}}>
+			<React.Fragment>
 				<p>Click on the color block you want your header to be</p>
 				<hr/>
 				{COLOR_OPTIONS.RETICAN_HEADER_COLOR_OPTIONS.map(data=>
-					<div style={{...ColorHeaderCSS,backgroundColor:data.backgroundColor}}
-						onClick={()=>updateReticanDetailInformationInformation(data.backgroundColor)}
+					<div style={{
+						...ColorHeaderCSS,
+						backgroundColor:data.isBackground==false?data.color:"",
+						background:data.isBackground==true?data.color:""
+					}}
+						onClick={()=>updateReticanDetailInformationInformation(data)}
 					/>
 				)}
-			</div>
+			</React.Fragment>
 		)
 	}
 	return(

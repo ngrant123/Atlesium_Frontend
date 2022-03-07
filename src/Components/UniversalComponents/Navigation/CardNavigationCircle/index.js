@@ -2,6 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import CircleIcon from "./CircularIcons.js";
 
+/*
+		display:flex;
+	${({specifiedFlexDirection})=>
+		`flex-direction:${specifiedFlexDirection};`
+	}
+	justify-content:space-between;
+*/
+
 const Container=styled.div`
 	position:relative;
 	display:flex;
@@ -12,30 +20,25 @@ const Container=styled.div`
 `;
 
 const CircleNavigationContainer=styled.div`
-	display:flex;
-	${({specifiedFlexDirection})=>
-		`flex-direction:${specifiedFlexDirection};`
-	}
-	height:10%;
-	justify-content:space-between;
+	background-color:green;
 
 `;
 
 
-const CampaignNavigation=({totalCards,currentSelectedIndex,specifiedFlexDirection,triggerUpdatedSelectedIndex})=>{
-	console.log(totalCards);
-	console.log(currentSelectedIndex);
+const CampaignNavigation=({totalCards,currentSelectedIndex,specifiedDirection,triggerUpdatedSelectedIndex})=>{
 	return(
 		<Container>	
-			<CircleNavigationContainer specifiedFlexDirection={specifiedFlexDirection}>
+			<ul style={{padding:"0px"}}>
 				{totalCards.map((data,index)=>
-					<CircleIcon
-						iteratedIndex={index}
-						currentSelectedIndex={currentSelectedIndex}
-						triggerUpdatedSelectedIndex={triggerUpdatedSelectedIndex}
-					/>
+					<li style={{listStyle:"none",display:specifiedDirection}}>
+						<CircleIcon
+							iteratedIndex={index}
+							currentSelectedIndex={currentSelectedIndex}
+							triggerUpdatedSelectedIndex={triggerUpdatedSelectedIndex}
+						/>
+					</li>
 				)}
-			</CircleNavigationContainer>
+			</ul>
 		</Container>
 	)
 }
