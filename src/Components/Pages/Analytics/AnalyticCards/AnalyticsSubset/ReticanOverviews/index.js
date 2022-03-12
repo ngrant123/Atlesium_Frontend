@@ -83,25 +83,57 @@ const ReticanOverviewAnalysis=()=>{
 		}
 		fetchData({});
 	},[]);
+
+
+
+	const reorderByMostRecent=()=>{
+		reticanOverviews.sort(function(a, b){return a.dateCreated - b.dateCreated});
+		changeReticanOverviews([...reticanOverviews]);
+	}
+
+	const reorderByOldest=()=>{
+		reticanOverviews.sort(function(a, b){return b.dateCreated - a.dateCreated});
+		changeReticanOverviews([...reticanOverviews]);
+	}
+
+
+	const reorderByPopularity=()=>{
+
+	}
 	return(
 		<Container>
 			<div style={{marginTop:"5%",display:"flex",flexDirection:"row"}}>
 				<SecondaryOptions
 					headerText={"Sort-By"}
 					options={[
-						{option:"Date"},
-						{option:"Popularity"}
+						{
+							option:"Recent",
+							methodRetrieval:reorderByMostRecent
+						},
+						{
+							option:"Oldest",
+							methodRetrieval:reorderByOldest
+						}
 					]}
 				/>
-				<div style={{marginLeft:"2%"}}>
-					<SecondaryOptions
-						headerText={"Retican Status"}
-						options={[
-							{option:"Active"},
-							{option:"Inactive"}
-						]}
-					/>
-				</div>
+				{/*
+					{
+						option:"Popularity",
+						methodRetrieval:reorderByPopularity
+					}
+
+					Not yet next feature addition
+
+					<div style={{marginLeft:"2%"}}>
+						<SecondaryOptions
+							headerText={"Retican Status"}
+							options={[
+								{option:"Active"},
+								{option:"Inactive"}
+							]}
+						/>
+					</div>
+				*/}
 			</div>
 			<hr/>
 			<ReticanOverviewContainer>

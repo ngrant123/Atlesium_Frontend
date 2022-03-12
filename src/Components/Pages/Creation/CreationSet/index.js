@@ -11,6 +11,10 @@ import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
 import {CreationProvider} from "./CreationContext.js";
 import {useSelector,useDispatch} from "react-redux";
 import {tokensRegeneration} from "../../../../Actions/Tasks/UpdateTokens.js";
+import ReticanOnboardingModal from "../../../UniversalComponents/Onboarding/ReticanOnboarding.js";
+import {
+	retrieveReticanOnboardingStatus
+} from "../../../../Actions/Requests/ProfileRequests/Retrieval/OnboardingStatusRetrieval.js";
 
 
 const Container=styled.div`
@@ -41,6 +45,8 @@ const Creation=(props)=>{
 	const [displayAlertMessage,changeDisplayAlertMessage]=useState(false);
 	const [isEditReticanDesired,changeIsEditReticanDesiredStatus]=useState(false);
 	const [isLoadingEditedReticanInformation,changeIsLoadingEditedReticanInformation]=useState(true);
+	const [reticanHeaderColor,changeReticanHeaderColor]=useState();
+	const [displayOnboardingModal,changeDisplayOnboardingModal]=useState(false);
 	const dispatch=useDispatch();
 
 	const {
@@ -54,6 +60,18 @@ const Creation=(props)=>{
 		if(_id=="" || _id==null){
 			props.history.push('/');
 		}
+	},[]);
+
+	useEffect(()=>{
+		const fetchOnboardingStatus=async()=>{
+			const {confirmation,data}=await retrieveReticanOnboardingStatus(_id);
+			if(confirmation=="Success"){
+				const {message}=data;
+				changeDisplayOnboardingModal(!message);
+			}
+		}
+		fetchOnboardingStatus();
+		
 	},[]);
 
 	useEffect(()=>{
@@ -74,6 +92,7 @@ const Creation=(props)=>{
 			const {message}=data;
 			changeIsEditReticanDesiredStatus(true);
 			changeReticanAssembly(message);
+			changeReticanHeaderColor(message.headerColor);
 		}else{
 			const {statusCode}=data;
 			let reticanOverviewCreationErrorMessage;
@@ -160,6 +179,8 @@ const Creation=(props)=>{
 					progressScreen={displaySelectedScreen}
 					reticanAssembly={reticanAssembly}
 					isEditReticanDesired={isEditReticanDesired}
+					updateReticanAssemblerInformation={updateReticanAssemblerInformation}
+					reticanHeaderColor={reticanHeaderColor}
 				/>
 				<ReviewStage name="review"
 					progressScreen={displaySelectedScreen}
@@ -174,6 +195,25 @@ const Creation=(props)=>{
   		isLoadingEditedReticanInformation
   	]);
 
+  	const closeOnboardingModal=()=>{
+  		changeDisplayOnboardingModal(false);
+  	}
+
+  	const onboardingModal=()=>{
+		return(
+			<React.Fragment>
+				{displayOnboardingModal==true &&(
+					<ReticanOnboardingModal
+						targetDom={"reticanCreation"}
+						closeModal={closeOnboardingModal}
+						profileId={_id}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
+
+
 
 	return(
 		<CreationProvider
@@ -187,6 +227,7 @@ const Creation=(props)=>{
 				}
 			}}
 		>
+			{onboardingModal()}
 			<Container id="reticanCreation">
 				{reticanCreationErrorAlertModal()}
 				<CreationProgressBar

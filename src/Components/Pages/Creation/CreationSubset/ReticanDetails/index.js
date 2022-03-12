@@ -67,21 +67,25 @@ const ColorHeaderCSS={
 	cursor:"pointer"
 }
 
-const ReticanDetailsInit=({progressScreen,reticanAssembly,isEditReticanDesired})=>{
+const ReticanDetailsInit=(props)=>{
+	const {
+		reticanHeaderColor,
+		progressScreen,
+		reticanAssembly,
+		isEditReticanDesired,
+		updateReticanAssemblerInformation
+	}=props;
+
 	console.log(reticanAssembly);
 	console.log("Rerendered");
 
 	const [displayReticanHeaderColorOptions,changeReticanHeaderColorOptionsDisplay]=useState(false);
-	const [selectedColorHeader,changeSelectedColorHeader]=useState();
+	const [selectedColorHeader,changeSelectedColorHeader]=useState(reticanAssembly==null?null:reticanAssembly.headerColor);
 	let [currentReticanDetails,changeReticanDetails]=useState(reticanAssembly==null?{}:reticanAssembly);
 	const [editedReticans,changeEditedReticans]=useState([]);
 
 	console.log(currentReticanDetails);
-	useEffect(()=>{
-		if(reticanAssembly!=null){
-			changeSelectedColorHeader(reticanAssembly.headerColor);
-		}
-	},[]);
+
 
 
 	const closeModal=()=>{
@@ -98,6 +102,7 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly,isEditReticanDesired})
 			...currentReticanDetails,
 			...additionalReticanInformation
 		}
+		updateReticanAssemblerInformation(additionalReticanInformation);
 		changeReticanDetails({...currentReticanDetails});
 	}
 
@@ -144,6 +149,15 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly,isEditReticanDesired})
 		changeEditedReticans([...currentEditedReticans]);
 	}
 
+	const triggerPreviousScreen=()=>{
+		const quickSavedTitleAndDescription={
+			title:document.getElementById("title").value,
+			description:document.getElementById("description").value
+		}
+		updateReticanAssemblerInformation({...quickSavedTitleAndDescription});
+		progressScreen("webInformation");
+	}
+
 	return(
 		<ReticanOverviewProvider
 			value={{
@@ -154,7 +168,7 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly,isEditReticanDesired})
 				{headerColorOptionsModal()}
 				<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 					<ArrowBackIosRoundedIcon
-						onClick={()=>progressScreen("webInformation")}
+						onClick={()=>triggerPreviousScreen()}
 						style={{fontSize:"18",marginTop:"-10px",cursor:"pointer"}}
 					/>
 					<p id="overviewDetailsHeaderText" style={{fontSize:"18px",marginLeft:"4%"}}>
@@ -182,7 +196,9 @@ const ReticanDetailsInit=({progressScreen,reticanAssembly,isEditReticanDesired})
 						totalReticans={currentReticanDetails.reticans==null?[]:currentReticanDetails.reticans}
 						isEditReticanDesired={isEditReticanDesired}
 						selectedColorHeader={selectedColorHeader}
+						originalHeaderColor={reticanHeaderColor}
 						editedReticans={editedReticans}
+						triggerUpdateReticanParentInformation={triggerUpdateReticanParentInformation}
 					/>
 					<hr style={HorizontalLineCSS} id="horizontalLineDivider"/>
 

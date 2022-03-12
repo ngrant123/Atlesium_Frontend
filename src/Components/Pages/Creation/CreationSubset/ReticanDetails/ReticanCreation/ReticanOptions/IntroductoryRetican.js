@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from "react";
 import styled from "styled-components";
 import Color_Constants from "../../../../../../../Utils/ColorConstants.js";
+import {isSpecialCharactersSeen} from "../../../../../../../Actions/Validation/SpecialCharactersAnalysis.js";
 
 
 const InputContainer=styled.textarea`
@@ -37,19 +38,30 @@ const ButtonCSS={
 	marginBottom:"2%"
 }
 
+
+const HorizontalLineCSS={
+	position:"relative",
+	width:"100%",
+	height:"2px",
+	borderRadius:"5px",
+	borderRadius:"5px"
+}
+
+
 const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRetican,reticanInformation})=>{
 	const [pageRedirects,changePageRedirects]=useState([]);
 	const [introductoryText,changeIntroductoryText]=useState();
-	const [displayPageRedirectCreation,changeDisplayPageRedirectionCreation]=useState(false);
+	const [currentSelectedComponent,changeCurrentSelectedComponent]=useState("initial");
+	const [errorMessage,changeErrorMessage]=useState();
 
 	useEffect(()=>{
-		if(displayPageRedirectCreation){
+		if(currentSelectedComponent=="linksCreation"){
 			document.getElementById("pageRedirectUrl").value="";
 			document.getElementById("pageRedirectDescription").value="";
-		}else{
+		}else if(currentSelectedComponent=="pageDescription"){
 			document.getElementById("introductoryText").value=introductoryText==null?"":introductoryText;
 		}
-	},[displayPageRedirectCreation]);
+	},[currentSelectedComponent]);
 
 
 	useEffect(()=>{
@@ -58,33 +70,70 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 			const previousIntroductoryText=reticanInformation.introductoryText;
 
 			changePageRedirects([...previousPageRedirects]);
-			document.getElementById("introductoryText").value=previousIntroductoryText;
+			changeIntroductoryText(previousIntroductoryText);
 		}
 	},[]);
 
+	useEffect(()=>{
+		if(errorMessage!=null){
+			setTimeout(()=>{
+				changeErrorMessage(null);
+			},5000);
+		}
+	},[errorMessage]);
+
 	const triggerAddPageRedirect=()=>{
+		debugger;
+		const urlRedirect=document.getElementById("pageRedirectUrl").value;
+		const pageRedirectDescription=document.getElementById("pageRedirectDescription").value;
+		const urlRedirectSpecialCharacterIndicator=isSpecialCharactersSeen(urlRedirect);
+
+		if(urlRedirect=="" || pageRedirectDescription=="" || urlRedirectSpecialCharacterIndicator){
+			let errorMessage;
+			if(urlRedirect=="" || pageRedirectDescription==""){
+				errorMessage="Please enter a url redirect or page direct description";
+			}else{
+				errorMessage="No special characters allowed in url redirect link";
+			}
 
 
-		const redirectInformation={
-			urlRedirect:document.getElementById("pageRedirectUrl").value,
-			pageRedirectDescription:document.getElementById("pageRedirectDescription").value
+			changeErrorMessage(errorMessage)
+		}else{		
+			const redirectInformation={
+				urlRedirect:document.getElementById("pageRedirectUrl").value,
+				pageRedirectDescription:document.getElementById("pageRedirectDescription").value
+			}
+
+			pageRedirects.push(redirectInformation);
+
+			changePageRedirects([...pageRedirects]);
+			changeCurrentSelectedComponent("initial")	
 		}
 
-		pageRedirects.push(redirectInformation);
-
-		changePageRedirects([...pageRedirects]);
-		changeDisplayPageRedirectionCreation(false);		
 
 	}
 
 	const triggerDisplayPageRedirectionCreation=()=>{
-		changeIntroductoryText(document.getElementById("introductoryText").value);
-		changeDisplayPageRedirectionCreation(true)
+		changeCurrentSelectedComponent("linksCreation");
 	}
 
 	const deletePageRedirection=(currentIndex)=>{
 		pageRedirects.splice(currentIndex,1);
 		changePageRedirects([...pageRedirects]);
+	}
+
+	const triggerDisplayPageIntroductionCreation=()=>{
+		changeCurrentSelectedComponent("pageDescription");
+	}
+
+	const addIntroductoryText=()=>{
+		const introductoryText=document.getElementById("introductoryText").value;
+		if(introductoryText==""){
+			changeErrorMessage("Please enter a page description");
+		}else{
+			changeIntroductoryText(introductoryText);
+			changeCurrentSelectedComponent("initial");
+		}
 	}
 
 	const deletePageRedirectIcon=(currentIndex)=>{
@@ -101,61 +150,128 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 		)
 	}
 
-	return(
-		<React.Fragment>
-			{displayPageRedirectCreation==false?
-				<React.Fragment>
-					<InputContainer 
-						id="introductoryText" 
-						placeholder="Enter a written description of your introduction here"
-					/>
+	const ComponenetDecider=({componentName,children})=>{
+		debugger;
+		return children.filter(data=>data.props.componentName==componentName);
+	}
 
+	const Initializer=()=>{
+		return(
+			<React.Fragment>
+				<p style={{marginTop:"2%"}}>{introductoryText}</p>
+
+				<div style={{display:"flex",flexDirection:"column"}}>
 					<div style={{display:"flex",flexDirection:"row"}}>
-						<div style={ButtonCSS} onClick={()=>displayReticanInitialOptionCreation()}>
-							Close
+						<div style={ButtonCSS} onClick={()=>triggerDisplayPageIntroductionCreation()}>
+							{introductoryText==null?
+								<React.Fragment>
+									Create Page Introduction
+								</React.Fragment>:
+								<React.Fragment>
+									Edit Page Introduction
+								</React.Fragment>
+							}
 						</div>
+
 						{pageRedirects.length<3 &&(
 							<div style={ButtonCSS} onClick={()=>triggerDisplayPageRedirectionCreation()}>
 								Add Page Redirect
 							</div>
 						)}
+					</div>
+					<hr style={HorizontalLineCSS}/>
+					<div style={{display:"flex",flexDirection:"row"}}>
+						<div style={ButtonCSS} onClick={()=>displayReticanInitialOptionCreation()}>
+							Close
+						</div>
+
 						<div style={ButtonCSS} onClick={()=>triggerCreateRetican({
 							pageRedirects,
-							introductoryText:document.getElementById("introductoryText").value
+							introductoryText
 						})}>
 							Create Retican
 						</div>
 					</div>
-					<div style={{display:"flex",flexDirection:"column"}}>
-						{pageRedirects.map((data,index)=>
-							<li>
-								<div style={{display:"flex",flexDirection:"row"}}>
-									{data.urlRedirect}
-									{deletePageRedirectIcon(index)}
-								</div>
-							</li>
-						)}
+				</div>
+				<hr/>
+				<div style={{display:"flex",flexDirection:"column"}}>
+					{pageRedirects.map((data,index)=>
+						<li>
+							<div style={{display:"flex",flexDirection:"row"}}>
+								{data.urlRedirect}
+								{deletePageRedirectIcon(index)}
+							</div>
+						</li>
+					)}
+				</div>
+			</React.Fragment>
+		)
+	}
+
+	const PageDescription=()=>{
+		return(
+			<React.Fragment>
+				<InputContainer 
+					id="introductoryText" 
+					placeholder="Enter a written description of your introduction here"
+				/>
+
+				{errorMessage!=null &&(
+					<p style={{color:Color_Constants.CALL_TO_ACTION_COLOR}}>
+						<b>{errorMessage}</b>
+					</p>
+				)}
+
+				<div style={{display:"flex",flexDirection:"row"}}>	
+					<div style={ButtonCSS} onClick={()=>changeCurrentSelectedComponent("initial")}>
+						Close
 					</div>
-				</React.Fragment>:
-				<React.Fragment>
-					<InputContainer 
-						id="pageRedirectUrl" 
-						placeholder="Enter a link on your website you want a button to redirect to. E.g. signup. The final link will be www.youwebsite.com/signup"
-					/>
-					<InputContainer 
-						id="pageRedirectDescription" 
-						placeholder="Enter a description of you link. For example if you had used signup above you can write Sign-Up"
-					/>
-					<div style={{display:"flex",flexDirection:"row"}}>
-						<div style={ButtonCSS} onClick={()=>changeDisplayPageRedirectionCreation(false)}>
-							Back
-						</div>
-						<div style={ButtonCSS} onClick={()=>triggerAddPageRedirect()}>
-							Add
-						</div>
+					<div style={ButtonCSS} onClick={()=>addIntroductoryText()}>
+						Add Introductory Text
 					</div>
-				</React.Fragment>
-			}
+				</div>
+			</React.Fragment>
+		)
+	}
+
+	const Links=()=>{
+		return(
+			<React.Fragment>
+				<InputContainer 
+					id="pageRedirectUrl" 
+					placeholder="Enter a link on your website you want a button to redirect to. E.g. signup. The final link will be www.youwebsite.com/signup"
+				/>
+				<InputContainer 
+					id="pageRedirectDescription" 
+					placeholder="Enter a description of you link. For example if you had used signup above you can write Sign-Up"
+				/>
+
+				{errorMessage!=null &&(
+					<p style={{color:Color_Constants.CALL_TO_ACTION_COLOR}}>
+						<b>{errorMessage}</b>
+					</p>
+				)}
+				<div style={{display:"flex",flexDirection:"row"}}>
+					<div style={ButtonCSS} onClick={()=>changeCurrentSelectedComponent("initial")}>
+						Back
+					</div>
+					<div style={ButtonCSS} onClick={()=>triggerAddPageRedirect()}>
+						Add
+					</div>
+				</div>
+			</React.Fragment>
+		)
+	}
+
+
+
+	return(
+		<React.Fragment>
+			<ComponenetDecider componentName={currentSelectedComponent}>
+				<Initializer componentName={"initial"}/>
+				<PageDescription componentName={"pageDescription"}/>
+				<Links componentName={"linksCreation"}/>
+			</ComponenetDecider>
 
 		</React.Fragment>
 	)

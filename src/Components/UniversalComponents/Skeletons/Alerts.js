@@ -23,19 +23,19 @@ const Container=styled.div`
 	width:50%;
 	left:25%;
 	padding:40px;
-	display:flex;
-	overflow:hidden;
-	flex-direction:column;
+	overflow-y:auto;
+
+	@media screen and (max-width:1370px){
+		#headerText{
+			flex-direction:column-reverse !important;
+		}
+	}
 
 	@media screen and (max-width:650px){
 		top:0%;
 		width:100%;
 		left:0%;
 		height:100%;
-
-		#headerText{
-			flex-direction:column-reverse !important;
-		}
 	}
 `;
 

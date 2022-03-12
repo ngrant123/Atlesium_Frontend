@@ -12,17 +12,25 @@ const ColorHeaderCSS={
 	flexShrink:0
 }
 
+const HorizontalLineCSS={
+	position:"relative",
+	width:"100%",
+	height:"2px",
+	borderRadius:"5px",
+	borderRadius:"5px"
+}
+
 const ReticanHeaderColorOptions=({closeModal,updateReticanDetailInformationInformation})=>{
 	const reticanHeaderColorOptions=()=>{
 		return(
 			<React.Fragment>
 				<p>Click on the color block you want your header to be</p>
-				<hr/>
+				<hr style={HorizontalLineCSS}/>
 				{COLOR_OPTIONS.RETICAN_HEADER_COLOR_OPTIONS.map(data=>
 					<div style={{
 						...ColorHeaderCSS,
-						backgroundColor:data.isBackground==false?data.color:"",
-						background:data.isBackground==true?data.color:""
+						background:data.color,
+						backgroundColor:data.color
 					}}
 						onClick={()=>updateReticanDetailInformationInformation(data)}
 					/>

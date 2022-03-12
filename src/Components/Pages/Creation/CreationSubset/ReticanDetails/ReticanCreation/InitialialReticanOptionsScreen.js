@@ -24,7 +24,7 @@ const ReticanOptionCSS={
 	marginBottom:"2%"
 }
 
-const InitialScreen=({reticansLength,displayDefaultReticans})=>{
+const InitialScreen=({reticansLength,displayDefaultReticans,isIntroductoryPresent})=>{
 	const [displayReticanOptionCreation,changeReticanOptionCreation]=useState(false);
 	const [selectedReticanOption,changeSelectedReticanOption]=useState();
 
@@ -85,10 +85,12 @@ const InitialScreen=({reticansLength,displayDefaultReticans})=>{
 							General Retican
 						</div>
 
-						<div style={ReticanOptionCSS}
-							onClick={()=>triggerDisplayReticanOptionCreation("Introductory")}>
-							Introductory Retican
-						</div>
+						{isIntroductoryPresent==false &&(
+							<div style={ReticanOptionCSS}
+								onClick={()=>triggerDisplayReticanOptionCreation("Introductory")}>
+								Introductory Retican
+							</div>
+						)}
 					</div>
 				</React.Fragment>
 			}

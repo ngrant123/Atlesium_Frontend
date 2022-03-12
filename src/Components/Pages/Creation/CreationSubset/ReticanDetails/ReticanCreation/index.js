@@ -1,11 +1,10 @@
-import React,{useState,useContext,useEffect} from "react";
+import React,{useState,useContext,useEffect,useMemo} from "react";
 import styled from "styled-components";
 import test4 from "../../../../../../Assets/LandingPageSpecific/scrollingWindowBlock_4.png";
 import EditIcon from '@material-ui/icons/ReplayRounded';
 import PauseIcon from '@material-ui/icons/Pause';
 import CropIcon from '@material-ui/icons/Crop';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-
 
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 import CropBar from "./CropBar/index.js";
@@ -18,6 +17,8 @@ import EditReticanModal from "./ReticanOptions/index.js";
 import {ReticanOverviewConsumer} from "../ReticanOverviewCreationContext.js";
 import {CreationContext} from "../../../CreationSet/CreationContext.js";
 import {reorderPointers} from "../../../../../../Actions/Tasks/ReorderPointers.js";
+import ReticanReorder from "./ReorderModal.js";
+import VideoLoadingPrompt from "../../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
 
 
 
@@ -36,9 +37,6 @@ const Container=styled.div`
 	}
 
 	@media screen and (max-width:650px){
-		#reticanOptions{
-			flex-direction:column !important;
-		}
 
 		#reticansNavigation{
 			margin-left:0% !important;
@@ -58,17 +56,6 @@ const VideoOptionsCSS={
 	alignItems:"center",
 	cursor:"pointer"
 }
-
-const RankingInputContainer=styled.textarea`
-	position:relative;
-	height:40px;
-	border-style:solid;
-	border-width:1px;
-	border-color:${COLOR_CONSTANTS.GREY};
-	resize:none;
-	padding:10px;
-	border-radius:5px;
-`;
 
 /*
 	<video id="videoElement"
@@ -115,11 +102,10 @@ const ReticanTypeCSS={
 	color:COLOR_CONSTANTS.PRIMARY_COLOR
 }
 
-const ProgressNodesCSS={
+const NodeCSS={
 	width:"35px",
 	height:"35px",
 	borderRadius:"50%",
-	backgroundColor:COLOR_CONSTANTS.PRIMARY_SECONDARY_COLOR,
 	transition:".8s",
 	display:"flex",
 	justifyContent:"center",
@@ -127,6 +113,19 @@ const ProgressNodesCSS={
 	padding:"10%",
 	marginBottom:"20%",
 	cursor:"pointer"
+}
+
+const UnSelectedNodeCSS={
+	...NodeCSS,
+	backgroundColor:COLOR_CONSTANTS.PRIMARY_SECONDARY_COLOR
+}
+
+const SelectedNodeCSS={
+	...NodeCSS,
+	borderStyle:"solid",
+	borderWidth:"3px",
+	borderColor:COLOR_CONSTANTS.PRIMARY_SECONDARY_COLOR,
+	backgroundColor:"white"
 }
 
 const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdited,isEditReticanDesired})=>{
@@ -147,6 +146,10 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 		?true
 		:false);
 	const [displayRankingReOrderSuccess,changeDisplayRankingReorderSuccess]=useState();
+	const [rankingReorderMessage,changeRankingReorderMessage]=useState();
+
+	const [displayReticanEditButtons,changeDisplayReticanEditButtons]=useState(true);
+	const [isIntroductoryPresent,changeIsIntroductoryPresent]=useState(false);
 	const reticanCreationParentConsumer=useContext(CreationContext);
 
 
@@ -155,18 +158,31 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 	console.log(reticans);
 
 	useEffect(()=>{
-		debugger;
-		if(document.getElementById("rankingContainer")!=null){
-			document.getElementById("rankingContainer").value=currentReticanCounter+1;
+		if(reticanOverviewConsumer.reticanAssembly.reticans!=null){
+			if(reticanOverviewConsumer.reticanAssembly.reticans.length>0){
+				if(reticanOverviewConsumer.reticanAssembly.reticans[0].reticanOptionType=="Introductory"){
+					changeIsIntroductoryPresent(true);
+				}
+			}
 		}
-	},[reticans,currentReticanCounter]);
+	},[])
 
 	useEffect(()=>{
-		if(displayRankingReOrderSuccess){
-			setTimeout(()=>{
-				changeDisplayRankingReorderSuccess(null);
-			},1000);
+		debugger;
+		if(document.getElementById("rankingContainer")!=null && editReticanModal==false){
+			document.getElementById("rankingContainer").value=currentReticanCounter+1;
 		}
+	},[
+		reticans,
+		currentReticanCounter,
+		editReticanModal,
+		displayInitialReticanScreen]);
+
+	useEffect(()=>{
+		const milliseconds=displayRankingReOrderSuccess==true?1000:5000;
+		setTimeout(()=>{
+			changeDisplayRankingReorderSuccess(null);
+		},milliseconds);
 	},[displayRankingReOrderSuccess]);
 
 	const uuid=()=>{
@@ -195,6 +211,9 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 
 	const deleteRetican=()=>{
 		debugger;
+		if(reticans[currentReticanCounter].reticanOptionType=="Introductory"){
+			changeIsIntroductoryPresent(false);
+		}
 		reticans.splice(currentReticanCounter,1);
 		let reorderedReticans=reorderPointers(reticans);
 		triggerUpdateReticanParentInformation({reticans:[...reorderedReticans]});
@@ -211,26 +230,25 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 		changeReticanScreen(false);
 	}
 //
-	const analyzeInput=(event)=>{
+	const analyzeInput=(requestedReorderIndex)=>{
 		debugger;
 		changeDisplayRankingReorderSuccess(null);
-		if((!!event.key.trim() && event.key > -1)==false){
-			event.preventDefault();
-		}else{
-			if(event.key<=reticans.length && event.key>0){
-				let currentReticans=reticans;
-				let currentSelectedRetican=reticans[currentReticanCounter];
-				currentReticans.splice(currentReticanCounter,1);
-				currentReticans.splice(event.key==0?0:event.key-1, 0, currentSelectedRetican);
-				let reorderedReticans=reorderPointers(currentReticans);
-				changeReticans([...reorderedReticans]);
-				triggerUpdateReticanParentInformation({reticans:[...reorderedReticans]});
+		if(requestedReorderIndex<=reticans.length-1 && requestedReorderIndex>=0){
+			let currentReticans=reticans;
+			let currentSelectedRetican=reticans[currentReticanCounter];
+			currentReticans.splice(currentReticanCounter,1);
+			currentReticans.splice(requestedReorderIndex, 0, currentSelectedRetican);
+			let reorderedReticans=reorderPointers(currentReticans);
+			changeReticans([...reorderedReticans]);
+			changeCurrentReticanCounter(requestedReorderIndex);
+			triggerUpdateReticanParentInformation({reticans:[...reorderedReticans]});
 
-				changeDisplayRankingReorderSuccess(true);
-			}else{
-				event.preventDefault();
-				changeDisplayRankingReorderSuccess(false);
-			}
+			changeRankingReorderMessage("Ranking Re-Order Success");
+			changeDisplayRankingReorderSuccess(true);
+		}else{
+			changeRankingReorderMessage(`Ranking Re-Order Failure. Ranking provided is out of bounds. Please provide
+																a number between 1 and ${reticans.length}`);
+			changeDisplayRankingReorderSuccess(false);
 		}
 	}
 
@@ -246,6 +264,45 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 		changeReticanScreen(true);
 	}
 
+	const reticansDisplay=(iteratedIndexCounter)=>{
+		debugger;
+		let nodeCSS;
+		if(iteratedIndexCounter==currentReticanCounter){
+			nodeCSS=SelectedNodeCSS;
+		}else{
+			nodeCSS=UnSelectedNodeCSS;
+		}
+
+		return(
+			<div style={nodeCSS}
+				onClick={()=>changeCurrentReticanCounter(iteratedIndexCounter)}
+			/>
+		)	
+	}
+
+	const alterReticanEditButtonsDisplayStatus=(statusAlteration)=>{
+		changeDisplayReticanEditButtons(statusAlteration);
+	}
+
+	const displayIntroductoryReticanPreventionReorderMessage=()=>{
+		changeRankingReorderMessage("Unable to reorder. Introductory reticans are permanently placed at order 1");
+		changeDisplayRankingReorderSuccess(false);
+	}
+
+
+	const memoizedReticanReorder=useMemo(()=>{
+		return(
+			<ReticanReorder
+				analyzeInput={analyzeInput}
+				alterReticanEditButtonsDisplayStatus={alterReticanEditButtonsDisplayStatus}
+				currentReticanCounter={currentReticanCounter}
+				firstReticanType={reticans.length==0?null:reticans[0].reticanOptionType}
+				currentReticanType={reticans.length==0?null:reticans[currentReticanCounter].reticanOptionType}
+				displayIntroductoryReticanPreventionReorderMessage={displayIntroductoryReticanPreventionReorderMessage}
+			/>
+		)
+	},[currentReticanCounter,reticans]);
+
 	return(
 		<ReticanCreationProvider
 			value={{
@@ -254,7 +311,15 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 				},
 				createRetican:(reticanInformation)=>{
 					debugger;
-					reticans.push(reticanInformation);
+
+					if(reticanInformation.reticanOptionType=="Introductory"){
+						reticans.splice(0,0,reticanInformation);
+						changeIsIntroductoryPresent(true);
+					}else{
+						reticans.push(reticanInformation);
+					}
+
+
 					changeReticans([...reticans]);
 					triggerUpdateReticanParentInformation({reticans:[...reticans]});
 					triggerDisplayReticanDisplay();
@@ -264,7 +329,6 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 					}
 				},
 				editRetican:(editedReticanInformation)=>{
-					debugger;
 					const {
 						videoInformation:{
 							videoUrl,
@@ -285,6 +349,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 						...editedReticanInformation,
 						reticanId:reticans[currentReticanCounter]._id
 					});
+					changeCurrentReticanCounter(currentReticanCounter);
 					displayCurrentlySelectedReticans();
 					triggerUpdateReticanParentInformation({reticans:[...reticans]});
 				}
@@ -303,39 +368,42 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 							<InitialialReticanOptionsScreen
 								reticansLength={reticans.length}
 								displayDefaultReticans={triggerDisplayReticanDisplay}
+								isIntroductoryPresent={isIntroductoryPresent}
 							/>:
 							<React.Fragment>
 								<div style={{display:"flex",flexDirection:"row"}}>
 									<div style={{display:"flex",flexDirection:"column"}}>
-										<video id="videoElement"
-											key={uuid()}
-											width="400px" height="250px" borderRadius="50%"
-											autoPlay loop autoBuffer playsInline muted controls>
-											<source src={reticans[currentReticanCounter].videoInformation.videoUrl}
-												type="video/mp4"/>
-										</video>
+										<VideoLoadingPrompt
+											videoElement={
+												<video id="videoElement"
+													key={uuid()} style={{backgroundColor:"#151515",borderRadius:"5px"}}
+													width="400px" height="250px" borderRadius="50%"
+													autoPlay loop autoBuffer playsInline muted controls>
+													<source src={reticans[currentReticanCounter].videoInformation.videoUrl}
+														type="video/mp4"/>
+												</video>
+											}
+											videoId="videoElement"
+										/>
+									
 										<div id="reticanOptions" 
 											style={{display:"flex",flexDirection:"row",marginTop:"5%",marginBottom:"5%"}}>
-											<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-												<div style={{...VideoOptionsCSS}}
-													onClick={()=>changeEditReticanModal(true)}>
-													<EditIcon/>
-												</div>
 
-												<div style={{...VideoOptionsCSS,marginLeft:"5%"}}
-													onClick={()=>changeDisplayDeleteRetican(true)}>
-													<DeleteIcon/>
-												</div>
-											</div>
+											{displayReticanEditButtons==true &&(
+												<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+													<div style={{...VideoOptionsCSS}}
+														onClick={()=>changeEditReticanModal(true)}>
+														<EditIcon/>
+													</div>
 
-											<div style={{marginLeft:"10%",display:"flex",flexDirection:"row"}}>
-												<p style={{marginLeft:"10%",marginRight:"2%"}}>
-													<b>Ranking:</b>
-												</p>
-												<RankingInputContainer type="number" id="rankingContainer"
-													onKeyPress={e=>analyzeInput(e)}
-												/>
-											</div> 
+													<div style={{...VideoOptionsCSS,marginLeft:"5%"}}
+														onClick={()=>changeDisplayDeleteRetican(true)}>
+														<DeleteIcon/>
+													</div>
+												</div>
+											)}
+
+											{memoizedReticanReorder}
 
 										</div>
 										{displayRankingReOrderSuccess!=null &&(
@@ -345,13 +413,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 													COLOR_CONSTANTS.CALL_TO_ACTION_COLOR:
 													COLOR_CONSTANTS.SUCCESS_ACTION_COLOR}}>
 													<b>
-														{displayRankingReOrderSuccess==true?
-															<>Ranking Re-Order Success</>:
-															<>
-																Ranking Re-Order Failure. Ranking provided is out of bounds. Please provide
-																a number between 1 and {reticans.length}
-															</>
-														}
+														{rankingReorderMessage}
 													</b>
 												</p>
 											</React.Fragment>
@@ -361,26 +423,17 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 									<div id="reticansNavigation" 
 										style={{display:"flex",flexDirection:"column",marginLeft:"5%"}}>
 										{reticans.map((data,index)=>
-											<div style={ProgressNodesCSS}
-												onClick={()=>changeCurrentReticanCounter(index)}
-											/>
+											<React.Fragment>
+												{reticansDisplay(index)}
+											</React.Fragment>
 										)}
 
 										<div style={VideoOptionsCSS} onClick={()=>triggerDisplayInitialReticanScreen()}>
 											<AddCircleOutlineIcon/>
 										</div>
-
-										{/*
-											{reticans.length!=3 &&(
-												<div style={{...VideoOptionsCSS,transform:"rotate(130deg)"}}
-													onClick={()=>changeReticanScreen(true)}>
-													<CancelOutlinedIcon/>
-												</div>
-											)}
-										*/}
 									</div>
 								</div>
-								<p style={{marginTop:"5%"}}>You have <b>{3-reticans.length}</b> reticans remaining</p>
+								<p style={{marginTop:"5%"}}>You have the option to use <b>{5-reticans.length}</b> reticans left</p>
 							</React.Fragment>
 						}
 					</React.Fragment>

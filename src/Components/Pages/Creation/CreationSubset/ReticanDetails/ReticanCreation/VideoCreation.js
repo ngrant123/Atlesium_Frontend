@@ -5,6 +5,7 @@ import Color_Constants from "../../../../../../Utils/ColorConstants.js";
 import ReplayRoundedIcon from '@material-ui/icons/ReplayRounded';
 import KeyboardTabIcon from '@material-ui/icons/KeyboardTab';
 import ErrorAlertSystem from "../../../../../UniversalComponents/Skeletons/Alerts.js";
+import VideoLoadingPrompt from "../../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
 
 const Container=styled.div`
 	position:relative;
@@ -110,11 +111,16 @@ const VideoCreation=({displaySelectedReticanOptionType})=>{
 			{videoCreationErrorAlertModal()}
 			{videoUrl!=null?
 				<React.Fragment>
-					<video id="videoElement"
-						width="400px" height="250px" borderRadius="50%"
-						autoPlay loop autoBuffer playsInline muted controls>
-						<source src={videoUrl} type="video/mp4"/>
-					</video>
+					<VideoLoadingPrompt
+						videoElement={
+							<video id="videoElement" style={{backgroundColor:"#151515",borderRadius:"5px"}}
+								width="400px" height="250px" borderRadius="50%"
+								autoPlay loop autoBuffer playsInline muted controls>
+								<source src={videoUrl} type="video/mp4"/>
+							</video>
+						}
+						videoId="videoElement"
+					/>
 					<div style={{display:"flex",flexDirection:"row",marginTop:"5%",width:"100%",justifyContent:"center"}}>
 						<div style={VideoOptionsCSS} onClick={()=>initiateRedo()}>
 							<ReplayRoundedIcon/>

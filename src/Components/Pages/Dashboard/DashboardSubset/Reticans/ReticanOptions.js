@@ -1,6 +1,7 @@
-import React from "react";
+import React,{useContext} from "react";
 import styled from "styled-components";
 import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
+import {ReticanContext} from "../../DashboardSet/ReticanContext.js";
 
 const ReticanOptionsCSS={
 	backgroundColor:"white",
@@ -28,7 +29,24 @@ const Container=styled.div`
     }
 `;
 
-const CampaignOptions=()=>{
+const CampaignOptions=({})=>{
+	const {
+		reticans,
+		updateReticanOrdering
+	}=useContext(ReticanContext);
+
+	const reorderReticansByRecent=()=>{
+		debugger;
+		reticans.sort(function(a, b){return a.dateCreated - b.dateCreated});
+		updateReticanOrdering(reticans);
+	}
+
+	const reorderReticanByOldest=()=>{
+		debugger;
+		reticans.sort(function(a, b){return b.dateCreated - a.dateCreated});
+		updateReticanOrdering(reticans);
+	}
+
 	return(
 		<Container>
 			<div class="btn-group">
@@ -42,6 +60,13 @@ const CampaignOptions=()=>{
 					/>
 				</button>
 				<ul class="dropdown-menu" style={{padding:"10px"}}>
+					<li style={{listStyle:"none",cursor:"pointer"}} onClick={()=>reorderReticansByRecent()}>
+						Recent
+					</li>
+					<hr/>
+					<li style={{listStyle:"none",cursor:"pointer"}} onClick={()=>reorderReticanByOldest()}>
+						Oldest
+					</li>
 				</ul>
 			</div>
 		</Container>

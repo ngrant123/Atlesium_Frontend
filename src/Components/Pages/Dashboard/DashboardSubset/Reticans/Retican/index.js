@@ -14,15 +14,15 @@ const Container=styled.div`
 
 const ReticanInitialier=()=>{
 	const reticanConsumer=useContext(ReticanContext);
-	const {reticans}=reticanConsumer;
-	console.log(reticans);
+	const {stackReticans}=reticanConsumer;
+	console.log(stackReticans);
 	debugger;
 	return(
 		<Container>
-			{reticans.length==0?
+			{stackReticans.length==0?
 				<p>No reticans</p>:
 				<React.Fragment>
-					{reticans.map((data,index)=>
+					{stackReticans.map((data,index)=>
 						<Retican 
 							reticanInformation={data}
 							currentIndex={index}

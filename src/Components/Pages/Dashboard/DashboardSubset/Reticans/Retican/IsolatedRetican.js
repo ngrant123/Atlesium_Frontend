@@ -299,7 +299,8 @@ const ReticanDisplay=(props)=>{
 					</p>
 				</div>
 				<hr style={HorizontalLineCSS}/>
-				<div style={{...DeleteButtonCSS,padding:"5%"}} onClick={()=>initiateDeleteReticanOverview({})}>
+				<div style={{...DeleteButtonCSS,width:"100%",marginLeft:"0%",padding:"5%"}} 
+					onClick={()=>initiateDeleteReticanOverview({})}>
 					Delete
 				</div>
 			</React.Fragment>

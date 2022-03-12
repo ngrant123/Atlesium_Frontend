@@ -116,15 +116,34 @@ const Review=({progressScreen,reticanAssembly})=>{
 
 	const script="<script defer data-domain=(1) src=(2)></script>"
 
+	const removeIdsFromReticanInformation=()=>{
+		const {
+			_id,
+			...reticanAssemblySansId
+		}=reticanAssembly;
+		for(var i=0;i<reticanAssemblySansId.reticans.length;i++){
+			const {
+				_id,
+				...reticanSansId
+			}=reticanAssembly.reticans[i];
+			reticanAssembly.reticans[i]=reticanSansId;
+		}
+
+		return reticanAssemblySansId;
+	}
+
 	useEffect(()=>{
 		const processReticanOverviewCreation=async({updatedAccessToken})=>{
+			if(reticanAssembly._id!=null){
+				reticanAssembly=removeIdsFromReticanInformation();
+			}
 			const {confirmation,data}=await createReticanOverview({
 				profileId:_id,
 				reticanInformation:reticanAssembly,
 				accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
 			});
-			changeDisplayLoadingAnimation(false);
 			if(confirmation=="Success"){
+				changeDisplayLoadingAnimation(false);
 				const {message}=data;
 				console.log(message);
 				changeReticanOverviewId(message);
@@ -141,6 +160,7 @@ const Review=({progressScreen,reticanAssembly})=>{
 						parameters:{}
 					})
 				}else{
+					changeDisplayLoadingAnimation(false);
 					if(statusCode==400){
 						reticanOverviewCreationErrorMessage={
 		            		header:"Retican Overview Creation Error",

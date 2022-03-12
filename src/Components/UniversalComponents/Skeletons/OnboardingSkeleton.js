@@ -2,6 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import {createPortal} from "react-dom";
 
+const ShadowContainer = styled.div`
+  position:fixed;
+  width:200%;
+  height:100vh;
+  left:-10%;
+  top:0%;
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  display:block;
+  z-index:20;
+`;
+
 const Container=styled.div`
 	position:fixed;
 	height:60%;
@@ -9,8 +20,8 @@ const Container=styled.div`
 	z-index:20;
 	top:20%;
 	border-radius:5px;
-	width:30%;
-	left:35%;
+	width:45%;
+	left:30%;
 	padding:40px;
 	overflow-y:auto;
 
@@ -25,20 +36,17 @@ const Container=styled.div`
 		left:0%;
 		height:100%;
 	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		top:0%;
+		width:100%;
+		left:0%;
+		height:100%;
+    }
 `;
 
-const ShadowContainer = styled.div`
-  position:fixed;
-  width:200%;
-  height:100vh;
-  left:-10%;
-  top:0%;
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  display:block;
-  z-index:20;
-`;
 
-const CallToActionSkeleton=({closeModal,targetDom,component})=>{
+const OnboardingSkeleton=({closeModal,targetDom,component})=>{
 	const closeModalIcon=()=>{
 		return(
 			<svg xmlns="http://www.w3.org/2000/svg" onClick={()=>closeModal()}
@@ -52,6 +60,7 @@ const CallToActionSkeleton=({closeModal,targetDom,component})=>{
 			</svg>
 		)
 	}
+
 	return createPortal(
 		<React.Fragment>
 			<ShadowContainer onClick={()=>closeModal()}/>
@@ -67,4 +76,4 @@ const CallToActionSkeleton=({closeModal,targetDom,component})=>{
 	,document.getElementById(targetDom))
 }
 
-export default CallToActionSkeleton; 
+export default OnboardingSkeleton;

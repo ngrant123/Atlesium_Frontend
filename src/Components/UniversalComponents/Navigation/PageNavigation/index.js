@@ -124,6 +124,13 @@ const HorizontalLineCSS={
 }
 
 
+const PageOptionDisplayCSS={
+	display:"flex",
+	flexDirection:"row",
+	justifyContent:"center",
+	alignItems:"center"
+}
+
 const Navigation=({pageType,parentDiv})=>{
 	console.log(parentDiv);
 
@@ -216,7 +223,7 @@ const Navigation=({pageType,parentDiv})=>{
 
 	const dashBoardDisplay=()=>{
 		return(
-			<div style={{display:"flex",flexDirection:"row",justifyContent:"center"}}>
+			<div style={PageOptionDisplayCSS}>
 				<DesktopWindowsIcon
 					style={{fontSize:"24"}}
 				/>
@@ -229,7 +236,7 @@ const Navigation=({pageType,parentDiv})=>{
 
 	const analysisDisplay=()=>{
 		return(
-			<div style={{display:"flex",flexDirection:"row",justifyContent:"center"}}>
+			<div style={PageOptionDisplayCSS}>
 				<ShowChartIcon
 					style={{fontSize:"24"}}
 				/>
@@ -242,7 +249,7 @@ const Navigation=({pageType,parentDiv})=>{
 
 	const settingsDisplay=()=>{
 		return(
-			<div style={{display:"flex",flexDirection:"row",justifyContent:"center"}}>
+			<div style={PageOptionDisplayCSS}>
 				<GridOnIcon
 					style={{fontSize:"24"}}
 				/>
@@ -255,7 +262,7 @@ const Navigation=({pageType,parentDiv})=>{
 
 	const creationDisplay=()=>{
 		return(
-			<div style={{display:"flex",flexDirection:"row",justifyContent:"center"}}>
+			<div style={PageOptionDisplayCSS}>
 				<BorderColorIcon
 					style={{fontSize:"24"}}
 				/>

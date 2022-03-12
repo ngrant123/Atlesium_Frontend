@@ -162,8 +162,8 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 		)
 	}
 
-	const triggerEditName=async({updatedAccessToken})=>{
-		const userSubmittedName=document.getElementById("firstName").value;
+	const triggerEditName=async({updatedAccessToken,userSubmittedName})=>{
+		debugger;
 		let editedNameAlertMessage;
 		changeNameEditingStatus(true);
 
@@ -202,7 +202,9 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 						userId:_id,
 						parentApiTrigger:triggerEditName,
 						dispatch,
-						parameters:{}
+						parameters:{
+							userSubmittedName
+						}
 					})
 				}else{
 					if(statusCode==500){
@@ -229,9 +231,8 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 		
 	}
 
-	const triggerEditEmail=async({updatedAccessToken})=>{
+	const triggerEditEmail=async({updatedAccessToken,userSubmittedEmail})=>{
 		debugger;
-		const userSubmittedEmail=document.getElementById("email").value;
 		let editedEmailAlterMessage;
 		changeEmailEditingStatus(true);
 
@@ -269,7 +270,7 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 						userId:_id,
 						parentApiTrigger:triggerEditEmail,
 						dispatch,
-						parameters:{}
+						parameters:{userSubmittedEmail}
 					})
 				}else{
 					if(statusCode==403){
@@ -358,7 +359,10 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 					<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 						<TextArea id="firstName" placeholder="First Name"/>
 						<div style={VerticalLineCSS}/>
-						<div id="editButtonIcon" style={EditButtonCSS} onClick={()=>triggerEditName({})}>
+						<div id="editButtonIcon" style={EditButtonCSS} 
+							onClick={()=>triggerEditName({
+								userSubmittedName:document.getElementById("firstName").value
+							})}>
 							<BorderColorIcon
 								style={{color:Color_Constants.PRIMARY_COLOR,}}
 							/>
@@ -376,7 +380,10 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 					<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 						<TextArea id="email" placeholder="Email"/>
 						<div style={VerticalLineCSS}/>
-						<div id="editButtonIcon" style={EditButtonCSS} onClick={()=>triggerEditEmail({})}>
+						<div id="editButtonIcon" style={EditButtonCSS} 
+							onClick={()=>triggerEditEmail({
+								userSubmittedEmail:document.getElementById("email").value
+							})}>
 							<BorderColorIcon
 								style={{color:Color_Constants.PRIMARY_COLOR}}
 							/>

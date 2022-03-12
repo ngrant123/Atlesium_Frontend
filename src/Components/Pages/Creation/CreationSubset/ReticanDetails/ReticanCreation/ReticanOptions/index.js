@@ -8,6 +8,7 @@ import ReplayRoundedIcon from '@material-ui/icons/ReplayRounded';
 import VideoResponseRetican from "./VideoResponse.js";
 import Color_Constants from "../../../../../../../Utils/ColorConstants.js";
 import {ReticanCreationContext} from "../ReticanCreationContext.js";
+import VideoLoadingPrompt from "../../../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
 
 const Container=styled.div`
 	@media screen and (max-width:1370px){
@@ -139,11 +140,16 @@ const ReticanOptions=({reticanOptionType,reticanInformation,displayInitialRetica
 				/>:
 				<React.Fragment>
 					<div id="finalStageVideoCreation" style={{display:"flex",flexDirection:"row"}}>
-						<video id="videoElement"
-							width="200px" height="100px" borderRadius="50%"
-							autoPlay loop autoBuffer playsInline muted controls>
-							<source src={currentRetican.videoInformation.videoUrl} type="video/mp4"/>
-						</video>
+						<VideoLoadingPrompt
+							videoElement={
+								<video id="videoElement" style={{backgroundColor:"#151515",borderRadius:"5px"}}
+									width="200px" height="100px" borderRadius="50%"
+									autoPlay loop autoBuffer playsInline muted controls>
+									<source src={currentRetican.videoInformation.videoUrl} type="video/mp4"/>
+								</video>
+							}
+							videoId="videoElement"
+						/>
 						<div style={VideoOptionsCSS} onClick={()=>displayVideoCreationModal()}>
 							<ReplayRoundedIcon/>
 						</div>

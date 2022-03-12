@@ -17,6 +17,16 @@ const Container=styled.div`
 	width:100%;
 	justify-content:center;
 	align-items:center;
+
+	@media screen and (max-width:650px){
+		padding:2%;
+		#campaingNavigationContainer{
+			white-space:nowrap !important;
+			overflow-y:hidden;
+			overflow-x:auto;
+			padding-top:2% !important;
+		}
+	}
 `;
 
 const CircleNavigationContainer=styled.div`
@@ -28,7 +38,7 @@ const CircleNavigationContainer=styled.div`
 const CampaignNavigation=({totalCards,currentSelectedIndex,specifiedDirection,triggerUpdatedSelectedIndex})=>{
 	return(
 		<Container>	
-			<ul style={{padding:"0px"}}>
+			<ul id="campaingNavigationContainer" style={{padding:"0px"}}>
 				{totalCards.map((data,index)=>
 					<li style={{listStyle:"none",display:specifiedDirection}}>
 						<CircleIcon

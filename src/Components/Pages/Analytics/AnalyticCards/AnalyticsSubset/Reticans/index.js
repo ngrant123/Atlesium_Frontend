@@ -118,15 +118,19 @@ const ReticansAnalysis=({reticanOverviewId})=>{
 					<p style={{fontSize:"16px"}}>Reticans</p>
 				</div>
 
-				<div>
-					<SecondaryOptions
-						headerText={"Sort-By"}
-						options={[
-							{option:"Date"},
-							{option:"Popularity"}
-						]}
-					/>
-				</div>
+				{/*
+					Not yet next iteration yes
+					
+					<div>
+						<SecondaryOptions
+							headerText={"Sort-By"}
+							options={[
+								{option:"Date"},
+								{option:"Popularity"}
+							]}
+						/>
+					</div>
+				*/}
 			</div>
 
 			<ReticanContainer>

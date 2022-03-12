@@ -12,6 +12,10 @@ import AlertSystem from "../../../UniversalComponents/Skeletons/Alerts.js";
 import LoadingAnimation from "../../../UniversalComponents/Loading/index.js";
 import {useSelector,useDispatch} from "react-redux";
 import {tokensRegeneration} from "../../../../Actions/Tasks/UpdateTokens.js";
+import InitalNewUserOnboardingModal from "../../../UniversalComponents/Onboarding/InitialDashboardOnboarding.js";
+import {
+	retrieveDashboardOnboardingStatus
+} from "../../../../Actions/Requests/ProfileRequests/Retrieval/OnboardingStatusRetrieval.js";
 
 
 const Container=styled.div`
@@ -77,6 +81,7 @@ const Dashboard=(props)=>{
 	const [errorMessage,changeErrorMessage]=useState();
 	const [reticanStatus,changeReticanStatus]=useState("Active");
 	const [displayLoadingAnimation,changeDisplayLoadingAniamtion]=useState(true);
+	const [displayOnboardingModal,changeDisplayOnboardingModal]=useState(false);
 	const {
 		_id,
 		accessToken,
@@ -92,6 +97,18 @@ const Dashboard=(props)=>{
 		if(_id=="" || _id==null){
 			props.history.push('/');
 		}
+	},[]);
+
+
+	useEffect(()=>{
+		const fetchOnboardingData=async()=>{
+			const {confirmation,data}=await retrieveDashboardOnboardingStatus(_id);
+			if(confirmation=="Success"){
+				const {message}=data;
+				changeDisplayOnboardingModal(!message);
+			}
+		}
+		fetchOnboardingData();
 	},[]);
 
 	useEffect(()=>{
@@ -270,10 +287,29 @@ const Dashboard=(props)=>{
 		)
 	}
 
+	const closeOnboardingModal=()=>{
+		changeDisplayOnboardingModal(false);
+	}
+
+	const onboardingModal=()=>{
+		return(
+			<React.Fragment>
+				{displayOnboardingModal==true &&(
+					<InitalNewUserOnboardingModal
+						targetDom={"dashboard"}
+						closeModal={closeOnboardingModal}
+						profileId={_id}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
+
 	return(
 		<ReticanProvider
 			value={{
-				reticans:stackReticansView,
+				stackReticans:stackReticansView,
+				reticans:reticans,
 				currentSelectedIndex,
 				removeTargetedIndexRetican:(index)=>{
 					removeReticanFromStack(index);
@@ -281,9 +317,14 @@ const Dashboard=(props)=>{
 				deleteRetican:(index)=>{
 					deleteRetican(index);
 				},
+				updateReticanOrdering:(updatedReticansOrdering)=>{
+					changeReticans([...updatedReticansOrdering]);
+					changeCurrentSelectedIndex(0);
+				},
 				history:props.history
 			}}
 		>
+			{onboardingModal()}
 			<Container id="dashboard">
 				<Navigation
 					pageType={"Dashboard"}
@@ -292,7 +333,7 @@ const Dashboard=(props)=>{
 				<ReticanContainer>
 					{reticanRetrievalOverviewErrorModal()}
 					{displayLoadingAnimation==true ?
-						<div style={{width:"100%"}}>
+						<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
 							<LoadingAnimation
 								loadingText={"Retrieving retican overviews..."}
 							/>

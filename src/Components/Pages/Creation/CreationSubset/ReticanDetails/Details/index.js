@@ -72,16 +72,18 @@ const ReticanDetails=(props)=>{
 		triggerProgressScreen,
 		totalReticans,
 		isEditReticanDesired,
+		originalHeaderColor,
 		selectedColorHeader,
-		editedReticans
+		editedReticans,
+		triggerUpdateReticanParentInformation
 	}=props;
 
+	console.log(originalHeaderColor);
 	console.log(totalReticans);
 	debugger;
 
 	const [erroredInputIds,changeErroredInputIds]=useState([]);
 	let [currentReticansFileSize,changeCurrentReticansFileSize]=useState(0);
-	const [originalHeaderColor,changeOriginalHeaderColor]=useState("");
 	const [isEditing,changeIsEditingStatus]=useState(false);
 	const [originalReticanPointerMapping,changeOriginalReticanPointerMapping]=useState();
 
@@ -134,6 +136,7 @@ const ReticanDetails=(props)=>{
 
 
 	useEffect(()=>{
+		debugger;
 		const {reticanAssembly}=reticanOverviewConsumer;
 		const previousTitle=reticanAssembly.title;
 		const previousDescription=reticanAssembly.description;
@@ -144,9 +147,6 @@ const ReticanDetails=(props)=>{
 
 		if(previousDescription!=null){
 			document.getElementById("description").value=previousDescription;
-		}
-		if(selectedColorHeader!=""){
-			changeOriginalHeaderColor(selectedColorHeader);
 		}
 		if(totalReticans.length!=0){
 			constructReticanPointerMapping();
@@ -215,9 +215,11 @@ const ReticanDetails=(props)=>{
 
 		const currentDescription=document.getElementById("description").value;
 		const currentTitle=document.getElementById("title").value;
+		const currentHeaderColor=selectedColorHeader==null?null:selectedColorHeader.color;
+		const currentoriginalHeaderColor=originalHeaderColor==null?null:originalHeaderColor.color;
 
 
-		if(previousDescription==currentDescription && currentTitle==previousTitle && selectedColorHeader==originalHeaderColor){
+		if(previousDescription==currentDescription && currentTitle==previousTitle && currentHeaderColor==currentoriginalHeaderColor){
 			let tempErrorIds=[];
 			tempErrorIds.push("editReticanOverview");
 
@@ -243,7 +245,7 @@ const ReticanDetails=(props)=>{
 					headerColor:selectedColorHeader
 				}
 			}
-			triggerEditReticanOverview({updatedReticanOverviewInformation});
+			//triggerEditReticanOverview({updatedReticanOverviewInformation});
 		}
 	}
 
@@ -258,6 +260,7 @@ const ReticanDetails=(props)=>{
 
 		let editedReticanOverviewAlertMessage;
 		if(confirmation=="Success"){
+			triggerUpdateReticanParentInformation({...updatedReticanOverviewInformation});
 			editedReticanOverviewAlertMessage={
         		header:"Retican Overview Details Edited",
         		description:""
@@ -418,9 +421,10 @@ const ReticanDetails=(props)=>{
 	}
 
 	const fileSizeType=()=>{
+		console.log(currentReticansFileSize);
 		return(
 			<React.Fragment>
-				{currentReticansFileSize>0?<p>MB</p>:<p>KB</p>}
+				{currentReticansFileSize>0?<>MB</>:<>KB</>}
 			</React.Fragment>
 		)
 	}
@@ -458,9 +462,10 @@ const ReticanDetails=(props)=>{
 					<p>
 						<b>Total Estimated Size:</b>
 					</p>
-					<p>
-						<b>{currentReticansFileSize} {fileSizeType}</b>
-					</p>
+					<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+						<p><b>{currentReticansFileSize}</b></p>
+						<p style={{marginLeft:"2px"}}><b>{fileSizeType()}</b></p>
+					</div>
 				</div>
 
 				{isEditReticanDesired==true?
