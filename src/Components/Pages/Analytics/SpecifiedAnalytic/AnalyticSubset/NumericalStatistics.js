@@ -16,6 +16,14 @@ const Container=styled.div`
 	justify-content:space-between;
 	align-items:center;
 
+	@media screen and (max-width:1370px){
+		#progressRates{
+			margin-bottom:5%;
+			width:100% !important;
+			justify-content:start !important;
+		}
+	}
+
 	@media screen and (max-width:650px){
 		#secondaryOptions{
 			margin-left:0% !important;
@@ -26,7 +34,8 @@ const Container=styled.div`
 		}
 
 		#progressRates{
-			justify-content:start !important;
+			margin-bottom:0%;
+			width:100% !important;
 		}
 
 		#MobileVerticalLineCSS{
@@ -134,7 +143,7 @@ const NumericalStatistics=({progressRates,fetchAnalytics})=>{
 	return(
 		<Container style={{display:"flex",flexDirection:"row",width:"100%",justifyContent:"space-between",alignItems:"center"}}>
 			<div id="analyticsOptions" style={{display:"flex",flexDirection:"row",width:"100%"}}>
-				<div id="progressRates" style={{display:"flex",flexDirection:"row",justifyContent:"center"}}>
+				<div id="progressRates" style={{display:"flex",flexDirection:"row",justifyContent:"center",width:"25%"}}>
 					<div style={{display:"flex",flexDirection:"column"}}>
 						<p>Unique Visitors</p>
 						<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>	
@@ -189,9 +198,11 @@ const NumericalStatistics=({progressRates,fetchAnalytics})=>{
 
 			</div>
 			<hr id="MobileVerticalLineCSS" style={MobileVerticalLineCSS}/>
-			<GetAppRoundedIcon
-				style={{fontSize:"30"}}
-			/>
+			{/*
+				<GetAppRoundedIcon
+					style={{fontSize:"30"}}
+				/>
+			*/}
 		</Container>
 	)
 }

@@ -18,6 +18,10 @@ const Container=styled.div`
 			flex-direction:column !important;
 			margin-bottom:20% !important;
 		}
+
+		#videoElementContainer{
+			margin-left:0% !important;
+		}
 	}
 
 	@media screen and (max-width:650px){
@@ -36,13 +40,14 @@ const VideoComment=({comments})=>{
 	}
 
 	const videoComment=(data)=>{
+		console.log(data);
 		return (
 			<div id="videoComment" style={{display:"flex",flexDirection:"row",marginBottom:"10%"}}>
 				<AccountCircleIcon
 					id="userHolderImage"
 					style={{fontSize:"48"}}
 				/>
-				<div style={{display:"flex",flexDirection:"column",marginLeft:"5%",width:"100%"}}>	
+				<div id="videoElementContainer" style={{display:"flex",flexDirection:"column",marginLeft:"5%",width:"100%"}}>	
 					<video id="replyVideoElements"
 						key={uuid()}
 						style={{borderRadius:"5px",backgroundColor:"#151515"}}
@@ -61,7 +66,10 @@ const VideoComment=({comments})=>{
 	return(
 		<Container>
 			{comments.map(data=>
-				<>{videoComment(data)}</>
+				<React.Fragment>
+					{videoComment(data)}
+					<hr/>
+				</React.Fragment>
 			)}
 			<NextButton/>
 		</Container>

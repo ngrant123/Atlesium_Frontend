@@ -36,7 +36,7 @@ const Comments=({responses,responseType})=>{
 			{responses.length==0?
 				<p>No responses</p>:
 				<React.Fragment>
-					{responseType=="TextResponseRetican"?
+					{responseType=="Text Response Retican"?
 						<Text comments={responses}/>:
 						<Video comments={responses}/>
 					}

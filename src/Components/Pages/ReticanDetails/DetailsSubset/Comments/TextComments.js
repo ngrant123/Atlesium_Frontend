@@ -46,7 +46,10 @@ const Text=({comments})=>{
 	return(
 		<Container>
 			{comments.map(data=>
-				<>{comment(data)}</>
+				<React.Fragment>
+					{comment(data)}
+					<hr/>
+				</React.Fragment>
 			)}
 			<NextButton/>
 		</Container>

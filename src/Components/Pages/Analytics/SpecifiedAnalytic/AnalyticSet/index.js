@@ -117,7 +117,7 @@ const SpecifiedAnalytics=(props)=>{
 				userId:_id,
 				parentApiTrigger,
 				dispatch,
-				parameters:params==null?{}:{params}
+				parameters:params==null?{}:{requestedAnaltyicsType:params}
 			})
 		}else{
 			if(statusCode==400){
@@ -194,11 +194,13 @@ const SpecifiedAnalytics=(props)=>{
 				parentDiv={"specifiedAnalyticsContainer"}
 			/>
 			<Analytics>
-				<div style={{display:"flex",flexDirection:"row",alignItems:"center",cursor:"pointer",marginBottom:"5%"}}>
-					<ArrowBackIosIcon
-						style={{fontSize:"16",marginTop:"-10px"}}
-					/>
-					<p style={{fontSize:"16px"}}>Reticans</p>
+				<div style={{display:"flex",flexDirection:"row",alignItems:"center",marginBottom:"5%"}}>
+					<div style={{display:"flex",flexDirection:"row",alignItems:"center",cursor:"pointer"}}>
+						<ArrowBackIosIcon
+							style={{fontSize:"16",marginTop:"-10px"}}
+						/>
+						<p style={{fontSize:"16px"}}>Reticans</p>
+					</div>
 				</div>
 
 				<div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>

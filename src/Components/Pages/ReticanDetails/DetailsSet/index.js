@@ -20,6 +20,7 @@ import {
 	deleteResponse
 } from "../../../../Actions/Requests/ResponsesRequests/Adapter/EditResponses.js";
 import {tokensRegeneration} from "../../../../Actions/Tasks/UpdateTokens.js";
+import Navigation from "../../../UniversalComponents/Navigation/PageNavigation/index.js";
 
 const Container=styled.div`
 	position:absolute;
@@ -28,12 +29,6 @@ const Container=styled.div`
 	height:100%;
 	display:flex;
 	flex-direction:row;
-	overflow-y:auto;
-	align-items:center;
-	padding:15%;
-	padding-top:7%;
-	margin-top:5%;
-
 	@media screen and (max-width:1370px){
 		flex-direction:column !important;
 		height:auto;
@@ -44,12 +39,27 @@ const Container=styled.div`
 		#mobileHorizontalLine{
 			display:block !important;
 		}
-	}
 
+		#responsesContainer{
+			flex-direction:column !important;
+		}
+		#reticanDetailsHeaderTitle{
+			display:none !important;
+		}
+	}
 	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
 		height:auto;
     }
 `;
+
+const ResponseContainerCSS={
+	display:"flex",
+	flexDirection:"column",
+	width:"100%",
+	height:"100%",
+	padding:"5%",
+	paddingTop:"7%"
+}
 
 const VerticalLineCSS={
 	position:"relative",
@@ -62,56 +72,19 @@ const VerticalLineCSS={
  	marginLeft:"2%"
 }
 
-const MobileHorizontalLineCSS={
+
+const HorizontalLineCSS={
 	position:"relative",
 	width:"100%",
 	height:"10px",
 	borderRadius:"5px",
 	borderRadius:"5px",
-	display:"none",
-	borderColor:"#EBEBEB",
+	borderColor:"#EBEBEB"
+}
+const MobileHorizontalLineCSS={
+	...HorizontalLineCSS,
 	display:"none"
 }
-
-const reticanVideos=[
-	{
-		_id:1234,
-		comments:[
-			{
-				comment:"geagegg4sbr rhrsgsr jsrhrs srbhsrhrshrss srrsnrhrhrhrsb rssrvrsbrsbr"
-			},
-			{
-				comment:"Yessir"
-			}
-		],
-		commentType:"Text"
-	},
-	{
-		_id:123333,
-		comments:[
-			{
-				comment:"Test"
-			},
-			{
-				comment:"Yessir"
-			}
-		],
-		commentType:"Video"
-	},
-	{
-		_id:123333,
-		comments:[
-			{
-				comment:"Test"
-			},
-			{
-				comment:"Yessir"
-			}
-		],
-		commentType:"Video"
-	}
-]
-
 
 const ReticanDetails=(props)=>{
 	debugger;
@@ -169,12 +142,17 @@ const ReticanDetails=(props)=>{
 				debugger;
 				const {message}=data;
 				console.log(message);
-				const {
-					responses
-				}=message[0];
+				if(message.length==0){
+					changeReticanSpecificResponses([]);
+					changeReticans([]);
+				}else{
+					const {
+						responses
+					}=message[0];
 
-				changeReticanSpecificResponses(responses);
-				changeReticans(message);
+					changeReticanSpecificResponses(responses);
+					changeReticans(message);
+				}
 			}else{
 				const {statusCode}=data;
 				reticanResponsesErrorMessage(statusCode,fetchInitialData);
@@ -338,37 +316,42 @@ const ReticanDetails=(props)=>{
 			}}
 		>
 			<Container id="reticanDetails">
-				{isLoading==true?
-					<LoadingAnimation 
-						loadingText={"Retrieving retican responses..."}
-					/>:
-					<React.Fragment>
-						<div style={{position:"relative",display:"flex",flexDirection:"column",height:"100%",justifyContent:"space-between"}}>
-							<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-								<Link to={{pathname:"/dashboard"}}>
-									<ArrowBackIosRoundedIcon
-										style={{fontSize:"18",marginTop:"-10px",color:"black"}}
-									/>
-								</Link>
-								<p style={{fontSize:"18px",marginLeft:"4%"}}>
-									<b>Retican Details</b>
-								</p>
+				<Navigation
+					pageType={"reticanDetails"}
+					parentDiv={"reticanDetails"}
+				/>
+				<div style={{display:"flex",flexDirection:"column",width:"100%",height:"100%",padding:"5%",paddingTop:"7%"}}>
+					{isLoading==true?
+						<LoadingAnimation 
+							loadingText={"Retrieving retican responses..."}
+						/>:
+						<React.Fragment>
+							<p id="reticanDetailsHeaderTitle" style={{fontSize:"18px"}}>
+								<b>Retican Details</b>
+							</p>
+							<div id="responsesContainer" 
+								style={{position:"relative",display:"flex",flexDirection:"row",height:"100%",width:"100%",marginTop:"5%"}}>
+								{reticans.length==0?
+									<p>No retican responses</p>:
+									<React.Fragment>
+										<Video
+											triggerUpdatedSelectedIndex={updateIndex}
+											currentSelectedIndex={currentSelectedIndex}
+											totalReticans={reticans}
+											currentSelectedReticanVideo={reticans[currentSelectedIndex].videoUrl}
+										/>
+										<div id="verticalLine" style={VerticalLineCSS}/>
+										<hr id="mobileHorizontalLine" style={MobileHorizontalLineCSS}/>
+										<Comments
+											responses={reticanSpecificResponses}
+											responseType={reticans[currentSelectedIndex].reticanOptionType}
+										/>
+									</React.Fragment>
+								}
 							</div>
-							<Video
-								triggerUpdatedSelectedIndex={updateIndex}
-								currentSelectedIndex={currentSelectedIndex}
-								totalReticans={reticans}
-								currentSelectedReticanVideo={reticans[currentSelectedIndex].videoUrl}
-							/>
-						</div>
-						<div id="verticalLine" style={VerticalLineCSS}/>
-						<hr id="mobileHorizontalLine" style={MobileHorizontalLineCSS}/>
-						<Comments
-							responses={reticanSpecificResponses}
-							responseType={reticans[currentSelectedIndex].reticanOptionType}
-						/>
-					</React.Fragment>
-				}
+						</React.Fragment>
+					}
+				</div>
 			</Container>
 		</DetailsProvider>
 	)

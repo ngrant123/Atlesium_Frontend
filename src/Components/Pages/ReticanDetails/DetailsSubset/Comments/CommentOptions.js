@@ -81,7 +81,7 @@ const CommentOptions=({commentData})=>{
 	const detailsConsumer=useContext(DetailsContext);
 
 
-	const CommentOptions=({children})=>{
+	const CommentOptionsContainer=({children})=>{
 		return children.filter(child=>child.props.name==commentOptionType)
 	}
 
@@ -163,12 +163,16 @@ const CommentOptions=({commentData})=>{
 	const General=()=>{
 		return(
 			<div id="generalComments" 
-				style={{display:"flex",flexDirection:"row",alignItems:"center",width:"20%",justifyContent:"space-between"}}>
-				<ChatBubbleRoundedIcon
-					onClick={()=>triggerCheckEmailCorrespondence()}
-					style={{fontSize:"24",cursor:"pointer"}}
-				/>
-				<div id="commentOptionVerticalLine" style={VerticalLineCSS}/>
+				style={{display:"flex",flexDirection:"row",alignItems:"center",width:"20%",justifyContent:"space-between",marginTop:"2%"}}>
+				{commentData.responseOwnerEmail!="" &&(
+					<React.Fragment>
+						<ChatBubbleRoundedIcon
+							onClick={()=>triggerCheckEmailCorrespondence()}
+							style={{fontSize:"24",cursor:"pointer"}}
+						/>
+						<div id="commentOptionVerticalLine" style={VerticalLineCSS}/>
+					</React.Fragment>
+				)}
 				<DeleteRoundedIcon
 					onClick={()=>changeCommentOptionType("deletion")}
 					style={{fontSize:"24",cursor:"pointer"}}
@@ -177,13 +181,11 @@ const CommentOptions=({commentData})=>{
 		)
 	}
 	return(
-		<React.Fragment>
-			<CommentOptions>
-				<General name={"general"}/>
-				<Respond name={"respond"}/>
-				<Deletion name={"deletion"}/>
-			</CommentOptions>
-		</React.Fragment>
+		<CommentOptionsContainer>
+			<General name={"general"}/>
+			<Respond name={"respond"}/>
+			<Deletion name={"deletion"}/>
+		</CommentOptionsContainer>
 	)
 }
 

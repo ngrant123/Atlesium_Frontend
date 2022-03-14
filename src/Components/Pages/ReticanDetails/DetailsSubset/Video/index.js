@@ -9,6 +9,12 @@ const Container=styled.div`
 	display:flex;
 	flex-direction:column;
 
+	@media screen and (max-width:1370px){
+		#videoElement{
+			width:100% !important;
+		}
+	}
+
 	@media screen and (max-width:650px){
 		#videoElement{
 			width:100% !important;
@@ -46,18 +52,21 @@ const Video=({triggerUpdatedSelectedIndex,currentSelectedIndex,totalReticans,cur
 				<source src={currentSelectedReticanVideo}
 					type="video/mp4"/>
 			</video>
-			<div style={{display:"flex",flexDirection:"row",width:"100%",marginTop:"15%",alignItems:"center",justifyContent:"space-between"}}>
+			<div style={{display:"flex",flexDirection:"row",width:"100%",marginTop:"15%",alignItems:"center",justifyContent:"center"}}>
 				<div id="videoNavigation" style={{display:"flex",justifyContent:"space-between",width:"30%"}}>
 					<VideoNavigation 
 						totalCards={totalReticans}
 						currentSelectedIndex={currentSelectedIndex}
-						specifiedFlexDirection={"row"}
+						specifiedDirection={"inline-block"}
 						triggerUpdatedSelectedIndex={triggerUpdatedSelectedIndex}
 					/>
 				</div>
-				<GetAppRoundedIcon
-					style={{fontSize:"30",cursor:"pointer"}}
-				/>
+
+				{/*
+					<GetAppRoundedIcon
+						style={{fontSize:"30",cursor:"pointer"}}
+					/>
+				*/}
 			</div>
 		</Container>
 	)

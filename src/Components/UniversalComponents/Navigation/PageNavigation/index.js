@@ -305,7 +305,12 @@ const Navigation=({pageType,parentDiv})=>{
 				break;
 			}
 			case "Creation":{
-				component:creationDisplay();
+				component=creationDisplay();
+				break;
+			}
+
+			default:{
+				component=<p style={{fontSize:"18px"}}><b>Retican Details</b></p>;
 				break;
 			}
 		}
