@@ -6,15 +6,33 @@ import COLOR_CONSTANTS from "../../../../../Utils/ColorConstants.js";
 import {createProfile} from "../../../../../Actions/Requests/ProfileRequests/Adapter/ProfileCreation.js";
 import RequiredFieldNotification from "../../../../UniversalComponents/Notifications/RequiredFieldNotification.js";
 import ErrorAlertSystem from "../../../../UniversalComponents/Skeletons/Alerts.js";
-import {useDispatch} from "react-redux";
-import {initializeProfile} from "../../../../../Actions/Redux/Actions/PersonalInformationActions.js";
 import {Link} from "react-router";
 import Payment from "../../../../UniversalComponents/Modals/Payment/index.js";
 
+/*
+		@media screen and (max-width:650px){
+		#headerText{
+			flex-direction:column !important;
+		}
+	}
+*/
 const Container=styled.div`
+	position:relative;
 	display:flex;
 	flex-direction:column;
 	width:100%;
+
+	@media screen and (max-width:650px){
+		#headerText{
+			font-size:24px !important;
+		}
+	}
+
+	@media screen and (max-width:840px) and (max-height:420px) and (orientation:landscape){
+		#headerTextParentDiv{
+			display:none !important;
+		}
+    }
 `;
 
 const InputContainer=styled.textarea`
@@ -67,13 +85,11 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 	const [errorMessage,changeErrorMessage]=useState();
 	const [createProfileIndicator,changeCreatingProfileIndicator]=useState(false);
 	const [displayPaymentScreen,changeDisplayPaymentScreen]=useState(false);
-
-	const dispatcher=useDispatch();
+	const [reduxInformation,changeReduxInformation]=useState();
 
 	useEffect(()=>{
 		changeDisplayPaymentScreen(true);
-	},[]);
-
+	},[])
 
 	const triggerCreateProfile=async()=>{
 		debugger;
@@ -107,19 +123,20 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 						profileId
 					}
 				}=data;
+
 				let {
 					password,
 					email,
 					...reduxAppropriateUserInformation
 				}=userInformation;
 
-				dispatcher(initializeProfile({
+				reduxAppropriateUserInformation={
 					...reduxAppropriateUserInformation,
 					_id:profileId,
 					...tokens
-				}));
-				history.push('/dashboard');
-
+				}
+				changeReduxInformation(reduxAppropriateUserInformation);
+				changeDisplayPaymentScreen(true);
 			}else{
 				//alert 
 				const {message}=data;
@@ -203,6 +220,9 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 					<Payment
 						targetIdDom={parentContainerId}
 						closePaymentModal={closePaymentModal}
+						userSpecifiedEmail={userSpecifiedEmail}
+						reduxInformation={reduxInformation}
+						history={history}
 					/>
 				)}
 			</React.Fragment>
@@ -213,12 +233,12 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 		<Container>
 			{paymentModal()}
 			{creationErrorAlertModal()}
-			<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+			<div id="headerTextParentDiv" style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 				<ArrowBackIosRoundedIcon
 					style={{fontSize:"18",color:"black",cursor:"pointer",marginBottom:"2%",marginRight:"5%"}}
 					onClick={()=>landingPageConsumer.hideProfileCreation()}
 				/>
-				<p style={{fontSize:"36px"}}>
+				<p id="headerText" style={{fontSize:"36px"}}>
 					<b>Welcome to Atlesium</b>
 				</p>
 			</div>

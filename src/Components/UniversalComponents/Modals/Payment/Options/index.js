@@ -5,7 +5,7 @@ import Startup from "./Startup/index.js";
 import Community from "./Community/index.js";
 import COLOR_CONSTANTS from "../../../../../Utils/ColorConstants.js";
 
-const Container=styled.div`
+/*
 	position:fixed;
 	height:80%;
 	background-color:white;
@@ -21,7 +21,14 @@ const Container=styled.div`
 	padding-right:10%;
 	padding-bottom:2%;
 	padding-top:2%;
+*/
 
+const Container=styled.div`
+	position:relative;
+	height:80%;
+	background-color:white;
+	z-index:20;
+	width:30%;
 
 
 	@media screen and (max-width:650px){
@@ -34,12 +41,9 @@ const Container=styled.div`
 
 const PaymentCardContainer=styled.div`
 	position:relative;
-	width:30%;
 	border-radius:5px;
 	height:100%;
 	flex-shrink:0;
-	margin-rigth:5%;
-	margin-left:10%;
 	background-color:white;
 	box-shadow:1px 1px 5px ${COLOR_CONSTANTS.GREY};
 
@@ -53,28 +57,19 @@ const PaymentCardContainer=styled.div`
 	}
 `;
 
-
-const Options=()=>{
+/*
 	const paymentOptions=[
 		<Enterprise/>,
 		<Startup/>,
 		<Community/>
 	];
 
-	const paymentOptionsRender=(component)=>{
-		return(
-			<PaymentCardContainer>
-				{component}
-			</PaymentCardContainer>
-		)
-	}	
+*/
+
+const Options=()=>{
 
 	return(
-		<Container>
-			{paymentOptions.map(data=>
-				<>{paymentOptionsRender(data)}</>
-			)}
-		</Container>
+		<Enterprise/>
 	)
 }
 

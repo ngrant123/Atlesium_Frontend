@@ -12,6 +12,7 @@ import {useSelector,useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import {tokensRegeneration} from "../../../../../../Actions/Tasks/UpdateTokens.js";
 import {ReticanContext} from "../../../DashboardSet/ReticanContext.js";
+import VideoLoadingPrompt from "../../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
 
 const ReticanContainer=styled.div`
 	position:absolute;
@@ -338,14 +339,20 @@ const ReticanDisplay=(props)=>{
 			<ReticanContainer ref={reticanRef}
 				onAnimationEnd={() => removeTargetedIndexRetican(currentIndex)}>
 				<div id="retican" style={ReticanCSS}>
-					<video id="videoElement"
-						key={uuid()}
-						style={{borderRadius:"5px",backgroundColor:"#151515"}}
-						width="75%" height="40%" borderRadius="50%"
-						autoPlay loop autoBuffer playsInline muted>
-						<source src={reticanInformation.primaryReticanCard.videoUrl}
-							type="video/mp4"/>
-					</video>
+
+					<VideoLoadingPrompt
+						videoElement={
+							<video id="videoElement"
+								key={uuid()}
+								style={{borderRadius:"5px",backgroundColor:"#151515"}}
+								width="75%" height="40%" borderRadius="50%"
+								autoPlay loop autoBuffer playsInline muted>
+								<source src={reticanInformation.primaryReticanCard.videoUrl}
+									type="video/mp4"/>
+							</video>
+						}
+						videoId="videoElement"
+					/>
 
 					<div style={{marginTop:"5%",display:"flex",flexDirection:"row",width:"75%",justifyContent:"space-between"}}>
 						<div style={{display:"flex",flexDirection:"column"}}>

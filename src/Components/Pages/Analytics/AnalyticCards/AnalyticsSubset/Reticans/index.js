@@ -141,6 +141,7 @@ const ReticansAnalysis=({reticanOverviewId})=>{
 							<Retican
 								reticanData={data}
 								displayScreen={analyticsConsumer.triggerDisplayScreen}
+								reticanOverviewId={reticanOverviewId}
 							/>
 						)}
 					</React.Fragment>

@@ -4,6 +4,7 @@ import test4 from "../../../../../Assets/LandingPageSpecific/scrollingWindowBloc
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CommentOptions from "./CommentOptions.js";
 import NextButton from "./NextButton.js";
+import VideoLoadingPrompt from "../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
 
 const Container=styled.div`
 	width:100%;
@@ -48,14 +49,19 @@ const VideoComment=({comments})=>{
 					style={{fontSize:"48"}}
 				/>
 				<div id="videoElementContainer" style={{display:"flex",flexDirection:"column",marginLeft:"5%",width:"100%"}}>	
-					<video id="replyVideoElements"
-						key={uuid()}
-						style={{borderRadius:"5px",backgroundColor:"#151515"}}
-						width="400px" height="200px" borderRadius="50%"
-						autoPlay loop autoBuffer playsInline muted controls>
-						<source src={data.response}
-							type="video/mp4"/>
-					</video>
+					<VideoLoadingPrompt
+						videoElement={
+							<video id="replyVideoElements"
+								key={uuid()}
+								style={{borderRadius:"5px",backgroundColor:"#151515"}}
+								width="400px" height="200px" borderRadius="50%"
+								autoPlay loop autoBuffer playsInline muted controls>
+								<source src={data.response}
+									type="video/mp4"/>
+							</video>
+						}
+						videoId="replyVideoElements"
+					/>
 					<CommentOptions
 						commentData={data}
 					/>

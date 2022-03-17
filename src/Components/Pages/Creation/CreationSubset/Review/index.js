@@ -166,6 +166,11 @@ const Review=({progressScreen,reticanAssembly})=>{
 		            		header:"Retican Overview Creation Error",
 		            		description:"Unfortunately there has been an error when creating your retican overview. Please try again"
 						}
+					}else if(statusCode==404){
+						reticanOverviewCreationErrorMessage={
+		            		header:"Payment Processing Error",
+		            		description:"Unfortunately there has been an error when processing your payment information. Please try again later"
+						}
 					}else{
 						reticanOverviewCreationErrorMessage={
 		            		header:"Internal Server Error",

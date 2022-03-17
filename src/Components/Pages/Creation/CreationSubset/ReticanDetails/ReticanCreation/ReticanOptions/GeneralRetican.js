@@ -5,8 +5,8 @@ const GeneralRetican=()=>{
 	return(
 		<React.Fragment>
 			<p style={{marginTop:"2%"}}>
-				Does this retican look to you? Since this is a general one, 
-				people will only see you video description
+				Does this retican look okay to you? Since this is a general one, 
+				people will only see your video description
 			</p>
 		</React.Fragment>
 	)

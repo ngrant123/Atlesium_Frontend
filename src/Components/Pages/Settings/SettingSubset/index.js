@@ -22,7 +22,9 @@ const Settings=({parentContainerId,history})=>{
 				history={history}
 			/>
 			<hr/>
-			<AccountSettings/>
+			<AccountSettings
+				parentContainerId={parentContainerId}
+			/>
 		</Container>
 	)
 }

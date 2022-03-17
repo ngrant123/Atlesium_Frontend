@@ -37,8 +37,13 @@ const Analytics=(props)=>{
 		debugger;
 		if(profileId=="" || profileId==null){
 			props.history.push('/');
+		}else{
+			if(props.location.state!=null){
+				changeTargetReticanId(props.location.state.reticanOverviewId);
+				changeCurrentAnalyticsScreenType("Reticans");
+			}
 		}
-	},[])
+	},[]);
 
 	const ComponentDecider=({screenType,children})=>{
 		return children.filter(child=>child.props.componentName==screenType)

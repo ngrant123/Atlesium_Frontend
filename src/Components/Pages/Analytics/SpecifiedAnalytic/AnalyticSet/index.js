@@ -11,6 +11,7 @@ import {
 } from "../../../../../Actions/Requests/AnalyticsRequests/Retrieval/SpecifiedOptionsAnalyticsRetrieval.js";
 import {useSelector,useDispatch} from "react-redux";
 import {tokensRegeneration} from "../../../../../Actions/Tasks/UpdateTokens.js";
+import {Link} from "react-router-dom";
 
 const Container=styled.div`
 	position:absolute;
@@ -70,6 +71,7 @@ const SpecifiedAnalytics=(props)=>{
 		if(_id=="" || _id==null){
 			props.history.push('/');
 		}
+		console.log(props);
 	},[])
 
 	useEffect(()=>{
@@ -186,6 +188,7 @@ const SpecifiedAnalytics=(props)=>{
 	}
 
 
+
 	return(
 		<Container id="specifiedAnalyticsContainer">
 			{alertModal()}
@@ -196,9 +199,13 @@ const SpecifiedAnalytics=(props)=>{
 			<Analytics>
 				<div style={{display:"flex",flexDirection:"row",alignItems:"center",marginBottom:"5%"}}>
 					<div style={{display:"flex",flexDirection:"row",alignItems:"center",cursor:"pointer"}}>
-						<ArrowBackIosIcon
-							style={{fontSize:"16",marginTop:"-10px"}}
-						/>
+						<Link to={{pathname:'/analytics',
+							state:{reticanOverviewId:props.location.state.reticanOverviewId}}}
+						>
+							<ArrowBackIosIcon
+								style={{fontSize:"16",marginTop:"-10px"}}
+							/>
+						</Link>
 						<p style={{fontSize:"16px"}}>Reticans</p>
 					</div>
 				</div>

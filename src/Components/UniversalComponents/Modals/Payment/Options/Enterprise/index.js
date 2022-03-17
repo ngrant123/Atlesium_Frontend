@@ -1,16 +1,33 @@
-import React,{useState} from "react";
+import React,{useState,useContext} from "react";
 import styled from "styled-components";
 import Features from "./FeaturesBreakDown.js";
 import PricingDisplay from "./PricingDisplay.js";
 import FeaturesBreakDown from "./FeaturesBreakDown.js";
+import {PaymentContext} from "../../PaymentContext.js";
 
 const Container=styled.div`
+	position:fixed;
 	display:flex;
 	flex-direction:column;
-	justify-content:center;
 	align-items:center;
-	width:100%;
-	height:100%;
+	padding-top:5%;
+	padding:2%;
+	width:30%;
+	z-index:20;
+	height:80%;
+	border-radius:5px;
+	overflow-y:auto;
+	background-color:white;
+
+	@media screen and (max-width:1370px){
+		width:70%;
+	}
+
+
+	@media screen and (max-width:650px){
+		width:100%;
+		height:100%;
+	}
 
 	@media screen and (max-width:650px){
 		#enterpriseHeader{
@@ -21,6 +38,7 @@ const Container=styled.div`
 
 const Enterprise=()=>{
 	const [displayFeaturesBreakDown,changeDisplayFeaturesBreakDown]=useState(false);
+	const paymentConsumer=useContext(PaymentContext);
 
 	const triggerDisplayFeaturesBreakDown=()=>{
 		changeDisplayFeaturesBreakDown(true);
@@ -32,7 +50,8 @@ const Enterprise=()=>{
 
 	const closeModalIcon=()=>{
 		return(
-			<div style={{width:"100%",display:"flex",justifyContent:"flex-end",marginRight:"5%"}}>
+			<div style={{width:"100%",display:"flex",justifyContent:"flex-end",marginRight:"5%"}}
+				onClick={()=>paymentConsumer.triggerClosePaymentModal()}>
 				<svg xmlns="http://www.w3.org/2000/svg"
 					style={{cursor:"pointer"}}
 					class="icon icon-tabler icon-tabler-circle-x"

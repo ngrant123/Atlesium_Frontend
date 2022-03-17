@@ -11,7 +11,7 @@ const Container=styled.div`
 	height:100%;
 	overflow:hidden;
 
-	@media screen and (max-width:650px){
+	@media screen and (max-width:1370px){
 		display:none !important;
 	}
 

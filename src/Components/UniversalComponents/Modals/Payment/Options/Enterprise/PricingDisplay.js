@@ -1,8 +1,9 @@
-import React from "react";
+import React,{useContext} from "react";
 import styled from "styled-components";
 import COLOR_CONSTANTS from "../../../../../../Utils/ColorConstants.js";
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
+import {PaymentContext} from "../../PaymentContext.js";
 
 const CircularIcon=styled.div`
 	width:28px;
@@ -47,6 +48,8 @@ const SubscriptionCSS={
 	cursor:"pointer"
 }
 const PricingDisplay=({displayFeaturesBreakDown})=>{
+	const paymentConsumer=useContext(PaymentContext);
+
 	return(
 		<React.Fragment>
 				<p style={{fontSize:"24px"}}>
@@ -76,16 +79,18 @@ const PricingDisplay=({displayFeaturesBreakDown})=>{
 				/>
 			</div>
 			<hr style={HorizontalLineCSS}/>
-			<div style={SubscriptionCSS}>
+			<div style={SubscriptionCSS} onClick={()=>paymentConsumer.alterScreen("Checkout")}>
 				<p>
 					<b>Start subscription</b>
 				</p>
 			</div>
 
-			<div style={{display:"flex",flexDirection:"row",marginTop:"10%",width:"50%",justifyContent:"space-between"}}>
-				<CircularIcon/>
-				<p style={{fontSize:"18px"}}> 219 spaces left </p>
-			</div>
+			{/*
+				<div style={{display:"flex",flexDirection:"row",marginTop:"10%",width:"50%",justifyContent:"space-between"}}>
+					<CircularIcon/>
+					<p style={{fontSize:"18px"}}> 219 spaces left </p>
+				</div>
+			*/}
 		</React.Fragment>
 	)
 }

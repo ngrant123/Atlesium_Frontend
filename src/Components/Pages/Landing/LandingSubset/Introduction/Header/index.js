@@ -11,13 +11,23 @@ import ErrorAlertSystem from "../../../../../UniversalComponents/Skeletons/Alert
 
 import {hasEmailBeenPreviouslyUsed} from "../../../../../../Actions/Requests/ProfileRequests/Retrieval/ProfileInformation.js";
 
-const Container=styled.div`
+/*
+	
 	display:flex;
 	flex-direction:column;
 	justify-content:space-between;
+	align-items:center;
 	height:100%;
 	width:100%;
 	margin-top:0%;
+	background-color:red;
+*/
+const Container=styled.div`
+
+	position:relative;
+	display:flex;
+	flex-direction:column;
+	width:100%;
 
 	@media screen and (max-width:650px){
 		width:100%;
@@ -41,6 +51,10 @@ const Container=styled.div`
 
 		#callToActionsButtons{
 			margin-top:20%;
+		}
+
+		#signInButton{
+			margin-right:0%;
 		}
 	}
 
@@ -300,7 +314,7 @@ const Header=({incrementPageCounter})=>{
 							/>
 						</div>
 					</SecondaryButton>
-					<SecondaryButton onClick={()=>changeDisplaySignInModal(true)}>
+					<SecondaryButton id="signInButton" onClick={()=>changeDisplaySignInModal(true)}>
 						<div style={{backgroundColor:"white",padding:"10px",width:"50%"}}>
 							Sign In
 						</div>

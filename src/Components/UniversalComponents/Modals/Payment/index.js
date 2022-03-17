@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Checkout from "./Checkout/index.js";
 import PaymentOptions from "./Options/index.js";
 import {createPortal} from "react-dom";
+import {PaymentProvider} from "./PaymentContext.js";
 
 const ShadowContainer = styled.div`
   position:fixed;
@@ -12,24 +13,55 @@ const ShadowContainer = styled.div`
   top:0%;
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   display:block;
-  z-index:20;
 `;
 
-const Payment=({targetIdDom,closePaymentModal})=>{
+const Container=styled.div`
+	position:fixed;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	width:100%;
+	height:100%;
+	z-index:4;
+`;
+
+const Payment=({targetIdDom,closePaymentModal,userSpecifiedEmail,reduxInformation,history})=>{
 	console.log(targetIdDom);
 	const [screenDesired,changeScreenDesired]=useState("Options");
 
-	return createPortal(
-		<React.Fragment>
-			<ShadowContainer 
-				onClick={()=>closePaymentModal()}
-			/>
+	const closeAndResetModal=()=>{
+		changeScreenDesired("Options")
+	}
 
-			{screenDesired=="Options"?
-				<PaymentOptions/>:
-				<Checkout/>
-			}
-		</React.Fragment>
+	return createPortal(
+		<PaymentProvider
+			value={{
+				alterScreen:(userSelectedScreen)=>{
+					changeScreenDesired(userSpecifiedEmail);
+				},
+				triggerClosePaymentModal:()=>{
+					closePaymentModal()
+				}
+			}}
+		>
+			<Container>
+				{screenDesired=="Options"?
+					<PaymentOptions/>:
+					<Checkout
+						userSpecifiedEmail={userSpecifiedEmail}
+						reduxInformation={reduxInformation}
+						history={history}
+						targetIdDom={targetIdDom}
+						isNewProfileCreationCheckout={true}
+						closeModal={closeAndResetModal}
+					/>
+				}
+				<ShadowContainer 
+					onClick={()=>closePaymentModal()}
+				/>
+
+			</Container>
+		</PaymentProvider>
 	,document.getElementById(targetIdDom))
 }
 

@@ -16,9 +16,8 @@ const Container=styled.div`
 	justify-content:center;
 
 
-
 	@media screen and (max-width:650px){
-		padding:30px !important;
+		padding:0px !important;
 		#headerText{
 			font-size:18px !important;
 		}
@@ -29,6 +28,14 @@ const Container=styled.div`
 		#componentId{
 			width:100% !important;
 			margin-top:5% !important;
+		}
+
+		#image{
+			width:150px !important;
+			height:80px !important;
+		}
+				#explanationText{
+			font-size:18px !important;
 		}
 	}
 
@@ -44,6 +51,12 @@ const Container=styled.div`
 		#image{
 			width:200px !important;
 			height:82px !important;
+		}
+
+		#componentId{
+			width:100% !important;
+			margin-top:5% !important;
+			margin-bottom:0% !important;
 		}
 
 		#explanationText{

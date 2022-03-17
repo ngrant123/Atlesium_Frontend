@@ -5,7 +5,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import RemoveIcon from '@material-ui/icons/Remove';
-
+import VideoLoadingPrompt from "../../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
 import {AnalyticsContext} from "../../AnalyticsSet/AnalyticsContext.js";
 import {Link} from "react-router-dom";
 
@@ -186,14 +186,20 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 		<Container>
 			<div id="videoAndOptionsContainer"
 			 	style={{display:"flex",flexDirection:"row",justifyContent:"space-between",height:"25%"}}>
-				<video id="videoElement"
-					key={uuid()}
-					style={{borderRadius:"5px",backgroundColor:"#151515"}}
-					width="30%" height="100%" borderRadius="50%"
-					autoPlay loop autoBuffer playsInline muted>
-					<source src={overviewData.videoUrl}
-						type="video/mp4"/>
-				</video>
+			 	<VideoLoadingPrompt
+					videoElement={
+						<video id="videoElement"
+							key={uuid()}
+							style={{borderRadius:"5px",backgroundColor:"#151515"}}
+							width="30%" height="100%" borderRadius="50%"
+							autoPlay loop autoBuffer playsInline muted>
+							<source src={overviewData.videoUrl}
+								type="video/mp4"/>
+						</video>
+					}
+					videoId="videoElement"
+				/>
+
 				<div id="progressRatesContainer" style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
 					<div style={{display:"flex",flexDirection:"column"}}>
 						<p style={{fontSize:"16px"}}>Unique Visitors</p>

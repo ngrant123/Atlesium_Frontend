@@ -5,6 +5,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import RemoveIcon from '@material-ui/icons/Remove';
 import {Link} from "react-router-dom";
+import VideoLoadingPrompt from "../../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
 
 const Container=styled.div`
 	position:relative;
@@ -54,7 +55,7 @@ const AnalysisOptionCSS={
 }
 
 
-const Retican=({reticanData,displayScreen})=>{
+const Retican=({reticanData,displayScreen,reticanOverviewId})=>{
 	console.log(reticanData);
 	const [visitorsPercentageDecreaseIndicator,changeVisitorsDecreasePercentageIndicator]=useState(null);
 	const [completionPercentageDecreaseIndicator,changeCompletionDecreasePercentageIndicator]=useState(null);
@@ -124,15 +125,20 @@ const Retican=({reticanData,displayScreen})=>{
 	return(
 		<Container>
 			<div style={{height:"40%"}}>
-				<video id="videoElement"
-					key={uuid()}
-					style={{borderRadius:"5px",backgroundColor:"#151515"}}
-					width="100%" height="100%" borderRadius="50%"
-					autoPlay loop autoBuffer playsInline muted>
-					<source src={reticanData.videoUrl}
-						type="video/mp4"
-					/>
-				</video>
+				<VideoLoadingPrompt
+					videoElement={
+						<video id="videoElement"
+							key={uuid()}
+							style={{borderRadius:"5px",backgroundColor:"#151515"}}
+							width="100%" height="100%" borderRadius="50%"
+							autoPlay loop autoBuffer playsInline muted>
+							<source src={reticanData.videoUrl}
+								type="video/mp4"
+							/>
+						</video>
+					}
+					videoId="videoElement"
+				/>
 			</div>
 
 			<div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",marginTop:"5%"}}>
@@ -172,7 +178,10 @@ const Retican=({reticanData,displayScreen})=>{
 				 	<p style={{color:COLOR_CONSTANTS.SUCCESS_ACTION_COLOR,marginLeft:"20%"}}>Active</p>
 				</div>
 
-				<Link to={{pathname:"/analytics/"+reticanData._id}} style={{textDecoration:"none"}}>
+				<Link to={{
+						pathname:"/analytics/"+reticanData._id,
+						state:{reticanOverviewId}
+					}} style={{textDecoration:"none"}}>
 					<div style={AnalysisOptionCSS} onClick={()=>displayScreen("Analyitcs")}>
 						Analysis
 					</div>

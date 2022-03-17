@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext} from "react";
 import styled from "styled-components";
 import LiveTvIcon from '@material-ui/icons/LiveTv';
 import TimelineIcon from '@material-ui/icons/Timeline';
@@ -6,6 +6,7 @@ import SettingsRemoteIcon from '@material-ui/icons/SettingsRemote';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import COLOR_CONSTANTS from "../../../../../../Utils/ColorConstants.js";
+import {PaymentContext} from "../../PaymentContext.js";
 
 const SubscriptionCSS={
 	width:"90%",
@@ -27,6 +28,8 @@ const FeaturesOptionsCSS={
 	marginBottom:"5%"
 }
 const Features=({displayPricingDisplay})=>{
+	const paymentConsumer=useContext(PaymentContext);
+
 	return(
 		<React.Fragment>
 			<div style={{display:"flex",flexDirection:"row",width:"70%",marginBottom:"5%"}}>
@@ -62,7 +65,7 @@ const Features=({displayPricingDisplay})=>{
 				<p style={{fontSize:"16px"}}>24/7 customer support</p>
 			</div>
 
-			<div style={SubscriptionCSS}>
+			<div style={SubscriptionCSS} onClick={()=>paymentConsumer.alterScreen("Checkout")}>
 				<p>
 					<b>Start subscription</b>
 				</p>

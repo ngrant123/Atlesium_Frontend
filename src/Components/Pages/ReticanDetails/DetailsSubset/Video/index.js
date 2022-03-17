@@ -3,6 +3,7 @@ import styled from "styled-components";
 import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import test4 from "../../../../../Assets/LandingPageSpecific/scrollingWindowBlock_4.png";
 import VideoNavigation from "../../../../UniversalComponents/Navigation/CardNavigationCircle/index.js";
+import VideoLoadingPrompt from "../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
 
 const Container=styled.div`
 	position:relative;
@@ -44,14 +45,20 @@ const Video=({triggerUpdatedSelectedIndex,currentSelectedIndex,totalReticans,cur
 
 	return(
 		<Container>
-			<video id="videoElement"
-				key={uuid()}
-				style={{borderRadius:"5px",backgroundColor:"#151515"}}
-				width="400px" height="250px" borderRadius="50%"
-				autoPlay loop autoBuffer playsInline muted controls>
-				<source src={currentSelectedReticanVideo}
-					type="video/mp4"/>
-			</video>
+			<VideoLoadingPrompt
+				videoElement={
+					<video id="videoElement"
+						key={uuid()}
+						style={{borderRadius:"5px",backgroundColor:"#151515"}}
+						width="400px" height="250px" borderRadius="50%"
+						autoPlay loop autoBuffer playsInline muted controls>
+						<source src={currentSelectedReticanVideo}
+							type="video/mp4"/>
+					</video>
+				}
+				videoId="videoElement"
+			/>
+
 			<div style={{display:"flex",flexDirection:"row",width:"100%",marginTop:"15%",alignItems:"center",justifyContent:"center"}}>
 				<div id="videoNavigation" style={{display:"flex",justifyContent:"space-between",width:"30%"}}>
 					<VideoNavigation 
