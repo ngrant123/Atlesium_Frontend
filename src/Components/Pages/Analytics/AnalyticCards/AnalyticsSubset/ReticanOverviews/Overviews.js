@@ -126,7 +126,6 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 	const [completionPercentage,changeCompletionPercentage]=useState(0);
 
 	useEffect(()=>{
-		debugger;
 		if(overviewData.progressRates.completionPercantageChange.percentageChange<0){
 			changeCompletionDecreasePercentageIndicator(true);
 			changeCompletionPercentage(Math.abs(overviewData.progressRates.completionPercantageChange.percentageChange));
@@ -150,7 +149,6 @@ const ReticanOverivew=({overviewData,selectedReticanStatus})=>{
 	}
 
 	const percentageChangeIcon=(percentageIndicator)=>{
-		debugger;
 		let icon;
 
 		switch(percentageIndicator){

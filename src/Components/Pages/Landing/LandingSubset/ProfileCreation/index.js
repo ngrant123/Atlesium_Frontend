@@ -87,12 +87,7 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 	const [displayPaymentScreen,changeDisplayPaymentScreen]=useState(false);
 	const [reduxInformation,changeReduxInformation]=useState();
 
-	useEffect(()=>{
-		changeDisplayPaymentScreen(true);
-	},[])
-
 	const triggerCreateProfile=async()=>{
-		debugger;
 		const userSubmittedFirstName=document.getElementById("firstName").value;
 		const userSubmittedPassword=document.getElementById("password").value;
 
@@ -141,7 +136,6 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 				//alert 
 				const {message}=data;
 				let profileCreationErrorMessage;
-				debugger;
 				if(message.statusCode==400){
 					profileCreationErrorMessage={
 						header:"Profile creation error",
@@ -176,7 +170,6 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 	}
 
 	const clearInputField=(id)=>{
-		debugger;
 		let isInputErroredOut=false;
 		for(var i=0;i<erroredInputIds.length;i++){
 			if(erroredInputIds[i]==id){

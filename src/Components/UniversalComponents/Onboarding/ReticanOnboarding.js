@@ -97,7 +97,6 @@ const ReticanOnboarding=({closeModal,targetDom,profileId})=>{
 
 
 	const reticanDisplayExample=()=>{
-		debugger;
 		let reticanDemoImage;
 		switch(currentComponent){
 			case "Introductory Retican":{
@@ -322,7 +321,6 @@ const ReticanOnboarding=({closeModal,targetDom,profileId})=>{
 	}
 
 	const OnboardingDecider=({children,componentName})=>{
-		console.log(children);
 		return children.filter(data=>componentName==data.props.componentName);
 	}
 

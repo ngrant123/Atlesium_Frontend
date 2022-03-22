@@ -78,10 +78,6 @@ const ReticanDetails=(props)=>{
 		triggerUpdateReticanParentInformation
 	}=props;
 
-	console.log(originalHeaderColor);
-	console.log(totalReticans);
-	debugger;
-
 	const [erroredInputIds,changeErroredInputIds]=useState([]);
 	let [currentReticansFileSize,changeCurrentReticansFileSize]=useState(0);
 	const [isEditing,changeIsEditingStatus]=useState(false);
@@ -97,7 +93,6 @@ const ReticanDetails=(props)=>{
 	const dispatch=useDispatch();
 
 	useEffect(()=>{
-		debugger;
 		if(selectedColorHeader!=originalHeaderColor){
 			clearInputField(changeErroredInputIds,erroredInputIds,"editReticanOverview");
 		}
@@ -117,8 +112,6 @@ const ReticanDetails=(props)=>{
 			triggerClearInputField("compressFile");
 		}
 		calculateTotalFileSize();
-		
-		debugger;
 		clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
 		// if(originalReticanPointerMapping!=null){
 
@@ -130,13 +123,11 @@ const ReticanDetails=(props)=>{
 	},[totalReticans]);
 
 	useEffect(()=>{
-		debugger;
 		clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
 	},[editedReticans]);
 
 
 	useEffect(()=>{
-		debugger;
 		const {reticanAssembly}=reticanOverviewConsumer;
 		const previousTitle=reticanAssembly.title;
 		const previousDescription=reticanAssembly.description;
@@ -182,7 +173,6 @@ const ReticanDetails=(props)=>{
 	}
 
 	const validateInputs=()=>{
-		debugger;
 		const userSubmittedTitle=document.getElementById("title").value;
 		const userSubmittedDescription=document.getElementById("description").value;
 
@@ -208,7 +198,6 @@ const ReticanDetails=(props)=>{
 	}
 
 	const validateEditReticanOverview=()=>{
-		debugger;
 		const {reticanAssembly}=reticanOverviewConsumer;
 		const previousDescription=reticanAssembly.description;
 		const previousTitle=reticanAssembly.title;
@@ -333,7 +322,6 @@ const ReticanDetails=(props)=>{
 	}
 
 	const validateRetican=()=>{
-		debugger;
 		const {
 			reticanPointerAlterationStatus,
 			editedReticanPointers
@@ -421,7 +409,6 @@ const ReticanDetails=(props)=>{
 	}
 
 	const fileSizeType=()=>{
-		console.log(currentReticansFileSize);
 		return(
 			<React.Fragment>
 				{currentReticansFileSize>0?<>MB</>:<>KB</>}

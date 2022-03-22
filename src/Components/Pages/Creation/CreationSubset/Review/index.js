@@ -48,10 +48,9 @@ const ScriptContainer=styled.div`
 	border-radius:5px;
 	height:50px;
 	background-color:#F6F6F6;
-	display:flex;
-	align-items:center;
 	padding:5px;
-	overflow-x:auto;
+	overflow-y:auto;
+
 
 	@media screen and (max-width:650px){
 		height:80px;
@@ -70,6 +69,7 @@ const ScriptParams=styled.div`
 	border-color:${Color_Constants.GREY};
 	padding:5%;
 	font-size:18px;
+	overflow-y:auto;
 `;
 
 const CloseButtonCSS={
@@ -99,8 +99,7 @@ const CloseButtonCSS={
 */
 
 const Review=({progressScreen,reticanAssembly})=>{
-	console.log(reticanAssembly);
-	const [displayLoadingAnimation,changeDisplayLoadingAnimation]=useState(true);
+	const [displayLoadingAnimation,changeDisplayLoadingAnimation]=useState(false);
 	const [displayReticanOverviewCreationErrorAlert,changeReticanOverviewCreationErrorDisplay]=useState(false);
 	const [alertMessage,changeAlertMessage]=useState();
 	const [reticanOverviewId,changeReticanOverviewId]=useState();
@@ -113,8 +112,69 @@ const Review=({progressScreen,reticanAssembly})=>{
 	}=useSelector(state=>state.personalInformation);
 	const dispatch=useDispatch();
 
+	const urlHeader=process.env.NODE_ENV=='production'?
+					"www.atlesium.com":
+					"http://localhost:4002";
 
-	const script="<script defer data-domain=(1) src=(2)></script>"
+	const miscroserviceDispatchConnection=`${urlHeader}/retrieveInitialReticanFile?reticanOverviewId=${reticanOverviewId}`;
+	const script=`<script>
+
+			let xhr = new XMLHttpRequest();
+			xhr.open('get', ${miscroserviceDispatchConnection});
+			xhr.send();
+
+			xhr.onload = function() {
+				const app=document.getElementById("App");
+				const test=document.createElement('div');
+				test.innerHTML=xhr.response;
+				test.id="atlesium_div";
+				app.appendChild(test);
+				var tmpScripts = document.getElementsByTagName('script');
+				if (tmpScripts.length > 0) {
+				    var scripts = [];
+				    for (var i = 0; i < tmpScripts.length; i++) {
+				        scripts.push(tmpScripts[i]);
+				    }
+				    for (var i = 0; i < scripts.length; i++) {
+				    	if(scripts[i].id=="atlesium_script"){
+					        var s = document.createElement('script');
+					        s.innerHTML = scripts[i].innerHTML;
+					        scripts[i].parentNode.appendChild(s);
+					        scripts[i].parentNode.removeChild(scripts[i]);
+				    	}
+				    }
+				}
+			};
+		</script>`;
+		const presentationScription=`<script>
+
+			let xhr = new XMLHttpRequest();
+			xhr.open('get', (1));
+			xhr.send();
+
+			xhr.onload = function() {
+				const app=document.getElementById((2));
+				const test=document.createElement('div');
+				test.innerHTML=xhr.response;
+				test.id="atlesium_div";
+				app.appendChild(test);
+				var tmpScripts = document.getElementsByTagName('script');
+				if (tmpScripts.length > 0) {
+				    var scripts = [];
+				    for (var i = 0; i < tmpScripts.length; i++) {
+				        scripts.push(tmpScripts[i]);
+				    }
+				    for (var i = 0; i < scripts.length; i++) {
+				    	if(scripts[i].id=="atlesium_script"){
+					        var s = document.createElement('script');
+					        s.innerHTML = scripts[i].innerHTML;
+					        scripts[i].parentNode.appendChild(s);
+					        scripts[i].parentNode.removeChild(scripts[i]);
+				    	}
+				    }
+				}
+			};
+		</script>`
 
 	const removeIdsFromReticanInformation=()=>{
 		const {
@@ -145,7 +205,6 @@ const Review=({progressScreen,reticanAssembly})=>{
 			if(confirmation=="Success"){
 				changeDisplayLoadingAnimation(false);
 				const {message}=data;
-				console.log(message);
 				changeReticanOverviewId(message);
 			}else{
 				const {statusCode}=data;
@@ -205,8 +264,7 @@ const Review=({progressScreen,reticanAssembly})=>{
   	}
 
   	const copyToClipboard=()=>{
-  		const clipboardText=`<script defer data-domain=${reticanAssembly.websiteName} src=${reticanOverviewId}></script>`
-  		navigator.clipboard.writeText(clipboardText);
+  		navigator.clipboard.writeText(script);
   		let copySuccessAlertMessage={
     		header:"Copy Successful"
 		}
@@ -270,7 +328,7 @@ const Review=({progressScreen,reticanAssembly})=>{
 							<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 								<ScriptContainer>
 									<p id="script" style={{fontSize:"18px"}}>
-										<b>{script}</b>
+										<b>{presentationScription}</b>
 									</p>
 								</ScriptContainer>
 								<SaveRoundedIcon
@@ -280,11 +338,20 @@ const Review=({progressScreen,reticanAssembly})=>{
 							</div>
 
 							<ScriptParams style={{marginTop:"5%"}}>
-								<p>
-									<b>(1)= " {reticanAssembly.websiteName} "</b>
+								<p>Parameters</p>
+								<hr/>
+								<p style={{color:Color_Constants.PRIMARY_COLOR}}>
+									Link to altesium
 								</p>
 								<p>
-									<b>(2)= " {reticanOverviewId} "</b>
+									<b>(1)= "{miscroserviceDispatchConnection}"</b>
+								</p>
+								<hr/>
+								<p style={{color:Color_Constants.PRIMARY_COLOR}}>
+									Target div id. Works best with main page div
+								</p>
+								<p>
+									<b>(2)="App"</b>
 								</p>
 							</ScriptParams>
 

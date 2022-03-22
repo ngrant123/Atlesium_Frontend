@@ -15,7 +15,6 @@ const backendServiceErrorMessage={
 
 export const passwordResetConfirmationEmail=async(email)=>{
 	try{
-		debugger;
 		const {data}=await axios.post(`${EmailCreationURL}/sendPasswordResetEmailConfirmation`,{
 			email
 		});

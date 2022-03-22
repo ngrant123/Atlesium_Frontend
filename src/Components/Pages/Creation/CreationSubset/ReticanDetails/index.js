@@ -76,15 +76,10 @@ const ReticanDetailsInit=(props)=>{
 		updateReticanAssemblerInformation
 	}=props;
 
-	console.log(reticanAssembly);
-	console.log("Rerendered");
-
 	const [displayReticanHeaderColorOptions,changeReticanHeaderColorOptionsDisplay]=useState(false);
 	const [selectedColorHeader,changeSelectedColorHeader]=useState(reticanAssembly==null?null:reticanAssembly.headerColor);
 	let [currentReticanDetails,changeReticanDetails]=useState(reticanAssembly==null?{}:reticanAssembly);
 	const [editedReticans,changeEditedReticans]=useState([]);
-
-	console.log(currentReticanDetails);
 
 
 
@@ -125,7 +120,6 @@ const ReticanDetailsInit=(props)=>{
 			title,
 			description
 		}
-		console.log(currentReticanDetails);
 		progressScreen(destinationScreen,currentReticanDetails);
 	}
 

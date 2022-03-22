@@ -132,7 +132,6 @@ const PageOptionDisplayCSS={
 }
 
 const Navigation=({pageType,parentDiv})=>{
-	console.log(parentDiv);
 
 	const [dashboardSelection,changeDashBoardSelection]=useState(false);
 	const [analyticsSelection,changeAnalyticsSelection]=useState(false);
@@ -183,19 +182,16 @@ const Navigation=({pageType,parentDiv})=>{
 	},[]);
 
 	const fetchProfilePicture=async()=>{
-		debugger;
 		if(encodedProfilePicture!=null){
 			const base564url=atob(encodedProfilePicture);
 			changeProfilePicture(base564url);
 		}else{
 			const {confirmation,data}=await retrieveProfilePicture(_id);
 			if(confirmation=="Success"){
-				debugger;
 				const {message}=data;
 					
 				if(message!=null){
 					const encodedProfilePicture=btoa(message);
-					console.log(encodedProfilePicture);
 					dispatch(storeEncodedProfilePicture(encodedProfilePicture));
 				}
 
@@ -290,7 +286,6 @@ const Navigation=({pageType,parentDiv})=>{
 
 	const mobileNavigation=()=>{
 		let component;
-		console.log(pageType);
 		switch(pageType){
 			case "Settings":{
 				component=settingsDisplay();

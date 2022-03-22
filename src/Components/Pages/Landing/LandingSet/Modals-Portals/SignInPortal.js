@@ -114,7 +114,6 @@ const SignIn=({closeModal,history,parentContainerId})=>{
   const dispatcher=useDispatch();
 
   const triggerLoginRequest=async()=>{
-    debugger;
     const userSubmittedEmail=document.getElementById("loginEmail").value;
     const userSubmittedPassword=document.getElementById("password").value;
 
@@ -157,7 +156,6 @@ const SignIn=({closeModal,history,parentContainerId})=>{
           statusCode
         }=data;
         let loginErrorMessage;
-        debugger;
         if(statusCode==400){
           loginErrorMessage={
             header:"Login error",
@@ -182,7 +180,6 @@ const SignIn=({closeModal,history,parentContainerId})=>{
   }
 
   const clearInputField=(id)=>{
-    debugger;
     let isInputErroredOut=false;
     for(var i=0;i<erroredInputIds.length;i++){
       if(erroredInputIds[i]==id){

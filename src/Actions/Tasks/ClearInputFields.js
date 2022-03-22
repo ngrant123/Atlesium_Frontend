@@ -1,6 +1,5 @@
   
   export const clearInputField=(changeErroredInputIds,erroredInputIds,id)=>{
-    debugger;
     let isInputErroredOut=false;
     for(var i=0;i<erroredInputIds.length;i++){
       if(erroredInputIds[i]==id){

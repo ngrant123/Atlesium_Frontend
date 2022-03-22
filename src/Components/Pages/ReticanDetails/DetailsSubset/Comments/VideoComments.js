@@ -41,7 +41,6 @@ const VideoComment=({comments})=>{
 	}
 
 	const videoComment=(data)=>{
-		console.log(data);
 		return (
 			<div id="videoComment" style={{display:"flex",flexDirection:"row",marginBottom:"10%"}}>
 				<AccountCircleIcon

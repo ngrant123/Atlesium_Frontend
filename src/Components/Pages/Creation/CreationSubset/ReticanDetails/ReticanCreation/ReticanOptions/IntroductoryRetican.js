@@ -83,7 +83,6 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 	},[errorMessage]);
 
 	const triggerAddPageRedirect=()=>{
-		debugger;
 		const urlRedirect=document.getElementById("pageRedirectUrl").value;
 		const pageRedirectDescription=document.getElementById("pageRedirectDescription").value;
 		const urlRedirectSpecialCharacterIndicator=isSpecialCharactersSeen(urlRedirect);
@@ -151,7 +150,6 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 	}
 
 	const ComponenetDecider=({componentName,children})=>{
-		debugger;
 		return children.filter(data=>data.props.componentName==componentName);
 	}
 
@@ -173,11 +171,13 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 							}
 						</div>
 
-						{pageRedirects.length<3 &&(
-							<div style={ButtonCSS} onClick={()=>triggerDisplayPageRedirectionCreation()}>
-								Add Page Redirect
-							</div>
-						)}
+						{/*
+							{pageRedirects.length<3 &&(
+								<div style={ButtonCSS} onClick={()=>triggerDisplayPageRedirectionCreation()}>
+									Add Page Redirect
+								</div>
+							)}
+						*/}
 					</div>
 					<hr style={HorizontalLineCSS}/>
 					<div style={{display:"flex",flexDirection:"row"}}>
@@ -270,7 +270,9 @@ const IntroductoryRetican=({displayReticanInitialOptionCreation,triggerCreateRet
 			<ComponenetDecider componentName={currentSelectedComponent}>
 				<Initializer componentName={"initial"}/>
 				<PageDescription componentName={"pageDescription"}/>
-				<Links componentName={"linksCreation"}/>
+				{/*
+					<Links componentName={"linksCreation"}/>
+				*/}
 			</ComponenetDecider>
 
 		</React.Fragment>

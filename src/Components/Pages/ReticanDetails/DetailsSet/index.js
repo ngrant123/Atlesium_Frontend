@@ -87,7 +87,6 @@ const MobileHorizontalLineCSS={
 }
 
 const ReticanDetails=(props)=>{
-	debugger;
 	const [currentSelectedIndex,changeCurrentSelectedIndex]=useState(0);
 	const [reticans,changeReticans]=useState([]);
 	const [reticanSpecificResponses,changeReticanSpecificResponses]=useState([]);
@@ -114,7 +113,6 @@ const ReticanDetails=(props)=>{
 	}
 
 	useEffect(()=>{
-		debugger;
 		if(_id=="" || _id==null){
 			props.history.push('/');
 		}
@@ -139,9 +137,7 @@ const ReticanDetails=(props)=>{
 			);
 
 			if(confirmation=="Success"){
-				debugger;
 				const {message}=data;
-				console.log(message);
 				if(message.length==0){
 					changeReticanSpecificResponses([]);
 					changeReticans([]);

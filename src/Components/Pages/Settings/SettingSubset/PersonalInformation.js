@@ -88,7 +88,6 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 
 	useEffect(()=>{
 		const fetchData=async({updatedAccessToken})=>{
-			debugger;
 			const {confirmation,data}=await retrieveEmail(
 												_id,
 												updatedAccessToken==null?accessToken:updatedAccessToken);
@@ -163,7 +162,6 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 	}
 
 	const triggerEditName=async({updatedAccessToken,userSubmittedName})=>{
-		debugger;
 		let editedNameAlertMessage;
 		changeNameEditingStatus(true);
 
@@ -232,7 +230,6 @@ const PersonalInformationSettings=({parentContainerId,history})=>{
 	}
 
 	const triggerEditEmail=async({updatedAccessToken,userSubmittedEmail})=>{
-		debugger;
 		let editedEmailAlterMessage;
 		changeEmailEditingStatus(true);
 

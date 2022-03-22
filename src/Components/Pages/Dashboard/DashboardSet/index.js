@@ -93,7 +93,6 @@ const Dashboard=(props)=>{
 	const [indexesPreviouslyVisited,changeIndexesPreviouslyVisited]=useState({});
 
 	useEffect(()=>{
-		debugger;
 		if(_id=="" || _id==null){
 			props.history.push('/');
 		}
@@ -130,10 +129,7 @@ const Dashboard=(props)=>{
 
 
 	const fetchReticanUrlData=async(reticanId)=>{
-		debugger;
 		let tempIndexesVisited=indexesPreviouslyVisited;
-		console.log(Object.keys(tempIndexesVisited).length);
-		console.log(tempIndexesVisited[currentSelectedIndex]);
 
 		if(Object.keys(tempIndexesVisited).length>0 && tempIndexesVisited[currentSelectedIndex]==null){
 			const {confirmation,data}=await retrieveRetican(reticanId,_id);
@@ -168,11 +164,9 @@ const Dashboard=(props)=>{
 
 
 	useEffect(()=>{
-		debugger;
 		if(reticans.length>1){
 			const tempStackReticanHolders=[];
 			fetchReticanUrlData(reticans[currentSelectedIndex].primaryReticanCard.toString()).then(result=>{
-				debugger;
 				if(result!=null){
 					reticans[currentSelectedIndex]={
 						...reticans[currentSelectedIndex],
@@ -208,7 +202,6 @@ const Dashboard=(props)=>{
 			reticanStatus,
 			updatedAccessToken==null?accessToken:updatedAccessToken
 		);
-		debugger;
 		if(confirmation=="Success"){
 			const {message}=data;
 			changeReticans(message);
@@ -244,13 +237,11 @@ const Dashboard=(props)=>{
 	}
 
 	const updateSelectedIndex=(selectedIndex)=>{
-		console.log(selectedIndex);
 		changePreviousIndex(currentSelectedIndex);
 		changeCurrentSelectedIndex(selectedIndex);
 	}
 
 	const deleteRetican=()=>{
-		debugger;
 		let currentStackIndex=currentSelectedIndex;
 		if(currentStackIndex!=0){
 			currentStackIndex--;
@@ -263,7 +254,6 @@ const Dashboard=(props)=>{
 	}
 
 	const removeReticanFromStack=(index)=>{
-		debugger;
 		const tempReticans=stackReticansView;
 		tempReticans.splice(index,1);
 		changeStackReticanView([...tempReticans]);

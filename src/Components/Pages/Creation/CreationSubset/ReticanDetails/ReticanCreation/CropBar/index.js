@@ -53,7 +53,6 @@ const CropOptionsButtonCSS={
 
 const CropBar=({closeCropModal})=>{
 	useEffect(()=>{
-		debugger;
 		const primaryCropToggleButtonDrag=new DragFunctionality();
 		const secondaryCropToggleButtonDrag=new DragFunctionality();
 

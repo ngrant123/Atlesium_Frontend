@@ -135,7 +135,6 @@ const Checkout=(props)=>{
 	const dispatcher=useDispatch();
 
 	useEffect(()=>{
-		debugger;
 		const {statusCode}=renderPaymentHoistedFields(generateTransactionToken);
 		if(statusCode==400 || statusCode==500){
 			let paymentErrorMessage;

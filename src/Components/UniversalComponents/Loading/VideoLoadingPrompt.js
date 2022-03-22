@@ -14,13 +14,11 @@ const LoadingPromptCSS={
 	Food for thot
 */
 const VideoLoadingPrompt=({videoElement,videoId})=>{
-	console.log(videoElement);
 	const [displayVideoElement,changeDisplayVideoElement]=useState(true);
 	const [parentVideoElementHeight,changeParentVideoElementHeight]=useState(0);
 	const [parentVideoElementWidth,changeParentVideoElementWidth]=useState(0);
 
 	useEffect(()=>{
-		debugger;
 		const videoElement=document.getElementById(videoId);
 		changeParentVideoElementHeight(window.getComputedStyle(videoElement).height);
 		changeParentVideoElementWidth(window.getComputedStyle(videoElement).width);

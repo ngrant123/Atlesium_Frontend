@@ -56,7 +56,6 @@ const Creation=(props)=>{
 	}=useSelector(state=>state.personalInformation);
 
 	useEffect(()=>{
-		debugger;
 		if(_id=="" || _id==null){
 			props.history.push('/');
 		}

@@ -3,6 +3,7 @@ import styled,{keyframes} from "styled-components";
 import TestImahge from "../../../../../../Assets/LandingPageSpecific/scrollingWindowBlock_1.png";
 import TimelineIcon from '@material-ui/icons/Timeline';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
+import CodeIcon from '@material-ui/icons/Code';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import COLOR_CONSTANTS from "../../../../../../Utils/ColorConstants.js";
 import DeleteRetican from "../../../../../UniversalComponents/Skeletons/CallToActionSkeleton.js";
@@ -13,6 +14,7 @@ import {Link} from "react-router-dom";
 import {tokensRegeneration} from "../../../../../../Actions/Tasks/UpdateTokens.js";
 import {ReticanContext} from "../../../DashboardSet/ReticanContext.js";
 import VideoLoadingPrompt from "../../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
+import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 
 const ReticanContainer=styled.div`
 	position:absolute;
@@ -141,6 +143,8 @@ const ReticanCSS={
 	alignItems:"center"
 }
 
+
+
 const ReticanDisplay=(props)=>{
 	const {
 		reticanInformation,
@@ -149,8 +153,44 @@ const ReticanDisplay=(props)=>{
 		deleteRetican
 	}=props;
 
+	const urlHeader=process.env.NODE_ENV=='production'?
+					"www.atlesium.com":
+					"http://localhost:4002";
+
+	const miscroserviceDispatchConnection=`${urlHeader}/retrieveInitialReticanFile?reticanOverviewId=${reticanInformation._id}`;
+	const script=`<script>
+
+			let xhr = new XMLHttpRequest();
+			xhr.open('get', ${miscroserviceDispatchConnection});
+			xhr.send();
+
+			xhr.onload = function() {
+				const app=document.getElementById("App");
+				const test=document.createElement('div');
+				test.innerHTML=xhr.response;
+				test.id="atlesium_div";
+				app.appendChild(test);
+				var tmpScripts = document.getElementsByTagName('script');
+				if (tmpScripts.length > 0) {
+				    var scripts = [];
+				    for (var i = 0; i < tmpScripts.length; i++) {
+				        scripts.push(tmpScripts[i]);
+				    }
+				    for (var i = 0; i < scripts.length; i++) {
+				    	if(scripts[i].id=="atlesium_script"){
+					        var s = document.createElement('script');
+					        s.innerHTML = scripts[i].innerHTML;
+					        scripts[i].parentNode.appendChild(s);
+					        scripts[i].parentNode.removeChild(scripts[i]);
+				    	}
+				    }
+				}
+			};
+		</script>`;
+
 	const [displayDeleteReticanModal,changeDeleteReticanModal]=useState(false);
 	const [displayErrorAlertModal,changeErrorAlertModal]=useState(false);
+	const [displayScriptTag,changeDisplayScriptTag]=useState(false);
 	const [errorMessage,changeErrorMessage]=useState();
 	const {
 		_id,
@@ -187,7 +227,6 @@ const ReticanDisplay=(props)=>{
 	useEffect(()=>{
 		const {animationIndicator}=reticanInformation;
 		const uniqueId=uuid();
-		debugger;
 		if(animationIndicator==true){
 			setTimeout(()=>{
 				poppedFromStackAnimation(uniqueId);
@@ -207,6 +246,7 @@ const ReticanDisplay=(props)=>{
 			reticanRef.current.style.animation='none';
 		}
 	})
+
 
 
 	const poppedFromStackAnimation=(uniqueId)=>{
@@ -338,66 +378,83 @@ const ReticanDisplay=(props)=>{
 			{errorAlertModal()}
 			<ReticanContainer ref={reticanRef}
 				onAnimationEnd={() => removeTargetedIndexRetican(currentIndex)}>
-				<div id="retican" style={ReticanCSS}>
+				{displayScriptTag==true?
+					<div>
+						<ArrowBackIosRoundedIcon 
+							onClick={()=>changeDisplayScriptTag(false)}
+							style={{fontSize:24,cursor:"pointer"}}
+						/>
+						<hr/>
+						<p>{script}</p>
+					</div>:
+					<div id="retican" style={ReticanCSS}>
 
-					<VideoLoadingPrompt
-						videoElement={
-							<video id="videoElement"
-								key={uuid()}
-								style={{borderRadius:"5px",backgroundColor:"#151515"}}
-								width="75%" height="40%" borderRadius="50%"
-								autoPlay loop autoBuffer playsInline muted>
-								<source src={reticanInformation.primaryReticanCard.videoUrl}
-									type="video/mp4"/>
-							</video>
-						}
-						videoId="videoElement"
-					/>
+						<VideoLoadingPrompt
+							videoElement={
+								<video id={"videoElement"+reticanInformation.primaryReticanCard._id}
+									key={uuid()}
+									style={{borderRadius:"5px",backgroundColor:"#151515"}}
+									width="75%" height="40%" borderRadius="50%"
+									autoPlay loop autoBuffer playsInline muted>
+									<source src={reticanInformation.primaryReticanCard.videoUrl}
+										type="video/mp4"/>
+								</video>
+							}
+							videoId={"videoElement"+reticanInformation.primaryReticanCard._id}
+						/>
 
-					<div style={{marginTop:"5%",display:"flex",flexDirection:"row",width:"75%",justifyContent:"space-between"}}>
-						<div style={{display:"flex",flexDirection:"column"}}>
-							<p style={{fontSize:"24px"}}>
-								<b>{reticanInformation.title}</b>
-							</p>
-							<p style={{fontSize:"18px"}}>{reticanInformation.description}</p>
+						<div style={{marginTop:"5%",display:"flex",flexDirection:"row",width:"75%",justifyContent:"space-between"}}>
+							<div style={{display:"flex",flexDirection:"column"}}>
+								<p style={{fontSize:"24px"}}>
+									<b>{reticanInformation.title}</b>
+								</p>
+								<p style={{fontSize:"18px"}}>{reticanInformation.description}</p>
+							</div>
+							<div style={{display:"flex",flexDirection:"column"}}>
+								<div id="activeStatus" style={ActiveStatusCSS}/>
+								<hr style={HorizontalLineCSS}/>
+								<CodeIcon
+									onClick={()=>changeDisplayScriptTag(true)}
+									style={{fontSize:"24",cursor:"pointer"}}
+								/>
+							</div>
 						</div>
-						<div id="activeStatus" style={ActiveStatusCSS}/>
+
+						<hr style={HorizontalLineCSS}/>
+						<div id="reticanOptions"
+							style={{display:"flex",flexDirection:"row",width:"80%",justifyContent:"space-between",marginTop:"10%"}}>
+							<div id="specificReticanOptions" style={{display:"flex",flexDirection:"row"}}>
+								<div id="reticanOption" style={ReticanOptionButtonCSS}>
+									<TimelineIcon
+										style={{fontSize:"24"}}
+									/>
+								</div>
+
+								<div id="verticalLineCSS" style={VerticalLineCSS}/>
+
+								<div id="reticanOption" style={ReticanOptionButtonCSS}
+									onClick={()=>reticanConsumer.history.push(`/reticanDetails/${reticanInformation._id}`)}>
+									<ChatBubbleOutlineIcon
+										style={{fontSize:"24"}}
+									/>
+								</div>
+
+								<div id="verticalLineCSS" style={VerticalLineCSS}/>
+
+								<div id="reticanOption" style={ReticanOptionButtonCSS} 
+									onClick={()=>reticanConsumer.history.push(`/creation/${reticanInformation._id}`)}>
+									<BorderColorIcon
+										style={{fontSize:"24"}}
+									/>
+								</div>
+							</div>
+
+							<div id="deleteButton" style={DeleteButtonCSS} onClick={()=>changeDeleteReticanModal(true)}>
+								Delete
+							</div>
+						</div>
 					</div>
-
-					<hr style={HorizontalLineCSS}/>
-					<div id="reticanOptions"
-						style={{display:"flex",flexDirection:"row",width:"80%",justifyContent:"space-between",marginTop:"10%"}}>
-						<div id="specificReticanOptions" style={{display:"flex",flexDirection:"row"}}>
-							<div id="reticanOption" style={ReticanOptionButtonCSS}>
-								<TimelineIcon
-									style={{fontSize:"24"}}
-								/>
-							</div>
-
-							<div id="verticalLineCSS" style={VerticalLineCSS}/>
-
-							<div id="reticanOption" style={ReticanOptionButtonCSS}
-								onClick={()=>reticanConsumer.history.push(`/reticanDetails/${reticanInformation._id}`)}>
-								<ChatBubbleOutlineIcon
-									style={{fontSize:"24"}}
-								/>
-							</div>
-
-							<div id="verticalLineCSS" style={VerticalLineCSS}/>
-
-							<div id="reticanOption" style={ReticanOptionButtonCSS} 
-								onClick={()=>reticanConsumer.history.push(`/creation/${reticanInformation._id}`)}>
-								<BorderColorIcon
-									style={{fontSize:"24"}}
-								/>
-							</div>
-						</div>
-
-						<div id="deleteButton" style={DeleteButtonCSS} onClick={()=>changeDeleteReticanModal(true)}>
-							Delete
-						</div>
-					</div>
-				</div>
+				}
 
 			</ReticanContainer>
 		</React.Fragment>

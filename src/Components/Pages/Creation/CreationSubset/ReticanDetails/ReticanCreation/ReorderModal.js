@@ -58,19 +58,15 @@ const ReorderModal=(props)=>{
 		firstReticanType,
 		currentReticanType
 	}=props;
-	console.log(currentReticanCounter);
-	debugger;
 	const [displayExtendedReorderModal,changeDisplayExtendedReorderModal]=useState(false);
 
 	// useEffect(()=>{
-	// 	debugger;
 	// 	document.getElementById("rankingContainer").value=currentReticanCounter+1;
 	// },[currentReticanCounter]);
 
 
 
 	const editReticanOrderingStatus=(incrementIndicator)=>{
-		debugger;
 		if(displayExtendedReorderModal==false){
 			document.getElementById("reorderContainer").style.marginLeft="0%";
 			alterReticanEditButtonsDisplayStatus(false);

@@ -67,16 +67,13 @@ const SpecifiedAnalytics=(props)=>{
 	const dispatch=useDispatch();
 
 	useEffect(()=>{
-		debugger;
 		if(_id=="" || _id==null){
 			props.history.push('/');
 		}
-		console.log(props);
 	},[])
 
 	useEffect(()=>{
 		const fetchSpecifiedAnalyticsPage=async({updatedAccessToken})=>{
-			debugger;
 			const {confirmation,data}=await retrieveSpecifiedAnaltyicsPage(
 				props.match.params.id,
 				_id,
@@ -140,7 +137,6 @@ const SpecifiedAnalytics=(props)=>{
 	}
 
 	const fetchAnalytics=async({requestedAnaltyicsType,updatedAccessToken})=>{
-		debugger;
 		const {confirmation,data}=await retrieveTimeSpecifiedAnalytics(
 			props.match.params.id,
 			requestedAnaltyicsType,
@@ -149,7 +145,6 @@ const SpecifiedAnalytics=(props)=>{
 			_id);
 
 		if(confirmation=="Success"){
-			debugger;
 			const {
 				message:{
 					visitorReticanAnalytics,

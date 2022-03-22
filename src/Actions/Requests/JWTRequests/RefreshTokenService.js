@@ -15,7 +15,6 @@ const backendServiceErrorMessage={
 
 export const generateTokens=async({userId,currentRefreshToken})=>{
 	try{
-		debugger;
 		const {data}=await axios.post(`${JWTCreationURL}/tokenGeneration`,{
 			userId,
 			currentRefreshToken

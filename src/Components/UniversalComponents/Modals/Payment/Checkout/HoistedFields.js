@@ -6,7 +6,6 @@ export const renderPaymentHoistedFields=async(generateTransactionToken)=>{
 	let {confirmation,data}=await generateSessionToken();
 
 	if(confirmation=="Success"){
-		debugger;
 		const token=data.message;
 		let form=document.querySelector('#paymentCardForm');
 		window.braintree.client.create({
@@ -69,7 +68,6 @@ export const renderPaymentHoistedFields=async(generateTransactionToken)=>{
 									if(err){
 										return {statusCode:500};
 									}else{
-										console.log(payload.nonce);
 										generateTransactionToken(payload.nonce);
 										return {statusCode:200};
 									}

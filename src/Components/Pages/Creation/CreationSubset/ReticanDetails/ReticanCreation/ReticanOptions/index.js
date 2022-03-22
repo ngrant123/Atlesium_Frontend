@@ -60,7 +60,6 @@ const ButtonCSS={
 
 
 const ReticanOptions=({reticanOptionType,reticanInformation,displayInitialReticanScreen})=>{
-	console.log(reticanOptionType);
 	const reticanCreationConsumer=useContext(ReticanCreationContext);
 	const [displayMobileUI,changeDisplayMobileUI]=useState(false);
 
@@ -80,8 +79,6 @@ const ReticanOptions=({reticanOptionType,reticanInformation,displayInitialRetica
 
 	let [currentRetican,changeCurrentRetican]=useState(reticanInformation);
 	const ReticanOptionsModals=({children,currentSelectedReticanType})=>{
-		debugger;
-		console.log(currentSelectedReticanType);
 		return children.filter(reticanUploadOption=> reticanUploadOption.props.optionType==currentSelectedReticanType);
 	}
 
@@ -101,7 +98,6 @@ const ReticanOptions=({reticanOptionType,reticanInformation,displayInitialRetica
 	}
 
 	const triggerCreateRetican=(secondaryInformation)=>{
-		debugger;
 		currentRetican={
 			...currentRetican,
 			...secondaryInformation

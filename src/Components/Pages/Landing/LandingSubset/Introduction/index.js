@@ -124,7 +124,8 @@ const IntroductionCoordinator=()=>{
 		switch(pageCounter){
 			case 0:{
 
-				return changeComponent(<Header incrementPageCounter={incrementPageCounter}/>);
+				return changeComponent(
+					<Header incrementPageCounter={incrementPageCounter}/>);
 			}
 			case 1:{
 				initPageIcons();
@@ -187,7 +188,6 @@ const IntroductionCoordinator=()=>{
 	}
 
 	const alterPageCounter=(prospecitvePageNumber)=>{
-		debugger;
 		if(prospecitvePageNumber>pageCounter){
 			incrementPageCounter(prospecitvePageNumber);
 		}else{

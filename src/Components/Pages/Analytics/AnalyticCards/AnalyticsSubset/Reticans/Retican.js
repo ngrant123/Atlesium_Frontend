@@ -56,7 +56,6 @@ const AnalysisOptionCSS={
 
 
 const Retican=({reticanData,displayScreen,reticanOverviewId})=>{
-	console.log(reticanData);
 	const [visitorsPercentageDecreaseIndicator,changeVisitorsDecreasePercentageIndicator]=useState(null);
 	const [completionPercentageDecreaseIndicator,changeCompletionDecreasePercentageIndicator]=useState(null);
 
@@ -64,7 +63,6 @@ const Retican=({reticanData,displayScreen,reticanOverviewId})=>{
 	const [completionPercentage,changeCompletionPercentage]=useState(0);
 
 	useEffect(()=>{
-		debugger;
 		if(reticanData.progressRates.completionPercantageChange.percentageChange<0){
 			changeCompletionDecreasePercentageIndicator(true);
 			changeCompletionPercentage(Math.abs(reticanData.progressRates.completionPercantageChange.percentageChange));
@@ -89,7 +87,6 @@ const Retican=({reticanData,displayScreen,reticanOverviewId})=>{
 	}
 
 	const percentageChangeIcon=(percentageIndicator)=>{
-		debugger;
 		let icon;
 
 		switch(percentageIndicator){

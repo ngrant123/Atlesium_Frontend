@@ -15,8 +15,6 @@ const Container=styled.div`
 const ReticanInitialier=()=>{
 	const reticanConsumer=useContext(ReticanContext);
 	const {stackReticans}=reticanConsumer;
-	console.log(stackReticans);
-	debugger;
 	return(
 		<Container>
 			{stackReticans.length==0?

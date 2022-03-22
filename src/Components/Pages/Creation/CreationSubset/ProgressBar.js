@@ -47,7 +47,6 @@ const CreationProgressBar=({currentScreen})=>{
 	}
 	useEffect(()=>{
 		setTimeout(()=>{
-			debugger;
 			let maxThreshold=retrievePercentage(currentScreen);
 			let startPoint=retrievePercentage(previousSelectedScreen);
 			if(startPoint>=maxThreshold)

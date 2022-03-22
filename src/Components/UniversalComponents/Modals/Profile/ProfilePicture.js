@@ -110,7 +110,6 @@ const HorizontalLineCSS={
 }
 
 const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigationProfilePicture})=>{
-	console.log(targetDom);
 	const [profilePicture,changeProfilePicture]=useState();
 	const [displayDeleteOptions,changeDeleteOptions]=useState(false);
 	const [errorMessage,changeErrorMessage]=useState();
@@ -159,7 +158,6 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 				alert('Your file is too large. We only accept images that have a max size of 7MB. You can go to preview (Mac) and lower the resolution there.');
 			}else{
 				const picUrl=reader.result;
-				console.log(btoa(picUrl));
 				changeProfilePictureBlob(btoa(picUrl));
 				changeProfilePicture(picUrl);
 			}
@@ -197,7 +195,6 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 
 	const triggerCreateProfilePicture=async({updatedAccessToken})=>{
 		changeSubmittingStatus(true);
-		debugger;
 		const {confirmation,data}=await createProfilePicture(
 											profilePicture,
 											_id,

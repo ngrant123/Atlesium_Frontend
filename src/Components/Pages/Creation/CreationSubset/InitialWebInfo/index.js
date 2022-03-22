@@ -75,7 +75,6 @@ const InitialWebInformation=(props)=>{
 		isEditReticanDesired,
 		isLoadingEditedReticanInformation
 	}=props;
-	console.log(reticanAssembly);
 	const [erroredInputIds,changeErroredInputIds]=useState([]);
 	const [isEditingReticanOverviewStatus,changeIsEditingReticanOverviewStatus]=useState(false);
 	const reticanCreationConsumer=useContext(CreationContext);
@@ -100,7 +99,6 @@ const InitialWebInformation=(props)=>{
 	}
 
 	const triggerNextScreen=()=>{
-		debugger;
 		const websiteName=document.getElementById("websiteName").value;
 		if(websiteName==""){
 			displayInputRequiredPrompt();

@@ -5,7 +5,6 @@ import {
 } from "../Redux/Actions/PersonalInformationActions.js";
 
 export const tokensRegeneration=async(props)=>{
-	debugger;
 	const {
 		currentRefreshToken,
 		userId,
@@ -20,7 +19,6 @@ export const tokensRegeneration=async(props)=>{
 	})
 	
 	if(confirmation=="Success"){
-		debugger;
 		const {
 			message:{
 				accessToken,

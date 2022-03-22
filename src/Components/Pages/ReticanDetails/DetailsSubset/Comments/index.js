@@ -30,7 +30,6 @@ const Container=styled.div`
 `;
 
 const Comments=({responses,responseType})=>{
-	console.log(responseType);
 	return(
 		<Container>
 			{responses.length==0?

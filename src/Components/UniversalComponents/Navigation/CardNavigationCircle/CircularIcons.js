@@ -21,9 +21,6 @@ const CircleContainer=({iteratedIndex,currentSelectedIndex,triggerUpdatedSelecte
 	const [isSelectedButton,changeIsSelectedButton]=useState(false);
 
 	useEffect(()=>{
-		debugger;
-		console.log(iteratedIndex);
-		console.log(currentSelectedIndex);
 
 		if(iteratedIndex==currentSelectedIndex){
 			changeIsSelectedButton(true);

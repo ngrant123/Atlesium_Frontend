@@ -63,13 +63,11 @@ const ChartDisplay=(props)=>{
     xAxisLabels,
     timeRequestedType
   }=props;
-  console.log(props);
 
   const [isDataReformatComplete,changeIsDataReformatComplete]=useState(false);
   const [chartData,changeChartData]=useState();
 
   useEffect(()=>{
-    debugger;
     if(timeRequestedType=='month'){
       xAxisLabels=reformatMonthLabels();
     }
@@ -101,7 +99,6 @@ const ChartDisplay=(props)=>{
   ]);
 
   const reformatMonthLabels=()=>{
-    debugger;
     for(var i=0;i<xAxisLabels.length;i++){
       const month=NUMERICAL_TO_DATE_CONSTANTS.month[xAxisLabels[i]];
       xAxisLabels[i]=month

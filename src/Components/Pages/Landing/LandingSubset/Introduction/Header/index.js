@@ -8,7 +8,7 @@ import {LandingPageContext} from "../../../LandingSet/LandingPageContext.js";
 import RequiredFieldNotification from "../../../../../UniversalComponents/Notifications/RequiredFieldNotification.js";
 import {isEmailValid} from "../../../../../../Actions/Validation/EmailValidation.js";
 import ErrorAlertSystem from "../../../../../UniversalComponents/Skeletons/Alerts.js";
-
+import RequestAccess from "../../../LandingSet/Modals-Portals/RequestAccess.js";
 import {hasEmailBeenPreviouslyUsed} from "../../../../../../Actions/Requests/ProfileRequests/Retrieval/ProfileInformation.js";
 
 /*
@@ -178,6 +178,7 @@ const Header=({incrementPageCounter})=>{
 	const [erroredInputIds,changeErroredInputIds]=useState([]);
 	const [displayEmailErrorAlert,changeDisplayEmailErrorAlert]=useState(false);
 	const [errorMessage,changeErrorMessage]=useState();
+	const [displayRequestAccessModal,changeDisplayRequestAccessModal]=useState(false);
 
 	const closeSignInModal=()=>{
 		changeDisplaySignInModal(false);
@@ -198,7 +199,6 @@ const Header=({incrementPageCounter})=>{
 	}
 
 	const initializeProfileCreation=async()=>{
-		debugger;
 		const userSubmittedEmail=document.getElementById("email").value;
 		if(userSubmittedEmail==""){
 			const tempErroredIds=[];
@@ -210,7 +210,6 @@ const Header=({incrementPageCounter})=>{
 					message
 				}
 			}=await hasEmailBeenPreviouslyUsed(userSubmittedEmail);
-			debugger;
 			if(isEmailValid(userSubmittedEmail) && message==false){
 				landingPageConsumer.triggerDisplayProfileCreation(userSubmittedEmail);
 			}else{
@@ -234,7 +233,6 @@ const Header=({incrementPageCounter})=>{
 
 
 	const clearInputField=(id)=>{
-		debugger;
 		let isInputErroredOut=false;
 		for(var i=0;i<erroredInputIds.length;i++){
 			if(erroredInputIds[i]==id){
@@ -267,8 +265,36 @@ const Header=({incrementPageCounter})=>{
 		)
 	}
 
+	const requestAccess=()=>{
+		const userSubmittedEmail=document.getElementById("email").value;
+		if(userSubmittedEmail==""){
+			const tempErroredIds=[];
+			tempErroredIds.push("email");
+			changeErroredInputIds(tempErroredIds);
+		}else{
+			changeDisplayRequestAccessModal(true);
+		}
+	}
+
+	const closeRequestAccess=()=>{
+		changeDisplayRequestAccessModal(false);
+	}
+
+	const requestAccessModal=()=>{
+		return(
+			<React.Fragment>
+				{displayRequestAccessModal==true &&(
+					<RequestAccess
+						closeRequestAccess={closeRequestAccess}
+						parentContainerId={"landingPage"}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
 	return(
 		<Container>
+			{requestAccessModal()}
 			{emailErrorAlertModal()}
 			{signInModal()}
 			<div id="headerTextInformation" style={{marginTop:"25%",marginBottom:"15%"}}>
@@ -294,10 +320,16 @@ const Header=({incrementPageCounter})=>{
 								placeholder="Enter your email"
 								onClick={()=>clearInputField("email")}
 							/>
-							<div id="getStartedDiv" style={PrimaryGetStartButtonCSS} 
-								onClick={()=>initializeProfileCreation()}>
-								Get Started
-							</div>
+							{landingPageConsumer.totalSeatsRemaining==0?
+								<div id="requestAccessDiv" style={PrimaryGetStartButtonCSS} 
+									onClick={()=>requestAccess()}>
+									Request Access
+								</div>:
+								<div id="getStartedDiv" style={PrimaryGetStartButtonCSS} 
+									onClick={()=>initializeProfileCreation()}>
+									Get Started
+								</div>
+							}
 						</div>
 					}
 					erroredInputIds={erroredInputIds}

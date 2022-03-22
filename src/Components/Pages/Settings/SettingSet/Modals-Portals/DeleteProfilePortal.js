@@ -39,7 +39,6 @@ const DeleteProfile=({closeModal,history})=>{
 
 
 	const triggerDeleteProfile=async({updatedAccessToken})=>{
-		debugger;
 		const {confirmation,data}=await deleteProfile(
 			_id,
 			updatedAccessToken==null?accessToken:updatedAccessToken);

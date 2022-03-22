@@ -37,7 +37,6 @@ export const retrieveTimeSpecifiedAnalytics=async(
 	accessToken,
 	profileId)=>{
 	try{
-		debugger;
 		const {data}=await axios.get(`${AnalyticsRetrievalURL}/retrieveTimeConstraintAnalytics`,{
 			params:{
 				targetId,

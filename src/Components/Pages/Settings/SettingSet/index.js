@@ -28,7 +28,6 @@ const Settings=(props)=>{
 	const profileId=useSelector(state=>state.personalInformation._id);
 
 	useEffect(()=>{
-		debugger;
 		if(profileId=="" || profileId==null){
 			props.history.push('/');
 		}

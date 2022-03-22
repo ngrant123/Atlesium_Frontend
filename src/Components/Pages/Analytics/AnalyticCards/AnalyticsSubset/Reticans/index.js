@@ -67,7 +67,6 @@ const ReticansAnalysis=({reticanOverviewId})=>{
 
 	useEffect(()=>{
 		const fetchData=async({updatedAccessToken})=>{
-			debugger;
 			const {confirmation,data}=await retrieveReticanCards(
 												reticanOverviewId,
 												_id,

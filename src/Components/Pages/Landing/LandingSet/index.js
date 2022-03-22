@@ -112,18 +112,17 @@ const CircularActivePeopleIconCSS={
 }
 
 const Landing=({history})=>{
-	const [displayProfileCreation,changeDisplayProfileCreation]=useState(true);
+	const [displayProfileCreation,changeDisplayProfileCreation]=useState(false);
 	const [userSpecifiedEmail,changeUserSpecifiedEmail]=useState();
-	const [totalProfiles,changeTotalProfilesCount]=useState(0);
+	const [totalSeatsRemaining,changeTotalSeatsRemaining]=useState(0);
 
 	useEffect(()=>{
 		const fetchTotalProfiles=async()=>{
 			const {confirmation,data}=await retrieveTotalProfiles();
 			if(confirmation=="Success"){
 				const {message}=data;
-				const seatsAvailable=250-message>=0?250-message:0;
-				console.log(seatsAvailable);
-				changeTotalProfilesCount(seatsAvailable);
+				// const seatsAvailable=250-message>=0?250-message:0;
+				changeTotalSeatsRemaining(0);
 			}
 		}
 		fetchTotalProfiles();
@@ -138,7 +137,7 @@ const Landing=({history})=>{
 				<div style={VerticalLineCSS}/>
 				<div style={{display:"flex",flexDirection:"row",alignItems:"center",width:"100%",marginLeft:"2%"}}>
 					<WeekendIcon style={{fontSize:"30"}}/>
-					<p style={{marginTop:"5%",marginLeft:"5%",width:"100%"}}><b>{totalProfiles} </b> seats left</p>
+					<p style={{marginTop:"5%",marginLeft:"5%",width:"100%"}}><b>{totalSeatsRemaining} </b> seats left</p>
 				</div>
 			</SeatsAvailableIndicator>
 		)
@@ -154,7 +153,8 @@ const Landing=({history})=>{
 					changeDisplayProfileCreation(false);
 				},
 				parentContainerId:"landingPage",
-				history
+				history,
+				totalSeatsRemaining
 			}}
 		>
 			<Container id="landingPage">

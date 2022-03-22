@@ -52,12 +52,14 @@ const AccountSettings=({parentContainerId})=>{
 			<React.Fragment>
 				{displayCreditCardUpdateModal==true &&(
 					<CallToActionSkeleton
-						component=<Checkout
-									userSpecifiedEmail={userSpecifiedEmail}
-									targetIdDom={parentContainerId}
-									isNewProfileCreationCheckout={false}
-									closeModal={closeCreditCardModal}
-								/>
+						component={
+							<Checkout
+								userSpecifiedEmail={userSpecifiedEmail}
+								targetIdDom={parentContainerId}
+								isNewProfileCreationCheckout={false}
+								closeModal={closeCreditCardModal}
+							/>
+						}
 						closeModal={closeCreditCardModal}
 						targetDom={parentContainerId}
 					/>
@@ -67,7 +69,6 @@ const AccountSettings=({parentContainerId})=>{
 	}
 
 	const triggerDisplayCreditCardEditModal=async({updatedAccessToken})=>{
-		debugger;
 		const {confirmation,data}=await retrieveEmail(
 											_id,
 											updatedAccessToken==null?accessToken:updatedAccessToken);

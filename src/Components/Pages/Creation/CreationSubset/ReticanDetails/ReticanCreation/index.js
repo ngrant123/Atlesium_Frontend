@@ -129,7 +129,6 @@ const SelectedNodeCSS={
 }
 
 const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdited,isEditReticanDesired})=>{
-	debugger;
 	const [isVideoElementPaused,changeVideoElementPauseStatus]=useState(false);
 	
 	let [currentReticanCounter,changeCurrentReticanCounter]=useState(0);
@@ -137,7 +136,6 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 	const [editReticanModal,changeEditReticanModal]=useState(false);
 
 	const reticanOverviewConsumer=useContext(ReticanOverviewConsumer);
-	console.log(reticanOverviewConsumer);
 	const [reticans,changeReticans]=useState(reticanOverviewConsumer.reticanAssembly.reticans==null
 											?[]:
 											reticanOverviewConsumer.reticanAssembly.reticans);
@@ -152,11 +150,6 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 	const [isIntroductoryPresent,changeIsIntroductoryPresent]=useState(false);
 	const reticanCreationParentConsumer=useContext(CreationContext);
 
-
-
-
-	console.log(reticans);
-
 	useEffect(()=>{
 		if(reticanOverviewConsumer.reticanAssembly.reticans!=null){
 			if(reticanOverviewConsumer.reticanAssembly.reticans.length>0){
@@ -168,7 +161,6 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 	},[])
 
 	useEffect(()=>{
-		debugger;
 		if(document.getElementById("rankingContainer")!=null && editReticanModal==false){
 			document.getElementById("rankingContainer").value=currentReticanCounter+1;
 		}
@@ -210,13 +202,12 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 	}
 
 	const deleteRetican=()=>{
-		debugger;
 		if(reticans[currentReticanCounter].reticanOptionType=="Introductory"){
 			changeIsIntroductoryPresent(false);
 		}
 		reticans.splice(currentReticanCounter,1);
 		let reorderedReticans=reorderPointers(reticans);
-		triggerUpdateReticanParentInformation({reticans:[...reorderedReticans]});
+		updateTitleAndDescription(reorderedReticans);
 		changeDisplayDeleteRetican(false);
 		const updatedCounter=currentReticanCounter==0?0:currentReticanCounter-1;
 		changeCurrentReticanCounter(updatedCounter);
@@ -231,7 +222,6 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 	}
 //
 	const analyzeInput=(requestedReorderIndex)=>{
-		debugger;
 		changeDisplayRankingReorderSuccess(null);
 		if(requestedReorderIndex<=reticans.length-1 && requestedReorderIndex>=0){
 			let currentReticans=reticans;
@@ -265,7 +255,6 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 	}
 
 	const reticansDisplay=(iteratedIndexCounter)=>{
-		debugger;
 		let nodeCSS;
 		if(iteratedIndexCounter==currentReticanCounter){
 			nodeCSS=SelectedNodeCSS;
@@ -303,6 +292,16 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 		)
 	},[currentReticanCounter,reticans]);
 
+	const updateTitleAndDescription=(updatedReticanInformation)=>{
+		triggerUpdateReticanParentInformation({
+			reticans:[...updatedReticanInformation],
+			title:document.getElementById("title").value==null?"":
+			document.getElementById("title").value,
+			description:document.getElementById("description").value==null?"":
+			document.getElementById("description").value
+		});
+	}
+
 	return(
 		<ReticanCreationProvider
 			value={{
@@ -310,8 +309,6 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 					triggerDisplayReticanDisplay();
 				},
 				createRetican:(reticanInformation)=>{
-					debugger;
-
 					if(reticanInformation.reticanOptionType=="Introductory"){
 						reticans.splice(0,0,reticanInformation);
 						changeIsIntroductoryPresent(true);
@@ -319,9 +316,8 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 						reticans.push(reticanInformation);
 					}
 
-
 					changeReticans([...reticans]);
-					triggerUpdateReticanParentInformation({reticans:[...reticans]});
+					updateTitleAndDescription(reticans);
 					triggerDisplayReticanDisplay();
 					changeCurrentReticanCounter(currentReticanCounter++);
 					if(isEditReticanDesired){
@@ -351,7 +347,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 					});
 					changeCurrentReticanCounter(currentReticanCounter);
 					displayCurrentlySelectedReticans();
-					triggerUpdateReticanParentInformation({reticans:[...reticans]});
+					updateTitleAndDescription(reticans);
 				}
 			}}
 		>

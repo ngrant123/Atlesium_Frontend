@@ -84,7 +84,6 @@ const NumericalStatistics=({progressRates,fetchAnalytics})=>{
 	const [completionPercentage,changeCompletionPercentage]=useState(0);
 
 	useEffect(()=>{
-		debugger;
 		if(progressRates.completionPercantageChange.percentageChange<0){
 			changeCompletionDecreasePercentageIndicator(true);
 			changeCompletionPercentage(Math.abs(progressRates.completionPercantageChange.percentageChange));
@@ -102,7 +101,6 @@ const NumericalStatistics=({progressRates,fetchAnalytics})=>{
 
 
 	const percentageChangeIcon=(percentageIndicator)=>{
-		debugger;
 		let icon;
 
 		switch(percentageIndicator){

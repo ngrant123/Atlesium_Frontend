@@ -36,13 +36,11 @@ const CampaignOptions=({})=>{
 	}=useContext(ReticanContext);
 
 	const reorderReticansByRecent=()=>{
-		debugger;
 		reticans.sort(function(a, b){return a.dateCreated - b.dateCreated});
 		updateReticanOrdering(reticans);
 	}
 
 	const reorderReticanByOldest=()=>{
-		debugger;
 		reticans.sort(function(a, b){return b.dateCreated - a.dateCreated});
 		updateReticanOrdering(reticans);
 	}
