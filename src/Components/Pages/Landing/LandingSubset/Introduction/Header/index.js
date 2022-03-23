@@ -321,7 +321,7 @@ const Header=({incrementPageCounter})=>{
 								onClick={()=>clearInputField("email")}
 							/>
 							{landingPageConsumer.totalSeatsRemaining==0?
-								<div id="requestAccessDiv" style={PrimaryGetStartButtonCSS} 
+								<div id="getStartedDiv" style={PrimaryGetStartButtonCSS} 
 									onClick={()=>requestAccess()}>
 									Request Access
 								</div>:
