@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const JWTCreationURL=process.env.NODE_ENV=='production'?
-				process.env.REACT_APP_JWT_CREATION_URLv:
+				process.env.REACT_APP_JWT_CREATION_URL:
 				process.env.REACT_APP_TEST_JWT_CREATION_URL;
 
 const backendServiceErrorMessage={

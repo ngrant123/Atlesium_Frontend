@@ -99,7 +99,7 @@ const CloseButtonCSS={
 */
 
 const Review=({progressScreen,reticanAssembly})=>{
-	const [displayLoadingAnimation,changeDisplayLoadingAnimation]=useState(false);
+	const [displayLoadingAnimation,changeDisplayLoadingAnimation]=useState(true);
 	const [displayReticanOverviewCreationErrorAlert,changeReticanOverviewCreationErrorDisplay]=useState(false);
 	const [alertMessage,changeAlertMessage]=useState();
 	const [reticanOverviewId,changeReticanOverviewId]=useState();
