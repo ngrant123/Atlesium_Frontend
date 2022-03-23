@@ -99,6 +99,7 @@ const CloseButtonCSS={
 */
 
 const Review=({progressScreen,reticanAssembly})=>{
+	console.log(reticanAssembly);
 	const [displayLoadingAnimation,changeDisplayLoadingAnimation]=useState(true);
 	const [displayReticanOverviewCreationErrorAlert,changeReticanOverviewCreationErrorDisplay]=useState(false);
 	const [alertMessage,changeAlertMessage]=useState();
@@ -120,7 +121,7 @@ const Review=({progressScreen,reticanAssembly})=>{
 	const script=`<script>
 
 			let xhr = new XMLHttpRequest();
-			xhr.open('get', ${miscroserviceDispatchConnection});
+			xhr.open('get', '${miscroserviceDispatchConnection}');
 			xhr.send();
 
 			xhr.onload = function() {
