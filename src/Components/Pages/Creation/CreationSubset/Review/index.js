@@ -114,10 +114,10 @@ const Review=({progressScreen,reticanAssembly})=>{
 	const dispatch=useDispatch();
 
 	const urlHeader=process.env.NODE_ENV=='production'?
-					"www.atlesium.com":
+					"https://v1.atlesium.com":
 					"http://localhost:4002";
 
-	const miscroserviceDispatchConnection=`${urlHeader}/retrieveInitialReticanFile?reticanOverviewId=${reticanOverviewId}`;
+	const miscroserviceDispatchConnection=`${urlHeader}/retrieveInitialReticanFile?reticanOverviewId=${reticanOverviewId}&targetDivId=landingPage`;
 	const script=`<script>
 
 			let xhr = new XMLHttpRequest();
@@ -125,26 +125,29 @@ const Review=({progressScreen,reticanAssembly})=>{
 			xhr.send();
 
 			xhr.onload = function() {
-				const app=document.getElementById("App");
-				const test=document.createElement('div');
-				test.innerHTML=xhr.response;
-				test.id="atlesium_div";
-				app.appendChild(test);
-				var tmpScripts = document.getElementsByTagName('script');
-				if (tmpScripts.length > 0) {
-				    var scripts = [];
-				    for (var i = 0; i < tmpScripts.length; i++) {
-				        scripts.push(tmpScripts[i]);
-				    }
-				    for (var i = 0; i < scripts.length; i++) {
-				    	if(scripts[i].id=="atlesium_script"){
-					        var s = document.createElement('script');
-					        s.innerHTML = scripts[i].innerHTML;
-					        scripts[i].parentNode.appendChild(s);
-					        scripts[i].parentNode.removeChild(scripts[i]);
-				    	}
-				    }
-				}
+		        const app=document.getElementById("landingPage");
+		        if(app!=null){
+		          const prospective=document.createElement('div');
+
+		          prospective.innerHTML=xhr.response;
+		          prospective.id="atlesium_div";
+		          app.after(prospective);
+		          var tmpScripts = document.getElementsByTagName('script');
+		          if (tmpScripts.length > 0) {
+		              var scripts = [];
+		              for (var i = 0; i < tmpScripts.length; i++) {
+		                  scripts.push(tmpScripts[i]);
+		              }
+		              for (var i = 0; i < scripts.length; i++) {
+		                if(scripts[i].id=="atlesium_script"){
+		                    var s = document.createElement('script');
+		                    s.innerHTML = scripts[i].innerHTML;
+		                    scripts[i].parentNode.appendChild(s);
+		                    scripts[i].parentNode.removeChild(scripts[i]);
+		                }
+		              }
+		          }
+		        }
 			};
 		</script>`;
 		const presentationScription=`<script>
@@ -155,25 +158,28 @@ const Review=({progressScreen,reticanAssembly})=>{
 
 			xhr.onload = function() {
 				const app=document.getElementById((2));
-				const test=document.createElement('div');
-				test.innerHTML=xhr.response;
-				test.id="atlesium_div";
-				app.appendChild(test);
-				var tmpScripts = document.getElementsByTagName('script');
-				if (tmpScripts.length > 0) {
-				    var scripts = [];
-				    for (var i = 0; i < tmpScripts.length; i++) {
-				        scripts.push(tmpScripts[i]);
-				    }
-				    for (var i = 0; i < scripts.length; i++) {
-				    	if(scripts[i].id=="atlesium_script"){
-					        var s = document.createElement('script');
-					        s.innerHTML = scripts[i].innerHTML;
-					        scripts[i].parentNode.appendChild(s);
-					        scripts[i].parentNode.removeChild(scripts[i]);
-				    	}
-				    }
-				}
+		        if(app!=null){
+		          const prospective=document.createElement('div');
+
+		          prospective.innerHTML=xhr.response;
+		          prospective.id="atlesium_div";
+		          app.after(prospective);
+		          var tmpScripts = document.getElementsByTagName('script');
+		          if (tmpScripts.length > 0) {
+		              var scripts = [];
+		              for (var i = 0; i < tmpScripts.length; i++) {
+		                  scripts.push(tmpScripts[i]);
+		              }
+		              for (var i = 0; i < scripts.length; i++) {
+		                if(scripts[i].id=="atlesium_script"){
+		                    var s = document.createElement('script');
+		                    s.innerHTML = scripts[i].innerHTML;
+		                    scripts[i].parentNode.appendChild(s);
+		                    scripts[i].parentNode.removeChild(scripts[i]);
+		                }
+		              }
+		          }
+		        }
 			};
 		</script>`
 
@@ -352,7 +358,7 @@ const Review=({progressScreen,reticanAssembly})=>{
 									Target div id. Works best with main page div
 								</p>
 								<p>
-									<b>(2)="App"</b>
+									<b>(2)="landingPage"</b>
 								</p>
 							</ScriptParams>
 

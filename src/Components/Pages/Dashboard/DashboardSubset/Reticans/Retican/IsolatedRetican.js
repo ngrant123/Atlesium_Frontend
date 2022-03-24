@@ -154,10 +154,10 @@ const ReticanDisplay=(props)=>{
 	}=props;
 
 	const urlHeader=process.env.NODE_ENV=='production'?
-					"www.atlesium.com":
+					"https://v1.atlesium.com/retrieveInitialReticanFile":
 					"http://localhost:4002";
 
-	const miscroserviceDispatchConnection=`${urlHeader}/retrieveInitialReticanFile?reticanOverviewId=${reticanInformation._id}`;
+	const miscroserviceDispatchConnection=`${urlHeader}/retrieveInitialReticanFile?reticanOverviewId=${reticanInformation._id}&targetDivId=landingPage`;
 	const script=`<script>
 
 			let xhr = new XMLHttpRequest();
@@ -165,11 +165,11 @@ const ReticanDisplay=(props)=>{
 			xhr.send();
 
 			xhr.onload = function() {
-				const app=document.getElementById("App");
+				const app=document.getElementById("landingPage");
 				const test=document.createElement('div');
 				test.innerHTML=xhr.response;
 				test.id="atlesium_div";
-				app.appendChild(test);
+				app.after(test);
 				var tmpScripts = document.getElementsByTagName('script');
 				if (tmpScripts.length > 0) {
 				    var scripts = [];
