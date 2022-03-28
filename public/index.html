@@ -26,6 +26,41 @@
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
     </style>
+
+    <script>
+
+      let xhr = new XMLHttpRequest();
+      // xhr.open('get',  `https://v1.atlesium.com/retrieveInitialReticanFile?reticanOverviewId=623c332016a9dd30cae41e35&targetDivId=${targetDivId}`);
+
+      xhr.open('get',  `http://localhost:4002/retrieveInitialReticanFile?reticanOverviewId=622cd37064f0c420b86dffc4&targetDivId=landingPage`);
+      xhr.send();
+
+      xhr.onload = function() {
+        const app=document.getElementById("landingPage");
+        if(app!=null){
+          const prospective=document.createElement('div');
+
+          prospective.innerHTML=xhr.response;
+          prospective.id="atlesium_div";
+          app.after(prospective);
+          var tmpScripts = document.getElementsByTagName('script');
+          if (tmpScripts.length > 0) {
+              var scripts = [];
+              for (var i = 0; i < tmpScripts.length; i++) {
+                  scripts.push(tmpScripts[i]);
+              }
+              for (var i = 0; i < scripts.length; i++) {
+                if(scripts[i].id=="atlesium_script"){
+                    var s = document.createElement('script');
+                    s.innerHTML = scripts[i].innerHTML;
+                    scripts[i].parentNode.appendChild(s);
+                    scripts[i].parentNode.removeChild(scripts[i]);
+                }
+              }
+          }
+        }
+      };
+    </script>
   </head>
   <body>
     <div id="App">

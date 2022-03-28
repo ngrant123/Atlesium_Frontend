@@ -57,7 +57,7 @@ const VideoCreation=({displaySelectedReticanOptionType})=>{
 		let reader= new FileReader();
 		const videoDescription=document.getElementById("uploadedVideoDescription").files[0];
 
-		const maxSize=11*1024*1024;
+		const maxSize=15*1024*1024;
 		if(videoDescription.size>maxSize){
 			let videoCreatoinErrorMessage={
 				header:"Video File Size Max Exceeded",

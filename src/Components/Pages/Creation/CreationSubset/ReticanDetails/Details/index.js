@@ -234,7 +234,7 @@ const ReticanDetails=(props)=>{
 					headerColor:selectedColorHeader
 				}
 			}
-			//triggerEditReticanOverview({updatedReticanOverviewInformation});
+			triggerEditReticanOverview({updatedReticanOverviewInformation});
 		}
 	}
 
