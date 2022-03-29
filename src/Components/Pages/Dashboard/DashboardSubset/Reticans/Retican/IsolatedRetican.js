@@ -159,34 +159,26 @@ const ReticanDisplay=(props)=>{
 
 	const miscroserviceDispatchConnection=`${urlHeader}/retrieveInitialReticanFile?reticanOverviewId=${reticanInformation._id}&targetDivId=landingPage`;
 	const script=`<script>
+		const app=document.getElementById("landingPage");
+	   	if(app!=null){
+	        let xhr = new XMLHttpRequest();
+	        xhr.open('get', '${miscroserviceDispatchConnection}');
+	        xhr.send();
 
-			let xhr = new XMLHttpRequest();
-			xhr.open('get', ${miscroserviceDispatchConnection});
-			xhr.send();
+	        xhr.onload = function() {
+	            const prospective=document.createElement('div');
 
-			xhr.onload = function() {
-				const app=document.getElementById("landingPage");
-				const test=document.createElement('div');
-				test.innerHTML=xhr.response;
-				test.id="atlesium_div";
-				app.after(test);
-				var tmpScripts = document.getElementsByTagName('script');
-				if (tmpScripts.length > 0) {
-				    var scripts = [];
-				    for (var i = 0; i < tmpScripts.length; i++) {
-				        scripts.push(tmpScripts[i]);
-				    }
-				    for (var i = 0; i < scripts.length; i++) {
-				    	if(scripts[i].id=="atlesium_script"){
-					        var s = document.createElement('script');
-					        s.innerHTML = scripts[i].innerHTML;
-					        scripts[i].parentNode.appendChild(s);
-					        scripts[i].parentNode.removeChild(scripts[i]);
-				    	}
-				    }
-				}
-			};
-		</script>`;
+	            prospective.innerHTML=xhr.response;
+	            prospective.id="atlesium_div";
+	            app.after(prospective);
+
+	            var s = document.createElement('script');
+	            s.innerHTML =document.getElementById("atlesium_script").innerHTML;
+	            document.getElementById("atlesium_script").parentNode.appendChild(s);
+	            document.getElementById("atlesium_script").parentNode.removeChild(document.getElementById("atlesium_script"));
+	        };
+	    }
+	</script>`;
 
 	const [displayDeleteReticanModal,changeDeleteReticanModal]=useState(false);
 	const [displayErrorAlertModal,changeErrorAlertModal]=useState(false);
