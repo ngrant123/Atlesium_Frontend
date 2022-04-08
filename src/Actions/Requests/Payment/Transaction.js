@@ -12,12 +12,13 @@ const backendServiceErrorMessage={
 	}
 }
 
-export const createTranscation=async(nonce,email,userId)=>{
+export const createTranscation=async(nonce,email,userId,firstName)=>{
 	try{
 		const {data}=await axios.post(`${PaymentURL}/transcation/createTranscation`,{
 			nonce,
 			userId,
-			email
+			email,
+			firstName
 		});
 		return data;
 	}catch(err){

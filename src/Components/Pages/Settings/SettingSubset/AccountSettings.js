@@ -27,7 +27,7 @@ const MorePaymentPlanCSS={
 	width:"40%",
 	color:"white"
 }
-const AccountSettings=({parentContainerId})=>{
+const AccountSettings=({parentContainerId,history})=>{
 	const [displayCreditCardUpdateModal,changeCreditCardDisplayModal]=useState(false);
 	const [userSpecifiedEmail,changeUserEmail]=useState();
 	const [alertMessage,changeAlertMessage]=useState();
@@ -35,11 +35,12 @@ const AccountSettings=({parentContainerId})=>{
 
 	const dispatch=useDispatch();
 
+	const profileReduxInformation=useSelector(state=>state.personalInformation);
 	const {
 		_id,
 		accessToken,
 		refreshToken
-	}=useSelector(state=>state.personalInformation);
+	}=profileReduxInformation;
 
 	const closeCreditCardModal=()=>{
 		changeCreditCardDisplayModal(false);
@@ -54,10 +55,12 @@ const AccountSettings=({parentContainerId})=>{
 					<CallToActionSkeleton
 						component={
 							<Checkout
-								userSpecifiedEmail={userSpecifiedEmail}
 								targetIdDom={parentContainerId}
-								isNewProfileCreationCheckout={false}
 								closeModal={closeCreditCardModal}
+								userSpecifiedEmail={userSpecifiedEmail}
+								reduxInformation={profileReduxInformation}
+								history={history}
+								isNewProfileCreationCheckout={false}
 							/>
 						}
 						closeModal={closeCreditCardModal}

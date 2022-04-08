@@ -135,27 +135,35 @@ const Checkout=(props)=>{
 	const dispatcher=useDispatch();
 
 	useEffect(()=>{
-		const {statusCode}=renderPaymentHoistedFields(generateTransactionToken);
-		if(statusCode==400 || statusCode==500){
-			let paymentErrorMessage;
-			if(statusCode==400){
-				paymentErrorMessage={
-					header:"Payment error",
-					description:"Please check if you have the correct format for your payment information and please try again"
+		const triggerPaymentHoistedFields=async()=>{
+			const {statusCode}=await renderPaymentHoistedFields(generateTransactionToken,triggerErrorAlertMessage);
+			if(statusCode==400 || statusCode==500){
+				let paymentErrorMessage;
+				if(statusCode==400){
+					paymentErrorMessage={
+						header:"Payment error",
+						description:"Please check if you have the correct format for your payment information and please try again"
+					}
+				}else if(statusCode==500){
+					paymentErrorMessage={
+						header:"Internal Server Error",
+						description:"Unfortunately there has been an error on our part. Please try again later"
+					}
 				}
-			}else if(statusCode==500){
-				paymentErrorMessage={
-					header:"Internal Server Error",
-					description:"Unfortunately there has been an error on our part. Please try again later"
-				}
-			}
-			changeAlertMessage(paymentErrorMessage); 
-			changePaymentAlertDisplay(true);
+				triggerErrorAlertMessage(paymentErrorMessage);
 
-		}else{
-			changeLoadingFieldsStatus(false);
+			}else{
+				changeLoadingFieldsStatus(false);
+			}
 		}
+
+		triggerPaymentHoistedFields();
 	},[]);
+
+	const triggerErrorAlertMessage=(alertMessage)=>{
+		changeAlertMessage(alertMessage); 
+		changePaymentAlertDisplay(true);
+	}
 
 	const handlePaymentError=(statusCode)=>{
 		if(statusCode==400 || statusCode==500){
@@ -171,9 +179,7 @@ const Checkout=(props)=>{
 					description:"Unfortunately there has been an error on our part. Please try again later"
 				}
 			}
-			changeAlertMessage(paymentErrorMessage); 
-			changePaymentAlertDisplay(true);
-
+			triggerErrorAlertMessage(paymentErrorMessage);
 		}
 	}
 
@@ -181,7 +187,8 @@ const Checkout=(props)=>{
 		const {confirmation,data}=await createTranscation(
 			paymentNonce,
 			userSpecifiedEmail,
-			reduxInformation._id);
+			reduxInformation._id,
+			reduxInformation.firstName);
 
 		if(confirmation=="Success"){
 			dispatcher(initializeProfile(reduxInformation));
@@ -223,11 +230,15 @@ const Checkout=(props)=>{
 		}
 	}
 
-	const generateTransactionToken=async(paymentNonce)=>{
-		if(isNewProfileCreationCheckout){
-			handleCreateTranscation(paymentNonce);
+	const generateTransactionToken=async(paymentNonce,errors)=>{
+		if(errors){
+			console.log(errors);
 		}else{
-			editCardInformation({paymentNonce});
+			if(isNewProfileCreationCheckout){
+				handleCreateTranscation(paymentNonce);
+			}else{
+				editCardInformation({paymentNonce});
+			}
 		}
 	}	
 
@@ -256,10 +267,8 @@ const Checkout=(props)=>{
 				<div style={{width:"100%",cursor:"pointer"}} onClick={()=>closeModal()}>
 					<ArrowBackIosIcon/>
 				</div>
-				{loadingFieldsStatus==true?
-					<p>Loading...</p>:
-					<form submit="/" method="post" id="paymentCardForm">
-
+				<form submit="/" method="post" id="paymentCardForm">
+					{/*
 						<label for="card-number" style={{marginTop:"5%"}}>Card Number </label>
 						<div id="card-number" style={InputCSS}></div>
 
@@ -275,8 +284,18 @@ const Checkout=(props)=>{
 							</div>
 						</div>
 						<input style={SubscriptionCSS} type="submit" value={submitButtonText} id="submit"/>
-					</form>
-				}
+					*/}
+					<div id="card-container"></div>
+					{loadingFieldsStatus==true?
+						<p>Loading...</p>:
+						<input id="sq-creditcard" 
+							style={SubscriptionCSS} 
+							type="submit" 
+							value={submitButtonText} 
+							id="submit"
+						/>
+					}
+				</form>
 			</Container>
 		</React.Fragment>
 	)

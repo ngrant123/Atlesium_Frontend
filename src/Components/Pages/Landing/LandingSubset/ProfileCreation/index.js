@@ -87,6 +87,10 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 	const [displayPaymentScreen,changeDisplayPaymentScreen]=useState(false);
 	const [reduxInformation,changeReduxInformation]=useState();
 
+	useEffect(()=>{
+		changeDisplayPaymentScreen(true);
+	},[])
+
 	const triggerCreateProfile=async()=>{
 		const userSubmittedFirstName=document.getElementById("firstName").value;
 		const userSubmittedPassword=document.getElementById("password").value;
@@ -212,7 +216,7 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 				{displayPaymentScreen==true &&(
 					<Payment
 						targetIdDom={parentContainerId}
-						closePaymentModal={closePaymentModal}
+						closeModal={closePaymentModal}
 						userSpecifiedEmail={userSpecifiedEmail}
 						reduxInformation={reduxInformation}
 						history={history}

@@ -15,15 +15,18 @@ const Container=styled.div`
 	}
 `;
 const Settings=({parentContainerId,history})=>{
+	const props={
+		parentContainerId,
+		history
+	}
 	return(
 		<Container>
 			<PersonalInformation
-				parentContainerId={parentContainerId}
-				history={history}
+				{...props}
 			/>
 			<hr/>
 			<AccountSettings
-				parentContainerId={parentContainerId}
+				{...props}
 			/>
 		</Container>
 	)

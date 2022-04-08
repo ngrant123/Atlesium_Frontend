@@ -121,8 +121,8 @@ const Landing=({history})=>{
 			const {confirmation,data}=await retrieveTotalProfiles();
 			if(confirmation=="Success"){
 				const {message}=data;
-				// const seatsAvailable=250-message>=0?250-message:0;
-				changeTotalSeatsRemaining(0);
+				const seatsAvailable=250-message>=0?250-message:0;
+				changeTotalSeatsRemaining(seatsAvailable);
 			}
 		}
 		fetchTotalProfiles();
