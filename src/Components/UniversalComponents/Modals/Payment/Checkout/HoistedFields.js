@@ -14,15 +14,17 @@ const initializeCard=async(payments)=>{
 
 export const renderPaymentHoistedFields=async(generateTransactionToken,triggerErrorAlertMessage)=>{
 	try{
-		debugger;
 		let form=document.querySelector('#paymentCardForm');
 		if(!window.Square){
+			console.log("window square missing");
 			return {statusCode:400}
 		}else{
-			console.log(process.env);
 			const applicationId=process.env.NODE_ENV=="production"?process.env.REACT_APP_SQUARE_PRODUCTION_APPLICATION_ID:
 								process.env.REACT_APP_SQUARE_SANDBOX_APPLICATION_ID;
-			const locationId=process.env.REACT_APP_SQUARE_LOCATION_ID;
+								
+			const locationId=process.env.NODE_ENV=="production"?process.env.REAC_APP_SQUARE_PRODUCTION_LOCATION_ID:
+			process.env.REACT_APP_SQUARE_SANDBOX_LOCATION_ID;
+
 			const payments = window.Square.payments(applicationId, locationId);
 
 			let paymentCard=await initializeCard(payments);
@@ -30,9 +32,7 @@ export const renderPaymentHoistedFields=async(generateTransactionToken,triggerEr
 			var analyzeForm=async(event)=>{
 				event.preventDefault();
 				const tokenResult=await paymentCard.tokenize();
-				debugger;
 				if(tokenResult.status=="OK"){
-					console.log(tokenResult);
 					generateTransactionToken(tokenResult.token);
 				}else{
 					const errorMessage={
@@ -49,6 +49,7 @@ export const renderPaymentHoistedFields=async(generateTransactionToken,triggerEr
 			return {statusCode:200}
 		}
 	}catch(err){
+		console.log(err);
 		return {statusCode:400};
 	}
 

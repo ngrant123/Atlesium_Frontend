@@ -26,7 +26,7 @@ const Container=styled.div`
 `;
 
 const Payment=({targetIdDom,closePaymentModal,userSpecifiedEmail,reduxInformation,history})=>{
-	const [screenDesired,changeScreenDesired]=useState("Checkout");
+	const [screenDesired,changeScreenDesired]=useState("Options");
 
 	const closeAndResetModal=()=>{
 		changeScreenDesired("Options")

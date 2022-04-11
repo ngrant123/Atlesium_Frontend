@@ -232,7 +232,6 @@ const Checkout=(props)=>{
 
 	const generateTransactionToken=async(paymentNonce,errors)=>{
 		if(errors){
-			console.log(errors);
 		}else{
 			if(isNewProfileCreationCheckout){
 				handleCreateTranscation(paymentNonce);
