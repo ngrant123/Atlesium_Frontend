@@ -55,7 +55,7 @@ const CallToActionSkeleton=({closeModal,targetDom,component})=>{
 	return createPortal(
 		<React.Fragment>
 			<ShadowContainer onClick={()=>closeModal()}/>
-			<Container>
+			<Container id="callToActionSkeleton">
 				<div style={{position:"relative",display:"flex",width:"100%",justifyContent:"flex-end"}}>
 					{closeModalIcon()}
 				</div>

@@ -6,6 +6,7 @@ import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import {Link} from "react-router-dom";
 import ReticanHeaderColorOptions from "../../CreationSet/Modals-Portals/ReticanHeaderColorOptions.js";
 import {ReticanOverviewProvider} from "./ReticanOverviewCreationContext.js";
+import ReticanProcessingInformationalModal from "../../CreationSet/Modals-Portals/ReticanProcessingConfirmationModal.js";
 
 const Container=styled.div`
 	width:100%;
@@ -73,10 +74,12 @@ const ReticanDetailsInit=(props)=>{
 		progressScreen,
 		reticanAssembly,
 		isEditReticanDesired,
+		history,
 		updateReticanAssemblerInformation
 	}=props;
 
 	const [displayReticanHeaderColorOptions,changeReticanHeaderColorOptionsDisplay]=useState(false);
+	const [displayReticanProcessingInformation,changeDisplayReticanProcessingInformation]=useState(false);
 	const [selectedColorHeader,changeSelectedColorHeader]=useState(reticanAssembly==null?null:reticanAssembly.headerColor);
 	let [currentReticanDetails,changeReticanDetails]=useState(reticanAssembly==null?{}:reticanAssembly);
 
@@ -144,6 +147,27 @@ const ReticanDetailsInit=(props)=>{
 		progressScreen("webInformation");
 	}
 
+	const closeReticanProcessingInformational=()=>{
+		changeDisplayReticanProcessingInformation(false);
+	}
+
+	const reticanProcessingInformational=()=>{
+		return(
+			<React.Fragment>
+				{displayReticanProcessingInformation==true &&(
+					<ReticanProcessingInformationalModal
+						closeModal={closeReticanProcessingInformational}
+						history={history}
+					/>
+				)}
+			</React.Fragment>
+		)
+	}
+
+	const triggerDisplayReticanProcessingModal=()=>{
+		changeDisplayReticanProcessingInformation(true);
+	}
+
 	return(
 		<ReticanOverviewProvider
 			value={{
@@ -151,6 +175,7 @@ const ReticanDetailsInit=(props)=>{
 			}}
 		>
 			<Container>
+				{reticanProcessingInformational()}
 				{headerColorOptionsModal()}
 				<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 					<ArrowBackIosRoundedIcon
@@ -184,6 +209,7 @@ const ReticanDetailsInit=(props)=>{
 						selectedColorHeader={selectedColorHeader}
 						originalHeaderColor={reticanHeaderColor}
 						triggerUpdateReticanParentInformation={triggerUpdateReticanParentInformation}
+						triggerDisplayReticanProcessingModal={triggerDisplayReticanProcessingModal}
 					/>
 					<hr style={HorizontalLineCSS} id="horizontalLineDivider"/>
 

@@ -327,6 +327,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,isEditReticanDesir
 					}
 				},
 				editRetican:(editedReticanInformation)=>{
+					debugger;
 					const {
 						videoInformation:{
 							videoUrl,

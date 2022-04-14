@@ -15,6 +15,7 @@ import {tokensRegeneration} from "../../../../../../Actions/Tasks/UpdateTokens.j
 import {ReticanContext} from "../../../DashboardSet/ReticanContext.js";
 import VideoLoadingPrompt from "../../../../../UniversalComponents/Loading/VideoLoadingPrompt.js";
 import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
+import AllOutIcon from '@material-ui/icons/AllOut';
 
 const ReticanContainer=styled.div`
 	position:absolute;
@@ -372,12 +373,21 @@ const ReticanDisplay=(props)=>{
 				onAnimationEnd={() => removeTargetedIndexRetican(currentIndex)}>
 				{displayScriptTag==true?
 					<div>
-						<ArrowBackIosRoundedIcon 
-							onClick={()=>changeDisplayScriptTag(false)}
-							style={{fontSize:24,cursor:"pointer"}}
-						/>
+						<div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+							<ArrowBackIosRoundedIcon 
+								onClick={()=>changeDisplayScriptTag(false)}
+								style={{fontSize:24,cursor:"pointer"}}
+							/>
+							<Link to={{pathname:`/review/${reticanInformation.primaryReticanCard._id}`}}>
+								<AllOutIcon
+									style={{fontSize:24,cursor:"pointer"}}
+								/>
+							</Link>
+						</div>
 						<hr/>
-						<p>{script}</p>
+						<div style={{width:"100%",height:"100%",overflowX:"auto"}}>
+							<p>{script}</p>
+						</div>
 					</div>:
 					<div id="retican" style={ReticanCSS}>
 

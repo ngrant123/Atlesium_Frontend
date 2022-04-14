@@ -24,10 +24,19 @@ const Container=styled.div`
 	padding:0px;
 	display:flex;
 	flex-direction:column;
+	align-items:center;
 	overflow-y:auto;
 	align-items:center;
 	padding:15%;
 	padding-top:7%;
+
+	#callToActionSkeleton{
+		padding:0px;
+	}
+
+	#loadingAnimationText{
+		margin-top:0%;
+	}
 
 	@media screen and (max-width:650px){
 		#componentParentContainer{
@@ -188,6 +197,7 @@ const Creation=(props)=>{
 					isEditReticanDesired={isEditReticanDesired}
 					updateReticanAssemblerInformation={updateReticanAssemblerInformation}
 					reticanHeaderColor={reticanHeaderColor}
+					history={props.history}
 				/>
 				<ReviewStage name="review"
 					progressScreen={displaySelectedScreen}

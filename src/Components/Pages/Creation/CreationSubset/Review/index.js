@@ -5,15 +5,21 @@ import AtlesiumLogo from "../../../../../Assets/Logos/AtlesiumLogo.svg";
 import Color_Constants from "../../../../../Utils/ColorConstants.js";
 import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
 import LoadingAnimation from "../../../../UniversalComponents/Loading/index.js";
-import {createReticanOverview} from "../../../../../Actions/Requests/ReticanRequests/Adapter/ReticanCreation.js";
 import AlertSystem from "../../../../UniversalComponents/Skeletons/Alerts.js";
 import {useSelector,useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
-import {tokensRegeneration} from "../../../../../Actions/Tasks/UpdateTokens.js";
 
 const Container=styled.div`
+	position:absolute;
 	width:100%;
 	height:100%;
+	padding:0px;
+	display:flex;
+	flex-direction:column;
+	overflow-y:auto;
+	align-items:center;
+	padding:15%;
+	padding-top:7%;
 
 	@media screen and (max-width:1370px){
 		#reviewResults{
@@ -33,12 +39,17 @@ const Container=styled.div`
 		#scriptContents{
 			margin-left:0% !important;
 			margin-top:5% !important;
+			width:100% !important;
 		}
 
 		#closeButton{
 			width:100% !important;
 			height:40px !important;
 		}
+	}
+
+	@media screen and (max-width:650px){
+		padding:5%;
 	}
 `;
 
@@ -98,7 +109,7 @@ const CloseButtonCSS={
 	should be  refactored
 */
 
-const Review=({progressScreen,reticanAssembly})=>{
+const Review=(props)=>{
 	const [displayLoadingAnimation,changeDisplayLoadingAnimation]=useState(true);
 	const [displayReticanOverviewCreationErrorAlert,changeReticanOverviewCreationErrorDisplay]=useState(false);
 	const [alertMessage,changeAlertMessage]=useState();
@@ -116,7 +127,7 @@ const Review=({progressScreen,reticanAssembly})=>{
 					"https://v1.atlesium.com":
 					"http://localhost:4002";
 
-	const miscroserviceDispatchConnection=`${urlHeader}/retrieveInitialReticanFile?reticanOverviewId=${reticanOverviewId}&targetDivId=landingPage`;
+	const miscroserviceDispatchConnection=`${urlHeader}/retrieveInitialReticanFile?reticanOverviewId=${props.match.params.id}&targetDivId=landingPage`;
 	const script=`<script>
 		const app=document.getElementById("landingPage");
 	   	if(app!=null){
@@ -161,74 +172,6 @@ const Review=({progressScreen,reticanAssembly})=>{
 		    }
 		</script>`
 
-	const removeIdsFromReticanInformation=()=>{
-		const {
-			_id,
-			...reticanAssemblySansId
-		}=reticanAssembly;
-		for(var i=0;i<reticanAssemblySansId.reticans.length;i++){
-			const {
-				_id,
-				...reticanSansId
-			}=reticanAssembly.reticans[i];
-			reticanAssembly.reticans[i]=reticanSansId;
-		}
-
-		return reticanAssemblySansId;
-	}
-
-	useEffect(()=>{
-		const processReticanOverviewCreation=async({updatedAccessToken})=>{
-			if(reticanAssembly._id!=null){
-				reticanAssembly=removeIdsFromReticanInformation();
-			}
-			const {confirmation,data}=await createReticanOverview({
-				profileId:_id,
-				reticanInformation:reticanAssembly,
-				accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
-			});
-			if(confirmation=="Success"){
-				changeDisplayLoadingAnimation(false);
-				const {message}=data;
-				changeReticanOverviewId(message);
-			}else{
-				const {statusCode}=data;
-				let reticanOverviewCreationErrorMessage;
-
-				if(statusCode==401){
-					tokensRegeneration({
-						currentRefreshToken:refreshToken,
-						userId:_id,
-						parentApiTrigger:processReticanOverviewCreation,
-						dispatch,
-						parameters:{}
-					})
-				}else{
-					changeDisplayLoadingAnimation(false);
-					if(statusCode==400){
-						reticanOverviewCreationErrorMessage={
-		            		header:"Retican Overview Creation Error",
-		            		description:"Unfortunately there has been an error when creating your retican overview. Please try again"
-						}
-					}else if(statusCode==404){
-						reticanOverviewCreationErrorMessage={
-		            		header:"Payment Processing Error",
-		            		description:"Unfortunately there has been an error when processing your payment information. Please try again later"
-						}
-					}else{
-						reticanOverviewCreationErrorMessage={
-		            		header:"Internal Server Error",
-		            		description:"Unfortunately there has been an error on our part. Please try again later"
-						}
-					}
-					changeAlertMessage(reticanOverviewCreationErrorMessage);
-					changeReticanOverviewCreationErrorDisplay(true);
-				}
-			}
-		}
-
-		processReticanOverviewCreation({});
-	},[]);
 
 	const closeErrorAlertScreen=()=>{
 		changeReticanOverviewCreationErrorDisplay(false);
@@ -279,76 +222,65 @@ const Review=({progressScreen,reticanAssembly})=>{
 		<Container id="reticanReview">
 			{copySuccessAlert()}
 			{reticanCreationErrorAlertModal()}
+			<div style={{display:"flex",flexDirection:"row",alignItems:"center",width:"100%"}}>
+				<ArrowBackIosRoundedIcon
+					onClick={()=>props.history.push('/dashboard')}
+					style={{fontSize:"18",marginTop:"-10px",cursor:"pointer"}}
+				/>
+				<p style={{fontSize:"18px",marginLeft:"4%"}}>
+					<b>Review</b>
+				</p>
+			</div>
 
-			{displayLoadingAnimation==true?
-				<div style={{position:"relative",width:"100%",height:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
-					<LoadingAnimation
-						loadingText={"Processing reticans..."}
-						secondaryText={"This process can take some time so if you want to you can head over to your dashboard and we'll let you kow via email when this is done."}
+			<div id="reviewResults" style={{display:"flex",flexDirection:"row",width:"90%"}}>
+				<div>
+					<img src={AtlesiumLogo} id="atlesiumLogo"
+						style={{width:"300px",height:"230px",borderRadius:"50%"}}
 					/>
-				</div>:
-				<React.Fragment>
-					<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-						<ArrowBackIosRoundedIcon
-							onClick={()=>progressScreen("reticanDetails")}
-							style={{fontSize:"18",marginTop:"-10px",cursor:"pointer"}}
-						/>
-						<p style={{fontSize:"18px",marginLeft:"4%"}}>
-							<b>Review</b>
+					<div style={{width:"100%",display:"flex",justifyContent:"center"}}>
+						<p id="copyScriptDescription" style={{width:"60%"}}>
+							Copy the script tag and add it to your websites header file
 						</p>
 					</div>
+				</div>
+				<div id="scriptContents" style={{display:"flex",flexDirection:"column",width:"70%",marginLeft:"5%"}}>
+					<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+						<ScriptContainer>
+							<p id="script" style={{fontSize:"18px"}}>
+								<b>{presentationScription}</b>
+							</p>
+						</ScriptContainer>
+						<SaveRoundedIcon
+							onClick={()=>copyToClipboard()}
+							style={{fontSize:"24",marginLeft:"5%",cursor:"pointer"}}
+						/>
+					</div>
 
-					<div id="reviewResults" style={{display:"flex",flexDirection:"row",width:"90%"}}>
-						<div>
-							<img src={AtlesiumLogo} id="atlesiumLogo"
-								style={{width:"300px",height:"230px",borderRadius:"50%"}}
-							/>
-							<div style={{width:"100%",display:"flex",justifyContent:"center"}}>
-								<p id="copyScriptDescription" style={{width:"60%"}}>
-									Copy the script tag and add it to your websites header file
-								</p>
-							</div>
+					<ScriptParams style={{marginTop:"5%"}}>
+						<p>Parameters</p>
+						<hr/>
+						<p style={{color:Color_Constants.PRIMARY_COLOR}}>
+							Link to altesium
+						</p>
+						<p>
+							<b>(1)= "{miscroserviceDispatchConnection}"</b>
+						</p>
+						<hr/>
+						<p style={{color:Color_Constants.PRIMARY_COLOR}}>
+							Target div id. Works best with main page div
+						</p>
+						<p>
+							<b>(2)="landingPage"</b>
+						</p>
+					</ScriptParams>
+
+					<Link to={{pathname:`/dashboard`}} style={{textDecoration:"none"}}>
+						<div id="closeButton" style={CloseButtonCSS}>
+							<p style={{color:Color_Constants.PRIMARY_COLOR}}>Close</p>
 						</div>
-						<div id="scriptContents" style={{display:"flex",flexDirection:"column",width:"90%",marginLeft:"5%"}}>
-							<div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-								<ScriptContainer>
-									<p id="script" style={{fontSize:"18px"}}>
-										<b>{presentationScription}</b>
-									</p>
-								</ScriptContainer>
-								<SaveRoundedIcon
-									onClick={()=>copyToClipboard()}
-									style={{fontSize:"24",marginLeft:"5%",cursor:"pointer"}}
-								/>
-							</div>
-
-							<ScriptParams style={{marginTop:"5%"}}>
-								<p>Parameters</p>
-								<hr/>
-								<p style={{color:Color_Constants.PRIMARY_COLOR}}>
-									Link to altesium
-								</p>
-								<p>
-									<b>(1)= "{miscroserviceDispatchConnection}"</b>
-								</p>
-								<hr/>
-								<p style={{color:Color_Constants.PRIMARY_COLOR}}>
-									Target div id. Works best with main page div
-								</p>
-								<p>
-									<b>(2)="landingPage"</b>
-								</p>
-							</ScriptParams>
-
-							<Link to={{pathname:`/dashboard`}} style={{textDecoration:"none"}}>
-								<div id="closeButton" style={CloseButtonCSS}>
-									<p style={{color:Color_Constants.PRIMARY_COLOR}}>Close</p>
-								</div>
-							</Link>
-						</div>
-					</div>	
-				</React.Fragment>
-			}
+					</Link>
+				</div>
+			</div>	
 		</Container>
 	)
 }

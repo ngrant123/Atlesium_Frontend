@@ -13,6 +13,7 @@ import {ReticanOverviewConsumer} from "../ReticanOverviewCreationContext.js";
 import {CreationContext} from "../../../CreationSet/CreationContext.js";
 import {useSelector,useDispatch} from "react-redux";
 import {tokensRegeneration} from "../../../../../../Actions/Tasks/UpdateTokens.js";
+import {createReticanOverview} from "../../../../../../Actions/Requests/ReticanRequests/Adapter/ReticanCreation.js";
 
 const Container=styled.div`
 	width:40%;
@@ -74,7 +75,8 @@ const ReticanDetails=(props)=>{
 		isEditReticanDesired,
 		originalHeaderColor,
 		selectedColorHeader,
-		triggerUpdateReticanParentInformation
+		triggerUpdateReticanParentInformation,
+		triggerDisplayReticanProcessingModal
 	}=props;
 
 	const [erroredInputIds,changeErroredInputIds]=useState([]);
@@ -189,10 +191,15 @@ const ReticanDetails=(props)=>{
 
 			changeErroredInputIds([...tempErrorIds]);
 		}else{
-			triggerProgressScreen(
-				"review",
-				userSubmittedTitle,
-				userSubmittedDescription)
+			debugger;
+			let {reticanAssembly}=reticanOverviewConsumer;
+			reticanAssembly={
+				...reticanAssembly,
+				title:userSubmittedTitle,
+				description:userSubmittedDescription
+			}
+
+			processReticanOverviewCreation({updatedReticanAssemblyInformation:reticanAssembly})
 		}	
 	}
 
@@ -236,6 +243,36 @@ const ReticanDetails=(props)=>{
 			triggerEditReticanOverview({updatedReticanOverviewInformation});
 		}
 	}
+
+	const removeIdsFromReticanInformation=(reticanAssembly)=>{
+		const {
+			_id,
+			...reticanAssemblySansId
+		}=reticanAssembly;
+		for(var i=0;i<reticanAssemblySansId.reticans.length;i++){
+			const {
+				_id,
+				...reticanSansId
+			}=reticanAssembly.reticans[i];
+			reticanAssembly.reticans[i]=reticanSansId;
+		}
+
+		return reticanAssemblySansId;
+	}
+
+		const processReticanOverviewCreation=async({updatedAccessToken,updatedReticanAssemblyInformation})=>{
+			if(updatedReticanAssemblyInformation._id!=null){
+				updatedReticanAssemblyInformation=removeIdsFromReticanInformation(
+					updatedReticanAssemblyInformation);
+			}
+			createReticanOverview({
+				profileId:_id,
+				reticanInformation:updatedReticanAssemblyInformation,
+				accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
+			});
+			triggerDisplayReticanProcessingModal();
+		}
+
 
 	const triggerEditReticanOverview=async({updatedReticanOverviewInformation,updatedAccessToken})=>{
 		changeIsEditingStatus(true);

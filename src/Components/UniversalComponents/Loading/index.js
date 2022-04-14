@@ -60,7 +60,7 @@ const ButtonCSS={
 
 const LoadingAnimation=({loadingText,secondaryText,referralLinkPresent})=>{
 	return(
-		<Container>
+		<Container id="loadingAnimationText">
 			<Logo>
 				<img src={AtlesiumLogo} style={{borderRadius:"50%",width:"100%",height:"100%",marginRight:"2%"}}/>
 			</Logo>

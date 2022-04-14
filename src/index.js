@@ -34,6 +34,7 @@ const ReticanDetails=lazy(()=>import('./Components/Pages/ReticanDetails/DetailsS
 const PrivacyPolicy=React.lazy(()=>import('./Components/Pages/LegalDocuments/PrivacyPolicy/index.js'));
 const TermsOfConditions=React.lazy(()=>import('./Components/Pages/LegalDocuments/TermsOfService/index.js'));
 const PasswordReset=React.lazy(()=>import('./Components/Pages/PasswordReset/PasswordResetSet/index.js'));
+const ReviewRetican=React.lazy(()=>import('./Components/Pages/Creation/CreationSubset/Review/index.js'));
 
 const application=(
 	<Provider store={store}>
@@ -53,6 +54,7 @@ const application=(
 					<Route exact path="/privacyPolicy" component={PrivacyPolicy}/>
 					<Route exact path="/termsOfService" component={TermsOfConditions}/>
 					<Route exact path="/passwordReset" component={PasswordReset}/>
+					<Route exact path="/review/:id" component={ReviewRetican}/>
 				</Switch>
 			</Suspense>
 		</Router>
