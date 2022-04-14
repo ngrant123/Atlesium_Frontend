@@ -21,12 +21,16 @@ const ReticanInitialier=()=>{
 				<p>No reticans</p>:
 				<React.Fragment>
 					{stackReticans.map((data,index)=>
-						<Retican 
-							reticanInformation={data}
-							currentIndex={index}
-							removeTargetedIndexRetican={reticanConsumer.removeTargetedIndexRetican}
-							deleteRetican={reticanConsumer.deleteRetican}
-						/>
+						<React.Fragment>
+							{data.primaryReticanCard!=null &&(
+								<Retican 
+									reticanInformation={data}
+									currentIndex={index}
+									removeTargetedIndexRetican={reticanConsumer.removeTargetedIndexRetican}
+									deleteRetican={reticanConsumer.deleteRetican}
+								/>
+							)}
+						</React.Fragment>
 					)}
 				</React.Fragment>
 			}

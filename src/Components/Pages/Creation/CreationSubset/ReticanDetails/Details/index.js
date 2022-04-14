@@ -83,6 +83,7 @@ const ReticanDetails=(props)=>{
 	let [currentReticansFileSize,changeCurrentReticansFileSize]=useState(0);
 	const [isEditing,changeIsEditingStatus]=useState(false);
 	const [originalReticanPointerMapping,changeOriginalReticanPointerMapping]=useState();
+	const [isCreationReticans,changeIsCreationReticanStatus]=useState(false);
 
 	const reticanOverviewConsumer=useContext(ReticanOverviewConsumer);
 	const reticanCreationConsumer=useContext(CreationContext);
@@ -198,8 +199,8 @@ const ReticanDetails=(props)=>{
 				title:userSubmittedTitle,
 				description:userSubmittedDescription
 			}
-
-			processReticanOverviewCreation({updatedReticanAssemblyInformation:reticanAssembly})
+			changeIsCreationReticanStatus(true);
+			processReticanOverviewCreation({updatedReticanAssemblyInformation:reticanAssembly});
 		}	
 	}
 
@@ -240,6 +241,8 @@ const ReticanDetails=(props)=>{
 					headerColor:selectedColorHeader
 				}
 			}
+
+
 			triggerEditReticanOverview({updatedReticanOverviewInformation});
 		}
 	}
@@ -260,18 +263,54 @@ const ReticanDetails=(props)=>{
 		return reticanAssemblySansId;
 	}
 
-		const processReticanOverviewCreation=async({updatedAccessToken,updatedReticanAssemblyInformation})=>{
-			if(updatedReticanAssemblyInformation._id!=null){
-				updatedReticanAssemblyInformation=removeIdsFromReticanInformation(
-					updatedReticanAssemblyInformation);
+	const serializeReticanVideos=(reticans)=>{
+		for(var i=0;i<reticans.length;i++){
+			let videoUrlSansMimeType=reticans[i].videoInformation.videoUrl.replace('data:video/quicktime;base64,','');
+			reticans[i].videoInformation.videoUrl=new Buffer.from(videoUrlSansMimeType,'base64');
+		}
+		return reticans;
+	}
+
+
+
+	const processReticanOverviewCreation=async({updatedAccessToken,updatedReticanAssemblyInformation})=>{
+		debugger;
+		if(updatedReticanAssemblyInformation._id!=null){
+			updatedReticanAssemblyInformation=removeIdsFromReticanInformation(
+				updatedReticanAssemblyInformation);
+		}
+
+		if(updatedAccessToken==null){
+			updatedReticanAssemblyInformation={
+				...updatedReticanAssemblyInformation,
+				reticans:serializeReticanVideos(updatedReticanAssemblyInformation.reticans)
 			}
-			createReticanOverview({
-				profileId:_id,
-				reticanInformation:updatedReticanAssemblyInformation,
-				accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
-			});
+		}
+
+		const {confirmation,data}=await createReticanOverview({
+			profileId:_id,
+			reticanInformation:updatedReticanAssemblyInformation,
+			accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
+		});
+		if(confirmation!="Success"){
+			debugger;
+			const {statusCode}=data;
+			let reticanOverviewCreationErrorMessage;
+
+			if(statusCode==401){
+				tokensRegeneration({
+					currentRefreshToken:refreshToken,
+					userId:_id,
+					parentApiTrigger:processReticanOverviewCreation,
+					dispatch,
+					parameters:{updatedReticanAssemblyInformation}
+				})
+			}
+		}else{
+			changeIsCreationReticanStatus(false);
 			triggerDisplayReticanProcessingModal();
 		}
+	}
 
 
 	const triggerEditReticanOverview=async({updatedReticanOverviewInformation,updatedAccessToken})=>{
@@ -493,19 +532,24 @@ const ReticanDetails=(props)=>{
 							</div>
 						}
 					</React.Fragment>:
-					<RequiredFieldNotification
-						id={"compressFile"}
-						notificationText={"Reticans required"}
-			          	InputComponent={
-			          		<div id="compressFile" style={CompressFileCSS} onClick={()=>validateInputs()}>
-								<p>Compress File</p>
-								<ArrowForwardRoundedIcon
-									style={{fontSize:"18"}}
-								/>
-							</div>
-			         	}
-			    		erroredInputIds={erroredInputIds}
-					/>
+					<React.Fragment>
+						{isCreationReticans==true?
+							<p>Please wait...</p>:
+							<RequiredFieldNotification
+								id={"compressFile"}
+								notificationText={"Reticans required"}
+					          	InputComponent={
+					          		<div id="compressFile" style={CompressFileCSS} onClick={()=>validateInputs()}>
+										<p>Compress File</p>
+										<ArrowForwardRoundedIcon
+											style={{fontSize:"18"}}
+										/>
+									</div>
+					         	}
+					    		erroredInputIds={erroredInputIds}
+							/>
+						}
+					</React.Fragment>
 				}
 			</div>
 		</Container>

@@ -30,10 +30,6 @@ const Container=styled.div`
 	padding:15%;
 	padding-top:7%;
 
-	#callToActionSkeleton{
-		padding:0px;
-	}
-
 	#loadingAnimationText{
 		margin-top:0%;
 	}
@@ -43,9 +39,6 @@ const Container=styled.div`
 			margin-top:25% !important;
 		}
 		padding:10%;
-		#callToActionSkeleton{
-			padding:5px;
-		}
 	}
 `;
 
