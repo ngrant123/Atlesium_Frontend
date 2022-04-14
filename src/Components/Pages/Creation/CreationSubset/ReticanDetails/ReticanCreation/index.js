@@ -128,7 +128,7 @@ const SelectedNodeCSS={
 	backgroundColor:"white"
 }
 
-const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdited,isEditReticanDesired})=>{
+const ReticanCreation=({triggerUpdateReticanParentInformation,isEditReticanDesired})=>{
 	const [isVideoElementPaused,changeVideoElementPauseStatus]=useState(false);
 	
 	let [currentReticanCounter,changeCurrentReticanCounter]=useState(0);
@@ -171,10 +171,12 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 		displayInitialReticanScreen]);
 
 	useEffect(()=>{
-		const milliseconds=displayRankingReOrderSuccess==true?1000:5000;
-		setTimeout(()=>{
-			changeDisplayRankingReorderSuccess(null);
-		},milliseconds);
+		if(displayRankingReOrderSuccess!=null){
+			const milliseconds=displayRankingReOrderSuccess==true?1000:5000;
+			setTimeout(()=>{
+				changeDisplayRankingReorderSuccess(null);
+			},milliseconds);
+		}
 	},[displayRankingReOrderSuccess]);
 
 	const uuid=()=>{
@@ -341,7 +343,7 @@ const ReticanCreation=({triggerUpdateReticanParentInformation,listReticanAsEdite
 							videoUrl
 						}
 					}
-					listReticanAsEdited({
+					reticanCreationParentConsumer.listReticanAsEdited({
 						...editedReticanInformation,
 						reticanId:reticans[currentReticanCounter]._id
 					});

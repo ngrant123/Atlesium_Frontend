@@ -29,9 +29,10 @@
     <script type="text/javascript" src="https://web.squarecdn.com/v1/square.js"></script>    
     <script>
 
-      let xhr = new XMLHttpRequest();
-      xhr.open('get',  `https://v1.atlesium.com/retrieveInitialReticanFile?reticanOverviewId=623cb41e76b5993b4051a4d6&targetDivId=landingPage`);
+     let xhr = new XMLHttpRequest();
+     xhr.open('get',  `https://v1.atlesium.com/retrieveInitialReticanFile?reticanOverviewId=623cb41e76b5993b4051a4d6&targetDivId=landingPage`);
       xhr.send();
+
 
       xhr.onload = function() {
         const app=document.getElementById("landingPage");

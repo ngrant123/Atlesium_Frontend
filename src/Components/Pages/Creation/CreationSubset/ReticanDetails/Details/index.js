@@ -74,7 +74,6 @@ const ReticanDetails=(props)=>{
 		isEditReticanDesired,
 		originalHeaderColor,
 		selectedColorHeader,
-		editedReticans,
 		triggerUpdateReticanParentInformation
 	}=props;
 
@@ -124,7 +123,7 @@ const ReticanDetails=(props)=>{
 
 	useEffect(()=>{
 		clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
-	},[editedReticans]);
+	},[reticanCreationConsumer.editedReticans]);
 
 
 	useEffect(()=>{
@@ -327,7 +326,7 @@ const ReticanDetails=(props)=>{
 			editedReticanPointers
 		}=isReticanPointersAltered();
 
-		if(!reticanPointerAlterationStatus && editedReticans.length==0){
+		if(!reticanPointerAlterationStatus && reticanCreationConsumer.editedReticans.length==0){
 			let tempErrorIds=[];
 			tempErrorIds.push("editRetican");
 
@@ -345,10 +344,10 @@ const ReticanDetails=(props)=>{
 				}
 			}
 
-			if(editedReticans.length>0){
+			if(reticanCreationConsumer.editedReticans.length>0){
 				editedReticansInformation={
 					...editedReticansInformation,
-					updatedReticans:editedReticans
+					updatedReticans:reticanCreationConsumer.editedReticans
 				}
 			}
 			triggerEditReticans({editedReticansInformation});

@@ -79,8 +79,6 @@ const ReticanDetailsInit=(props)=>{
 	const [displayReticanHeaderColorOptions,changeReticanHeaderColorOptionsDisplay]=useState(false);
 	const [selectedColorHeader,changeSelectedColorHeader]=useState(reticanAssembly==null?null:reticanAssembly.headerColor);
 	let [currentReticanDetails,changeReticanDetails]=useState(reticanAssembly==null?{}:reticanAssembly);
-	const [editedReticans,changeEditedReticans]=useState([]);
-
 
 
 	const closeModal=()=>{
@@ -137,12 +135,6 @@ const ReticanDetailsInit=(props)=>{
 		)
 	}
 
-	const listReticanAsEdited=(editedReticanInformation)=>{
-		const currentEditedReticans=editedReticans;
-		currentEditedReticans.push(editedReticanInformation);
-		changeEditedReticans([...currentEditedReticans]);
-	}
-
 	const triggerPreviousScreen=()=>{
 		const quickSavedTitleAndDescription={
 			title:document.getElementById("title").value,
@@ -191,14 +183,12 @@ const ReticanDetailsInit=(props)=>{
 						isEditReticanDesired={isEditReticanDesired}
 						selectedColorHeader={selectedColorHeader}
 						originalHeaderColor={reticanHeaderColor}
-						editedReticans={editedReticans}
 						triggerUpdateReticanParentInformation={triggerUpdateReticanParentInformation}
 					/>
 					<hr style={HorizontalLineCSS} id="horizontalLineDivider"/>
 
 					<ReticanCreation
 						triggerUpdateReticanParentInformation={triggerUpdateReticanParentInformation}
-						listReticanAsEdited={listReticanAsEdited}
 						isEditReticanDesired={isEditReticanDesired}
 					/>
 				</ReticanDetails>

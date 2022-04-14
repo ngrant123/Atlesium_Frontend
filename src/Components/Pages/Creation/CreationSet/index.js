@@ -47,6 +47,8 @@ const Creation=(props)=>{
 	const [isLoadingEditedReticanInformation,changeIsLoadingEditedReticanInformation]=useState(true);
 	const [reticanHeaderColor,changeReticanHeaderColor]=useState();
 	const [displayOnboardingModal,changeDisplayOnboardingModal]=useState(false);
+	const [editedReticans,changeEditedReticans]=useState([]);
+
 	const dispatch=useDispatch();
 
 	const {
@@ -163,6 +165,12 @@ const Creation=(props)=>{
 	    )
   	}
 
+  	const listReticanAsEdited=(editedReticanInformation)=>{
+		const currentEditedReticans=editedReticans;
+		currentEditedReticans.push(editedReticanInformation);
+		changeEditedReticans([...currentEditedReticans]);
+	}
+
   	const componentDeciderMemo=useMemo(()=>{
   		return(
   			<ComponentDecider componentSelectedName={currentSelectedComponent}>
@@ -223,7 +231,9 @@ const Creation=(props)=>{
 				},
 				disableEditReticanStatus:()=>{
 					changeIsEditReticanDesiredStatus(false);
-				}
+				},
+				editedReticans,
+				listReticanAsEdited
 			}}
 		>
 			{onboardingModal()}

@@ -49,7 +49,6 @@ export const renderPaymentHoistedFields=async(generateTransactionToken,triggerEr
 			return {statusCode:200}
 		}
 	}catch(err){
-		console.log(err);
 		return {statusCode:400};
 	}
 
