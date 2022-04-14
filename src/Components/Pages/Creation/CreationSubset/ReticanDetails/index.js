@@ -158,6 +158,7 @@ const ReticanDetailsInit=(props)=>{
 					<ReticanProcessingInformationalModal
 						closeModal={closeReticanProcessingInformational}
 						history={history}
+						isEditingProcessing={isEditReticanDesired}
 					/>
 				)}
 			</React.Fragment>

@@ -392,48 +392,12 @@ const ReticanDetails=(props)=>{
 	}
 
 	const triggerEditReticans=async({editedReticansInformation,updatedAccessToken})=>{
-		changeIsEditingStatus(true);
-		const {confirmation,data}=await editReticans({
+		editReticans({
 			...editedReticansInformation,
+			reticanOverviewTitle:reticanOverviewConsumer.reticanAssembly.title,
 			accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
 		});
-
-
-		let editedReticanAlertMessage;
-		if(confirmation=="Success"){
-			editedReticanAlertMessage={
-        		header:"Reticans Edited",
-        		description:""
-			}
-			reticanCreationConsumer.displayAlertScreen(editedReticanAlertMessage);
-			changeIsEditingStatus(false);
-		}else{
-			const {statusCode}=data;
-
-			if(statusCode==401){
-				tokensRegeneration({
-					currentRefreshToken:refreshToken,
-					userId:_id,
-					parentApiTrigger:triggerEditReticans,
-					dispatch,
-					parameters:{editedReticansInformation}
-				})
-			}else{
-				if(statusCode==400){
-					editedReticanAlertMessage={
-		        		header:"Edit Retican Error",
-		        		description:"Unfortunately there has been an error when editing your reticans. Please try again"
-					}
-				}else{
-					editedReticanAlertMessage={
-		        		header:"Internal Server Error",
-		        		description:"Unfortunately there has been an error on our part. Please try again later"
-					}
-				}
-				reticanCreationConsumer.displayAlertScreen(editedReticanAlertMessage);
-				changeIsEditingStatus(false);
-			}
-		}
+		triggerDisplayReticanProcessingModal();
 	}
 
 	const triggerClearInputField=(divId)=>{

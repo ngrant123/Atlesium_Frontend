@@ -43,6 +43,9 @@ const Container=styled.div`
 			margin-top:25% !important;
 		}
 		padding:10%;
+		#callToActionSkeleton{
+			padding:5px;
+		}
 	}
 `;
 
