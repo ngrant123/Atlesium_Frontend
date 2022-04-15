@@ -192,7 +192,6 @@ const ReticanDetails=(props)=>{
 
 			changeErroredInputIds([...tempErrorIds]);
 		}else{
-			debugger;
 			let {reticanAssembly}=reticanOverviewConsumer;
 			reticanAssembly={
 				...reticanAssembly,
@@ -274,7 +273,6 @@ const ReticanDetails=(props)=>{
 
 
 	const processReticanOverviewCreation=async({updatedAccessToken,updatedReticanAssemblyInformation})=>{
-		debugger;
 		if(updatedReticanAssemblyInformation._id!=null){
 			updatedReticanAssemblyInformation=removeIdsFromReticanInformation(
 				updatedReticanAssemblyInformation);
@@ -293,7 +291,6 @@ const ReticanDetails=(props)=>{
 			accessToken:updatedAccessToken==null?accessToken:updatedAccessToken
 		});
 		if(confirmation!="Success"){
-			debugger;
 			const {statusCode}=data;
 			let reticanOverviewCreationErrorMessage;
 

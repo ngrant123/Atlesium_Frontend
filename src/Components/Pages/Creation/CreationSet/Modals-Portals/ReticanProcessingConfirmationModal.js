@@ -21,7 +21,6 @@ const ReticanTypeCSS={
 
 
 const ReticanProcessingInformationalModal=({closeModal,history,isEditingProcessing})=>{
-	console.log(isEditingProcessing);
 	const defaultText="We'll let you kow via email when this is done.";
 
 	const secondaryText=isEditingProcessing==true?defaultText:defaultText+"This page will redirect you shortly or you can click the close button."
