@@ -146,7 +146,6 @@ const ProfilePicture=({targetDom,closeProfilePictureCreationModal,updateNavigati
 			</svg>
 		)
 	}
-//
 	const handleUploadPicture=()=>{
 		let reader= new FileReader();
 		const picture=document.getElementById("uploadPictureFile").files[0];

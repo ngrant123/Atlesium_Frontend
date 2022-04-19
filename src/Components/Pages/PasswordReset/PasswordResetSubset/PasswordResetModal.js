@@ -3,7 +3,6 @@ import styled from "styled-components";
 import {verifyPasswordResetCode} from "../../../../Actions/Requests/ProfileRequests/Retrieval/PassWordResetVerification.js";
 import {updatePassword} from "../../../../Actions/Requests/ProfileRequests/Adapter/ProfileEditService.js"; 
 import {useDispatch} from "react-redux";
-// import {refreshTokenApiCallHandle} from "../../../../Actions/Tasks/index.js";
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import RequiredFieldNotification from "../../../UniversalComponents/Notifications/RequiredFieldNotification.js";
 import {clearInputField} from "../../../../Actions/Tasks/ClearInputFields.js";
@@ -178,14 +177,6 @@ const PasswordReset=(props)=>{
 				const {statusCode}=data;
 				let alertExplanation;
 				if(statusCode==401){
-					// await refreshTokenApiCallHandle(
-					// 		userRefreshToken,
-					// 		userId,
-					// 		setPasswordForUser,
-					// 		dispatch,
-					// 		{},
-					// 		false
-					// 	);
 					changeEnterPasswordPrompt(false);
 				}else{
 					alertExplanation={

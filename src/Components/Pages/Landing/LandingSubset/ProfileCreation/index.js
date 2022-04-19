@@ -133,7 +133,6 @@ const ProfileCreation=({userSpecifiedEmail,parentContainerId,history})=>{
 				changeReduxInformation(reduxAppropriateUserInformation);
 				changeDisplayPaymentScreen(true);
 			}else{
-				//alert 
 				const {message}=data;
 				let profileCreationErrorMessage;
 				if(message.statusCode==400){

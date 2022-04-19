@@ -115,13 +115,6 @@ const ReticanDetails=(props)=>{
 		}
 		calculateTotalFileSize();
 		clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
-		// if(originalReticanPointerMapping!=null){
-
-		// 	const {reticanPointerAlterationStatus}=isReticanPointersAltered();
-		// 	if(reticanPointerAlterationStatus){
-		// 		clearInputField(changeErroredInputIds,erroredInputIds,"editRetican");
-		// 	}
-		// }
 	},[totalReticans]);
 
 	useEffect(()=>{

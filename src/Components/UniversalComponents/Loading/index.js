@@ -56,8 +56,6 @@ const ButtonCSS={
 	fontSize:"18px"
 }
 
-//animation:${keyFrame} 3s ease-in-out 0s infinite;
-
 const LoadingAnimation=({loadingText,secondaryText,referralLinkPresent})=>{
 	return(
 		<Container id="loadingAnimationText">

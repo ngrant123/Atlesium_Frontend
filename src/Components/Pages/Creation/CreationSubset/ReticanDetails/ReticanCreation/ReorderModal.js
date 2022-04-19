@@ -60,12 +60,6 @@ const ReorderModal=(props)=>{
 	}=props;
 	const [displayExtendedReorderModal,changeDisplayExtendedReorderModal]=useState(false);
 
-	// useEffect(()=>{
-	// 	document.getElementById("rankingContainer").value=currentReticanCounter+1;
-	// },[currentReticanCounter]);
-
-
-
 	const editReticanOrderingStatus=(incrementIndicator)=>{
 		if(displayExtendedReorderModal==false){
 			document.getElementById("reorderContainer").style.marginLeft="0%";

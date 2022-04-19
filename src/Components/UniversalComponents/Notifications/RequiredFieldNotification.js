@@ -12,7 +12,6 @@ const ToolTipTextCSS={
 	padding:"15px",
 	position:"relative",
 	zIndex: 1
-	//transform:"rotate(90deg)"
 }
 
 const ToolTipTextArrowCSS={

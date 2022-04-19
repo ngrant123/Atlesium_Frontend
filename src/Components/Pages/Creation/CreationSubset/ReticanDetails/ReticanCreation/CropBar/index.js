@@ -60,16 +60,12 @@ const CropBar=({closeCropModal})=>{
 		primaryCropToggleButtonDrag.initializeDrag(
 			document.getElementById("primaryToggleButton"),
 			document.getElementById("cropBarDiv"));
-		//secondaryCropToggleButtonDrag.initializeDrag(document.getElementById("secondaryToggleButton",offsetX));
 	},[]);
 
 	return(
 		<Container>
 			<CropBarContainer id="cropBarDiv">
 				<div id="primaryToggleButton" style={CropBarToggleButtonCSS}/>
-				{/*
-					<div id="secondaryToggleButton" style={CropBarToggleButtonCSS}/>
-				*/}
 			</CropBarContainer>
 
 			<div style={{display:"flex",flexDirection:"row"}}>
