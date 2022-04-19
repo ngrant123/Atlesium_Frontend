@@ -1,4 +1,4 @@
-<b>Atlesium: A new kind of customer relationship platform</b>
+# Atlesium_Frontend
 
 We all know Intercom, Drift, and all of the other customer relationship platforms. But honestly, those platforms don’t allow you to get a real sense of your visitor. What’s more effective than text? Video. Atlesium introduces a new take on customer relationships and allows you the owner to connect with your visitors on a more personal level. 
 
